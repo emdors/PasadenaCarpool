@@ -9,6 +9,8 @@
   "dependencies": {
     "body-parser": "^1.14.2",
     "bootstrap": "^3.3.6",
-    "express": "latest"
+    "cookie-parser": "^1.4.1",
+    "express": "^4.13.4",
+    "mongodb": "^2.1.5"
   }
 }
