@@ -1,0 +1,14 @@
+{
+  "name": "Pasadena Carpool",
+  "version": "1.0.0",
+  "description": "Website for pasadena carpool app",
+  "scripts": {
+    "start": "node Server.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "bootstrap": "^3.3.6",
+    "express": "latest"
+  }
+}
