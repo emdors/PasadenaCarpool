@@ -1,3 +1,6 @@
+body {
+  margin-bottom: 100px;
+}
 
 table.timetable {
   border-collapse: separate;
