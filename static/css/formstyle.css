@@ -1,0 +1,35 @@
+
+table.timetable {
+  border-collapse: separate;
+  border-spacing: 1px;
+}
+
+div#alltimeinputs {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+table.timetable tr.timeinput td {
+  height: 1.5em;
+  width:  1.2em;
+}
+
+table.timetable tr.timeinput td.unselected {
+  background-color: #e0e0e0;
+}
+
+table.timetable tr.timeinput td.selected {
+  background-color: #66ccff;
+}
+
+table.timetable tr.timetext td.hour {
+  font-size: 130%;
+}
+
+table.timetable tr.timetext td.halfhour {
+  font-size: 80%;
+}
