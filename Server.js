@@ -7,6 +7,7 @@ var app = express();
 //var db = new Datastore({filename:__dirname + 'IDEmailData.db', autoload:true});
 
 app.use(bodyParser.urlencoded({extended: true}));
+app.locals.pretty = true
 
 var MongoClient = require('mongodb').MongoClient;
 
@@ -23,13 +24,45 @@ var viewpath = __dirname + '/views/';
 //});
 
 app.get("/",function(req,res){
-  res.sendFile(viewpath + "index.html");
+  res.render(viewpath + "index.jade", {ourtitle: "Hello there"});
 });
 
 app.use(express.static("static"));
 
 function sendCzarPage(req, res) {
-  res.sendFile(viewpath + "czar.html");
+  res.render(viewpath + "czar.jade", {formresults: [
+    {name: 'Adam',
+  email: 'adunlap@hmc.edu',
+  numPassengers: '3',
+  MondayDriveStatus: 'cannot',
+  TuesdayDriveStatus: 'must',
+  WednesdayDriveStatus: 'can',
+  ThursdayDriveStatus: 'can',
+  FridayDriveStatus: 'can',
+  notes: 'Yay!',
+  timeValuesToSubmit: 'MondayAM530,MondayAM545,MondayAM600,MondayPM345,MondayPM400,MondayPM415,TuesdayAM815,TuesdayAM830,TuesdayAM845,TuesdayAM915,TuesdayAM945,TuesdayPM315,TuesdayPM330,TuesdayPM345,WednesdayAM530,WednesdayAM545,WednesdayPM415,WednesdayPM430,WednesdayPM445,ThursdayAM530,ThursdayAM545,ThursdayAM600,ThursdayPM645,ThursdayPM700,ThursdayPM715,ThursdayPM730,FridayAM815,FridayAM830,FridayAM845,FridayAM900,FridayAM915,FridayPM530,FridayPM545,FridayPM600,' },
+    { name: 'John',
+  email: 'jamigo@cuc.edu',
+  numPassengers: '4',
+  MondayDriveStatus: 'can',
+  TuesdayDriveStatus: 'must',
+  WednesdayDriveStatus: 'can',
+  ThursdayDriveStatus: 'cannot',
+  FridayDriveStatus: 'can',
+  notes: 'I am taking a 12-person bus on Friday',
+  timeValuesToSubmit: 'MondayAM530,MondayAM545,MondayAM600,MondayPM345,MondayPM400,MondayPM415,TuesdayAM815,TuesdayAM845,TuesdayAM915,TuesdayAM945,TuesdayPM315,TuesdayPM330,TuesdayPM345,WednesdayAM530,WednesdayAM545,WednesdayPM430,WednesdayPM445,ThursdayAM530,ThursdayAM545,ThursdayAM600,ThursdayPM645,ThursdayPM700,ThursdayPM715,ThursdayPM730,FridayAM815,FridayAM830,FridayAM845,FridayAM915,FridayPM530,FridayPM545,FridayPM600,' },
+    { name: 'jimmathy',
+  email: 'aardvark@cmc.edu',
+  numPassengers: '2',
+  MondayDriveStatus: 'can',
+  TuesdayDriveStatus: 'can',
+  WednesdayDriveStatus: 'can',
+  ThursdayDriveStatus: 'must',
+  FridayDriveStatus: 'can',
+  notes: 'I like pizza',
+  timeValuesToSubmit: 'MondayAM545,MondayAM600,MondayPM345,MondayPM400,MondayPM415,TuesdayAM815,TuesdayAM830,TuesdayAM845,TuesdayAM915,TuesdayPM315,TuesdayPM330,TuesdayPM345,WednesdayAM530,WednesdayAM545,WednesdayPM415,WednesdayPM445,ThursdayAM530,ThursdayAM545,ThursdayAM600,ThursdayPM700,ThursdayPM715,ThursdayPM730,FridayAM815,FridayAM830,FridayAM845,FridayAM900,FridayAM915,FridayPM530,FridayPM545,FridayPM600,' }
+  ]});
+
 }
 
 app.get("/czar", sendCzarPage);
@@ -52,12 +85,11 @@ app.get("/czar", sendCzarPage);
 //  });
 //});
 
-//router.use('/times', bodyParser());
-
 app.post("/times", function(req,res){
   var name = req.body.name;
   var email = req.body.email;
   // TODO: etc
+
   console.log(req.body);
   //weeklyCommuteFormBody = req.body;
   //MongoClient.connect(mongod_URI, function(err, db) {
@@ -73,13 +105,9 @@ app.post("/times", function(req,res){
   sendCzarPage(req, res);
 });
 
-//app.use(cookieParser());
-
-//app.use("/",router);
-
-//app.use("*",function(req,res){
-//  res.sendFile(viewpath + "404.html");
-//});
+app.get('*', function(req,res) {
+  res.render(viewpath+"404.jade");
+});
 
 app.listen(3005,function(){
   console.log("Live at Port 3005");

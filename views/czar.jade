@@ -1,0 +1,57 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    title Pasadena Carpool Czar Tools
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.3.3/angular.min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.3/angular-route.min.js')
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
+    link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css')
+    script(src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js')
+  body
+    div
+      div
+        nav.navbar.navbar-inverse(role='navigation', style='padding-left:130px;')
+          ul.nav.navbar-nav
+            li
+              a(href='/') Home
+            li.active
+              a(href='/czar') Czar
+              span.sr-only (current)
+      br
+      .container.theme-showcase(role='main')
+        h1 Form Results
+        ul
+          each result in formresults
+            li
+              table(style="table-layout: fixed; width: 100%")
+                tr
+                  td Name
+                  td= result.name
+                tr
+                  td Email
+                  td= result.email
+                tr
+                  td # Passengers
+                  td= result.numPassengers
+                tr
+                  td Drive Monday
+                  td= result.MondayDriveStatus
+                tr
+                  td Driving on Tuesday: 
+                  td= result.TuesdayDriveStatus
+                tr
+                  td Driving on Wednesday: 
+                  td= result.WednesdayDriveStatus
+                tr
+                  td Driving on Thursday: 
+                  td= result.ThursdayDriveStatus
+                tr
+                  td Driving on Friday: 
+                  td= result.FridayDriveStatus
+                tr
+                  td Come/go times: 
+                  td(style="word-wrap: break-word")= result.timeValuesToSubmit
+                tr
+                  td Notes:
+                  td(style="word-wrap: break-word")= result.notes

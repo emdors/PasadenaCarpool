@@ -1,0 +1,70 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    title Pasadena Carpool Signups
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.3.3/angular.min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.3/angular-route.min.js')
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
+    link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css')
+    script(src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js')
+    script(src='js/highlight.js')
+    link(rel='stylesheet', href='css/formstyle.css')
+  body
+    div
+      div
+        nav.navbar.navbar-inverse(role='navigation', style='padding-left:130px;')
+          ul.nav.navbar-nav
+            li.active
+              a(href='/')
+                | Home
+                span.sr-only (current)
+            li
+              a(href='/czar') Czar
+      br
+      .container.theme-showcase(role='main')
+        h1
+          | Your times
+        form#timeForm(method='POST', action='/times', onsubmit='submitForm();')
+          .form-group
+            label(for='name') Name
+            input#name.form-control(type='text', name='name', placeholder='Isabella Lai', required)
+          .form-group
+            label(for='email') Email Address
+            input.form-control(type='email', name='email', placeholder='iLai@hmc.edu', required)
+            span#helpBlock.help-block Email will be used to contact you with your carpool assignment
+          .form-group
+            label(for='numPassengers') Number of People You Can Drive
+            input.form-control(type='number', name='numPassengers', value='0', required)
+            span#helpBlock.help-block Include yourself. Put 0 if you are unable or unwilling to drive
+          .form-group
+            label Click the gray boxes below to paint over the times when you want to leave.
+
+            #alltimeinputs
+              each day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+                h3= day
+                label.radio-inline
+                  input(type='radio', name=day + 'DriveStatus', value='must')
+                  | Must Drive
+                label.radio-inline
+                  input(type='radio', name=day + 'DriveStatus', value='can', checked)
+                  | Can drive
+                label.radio-inline
+                  input(type='radio', name=day + 'DriveStatus', value='cannot')
+                  | Cannot drive
+                each hours, AMPM in {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]}
+                  h4= AMPM
+                  table.timetable
+                    tr.timetext
+                      each hr in hours
+                        td.hour(colspan='2')= hr
+                        td.halfhour(colspan='2') :30
+                    tr.timeinput
+                      each hr in hours
+                        each increment in [0, 15, 30, 45]
+                          td(id=day+AMPM+(hr*100+increment))
+          .form-group
+            label(for='notes') Notes
+            input#notes.form-control(type='notes', name='notes')
+          input#timeValuesToSubmit(type='hidden', name='timeValuesToSubmit')
+          button.btn.btn-default(type='submit') Submit
