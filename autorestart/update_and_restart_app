@@ -1,0 +1,15 @@
+#!/bin/bash
+
+(
+    set -e
+
+    cd ..
+    git pull --rebase
+
+    kill $(cat nodepid) || true
+
+    nohup node Server.js &
+    echo $! > nodepid
+) &>> update_and_restart_log &
+
+exit

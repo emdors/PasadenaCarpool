@@ -31,3 +31,7 @@ node_modules
 
 # Optional REPL history
 .node_repl_history
+
+autorestart/update_and_restart_log
+nodepid
+nohup.out
