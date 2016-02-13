@@ -57,18 +57,17 @@ window.onload = function() {
 
     }
 
-    // If mouse is released...
-    ti.onmouseup = function() {
-      mouseCurrentlyDown = false;
-    }
+  }
+  // If mouse is released...
+  timeform.onmouseup = function() {
+    mouseCurrentlyDown = false;
+  }
 
-    // If mouse leaves the table, make the user click again before they can
-    // select more things. Useful because we don't know if they unclicked while
-    // offscreen or something. It's also natural-ish. This could be changed to
-    // apply to the table as a whole so they don't have to relick as much.
-    ti.onmouseleave = function() {
-      mouseCurrentlyDown = false;
-    }
+  // If mouse leaves the table, make the user click again before they can
+  // select more things. Useful because we don't know if they unclicked while
+  // offscreen or something.
+  timeform.onmouseleave = function() {
+    mouseCurrentlyDown = false;
   }
 }
 
@@ -78,19 +77,21 @@ function submitForm() {
   var timeform = document.getElementById("timeForm");
   var timeinputs = timeform.getElementsByClassName("timeinput");
 
-  var timeValueConcatenation = ""
-
   for (var i=0; i<timeinputs.length; ++i) {
     var ti = timeinputs[i];
+    var dayAndHalfDay = ti.id.slice('timeinput'.length);
+
+    var timesForThisPeriod = '';
+
     var tds = ti.getElementsByTagName("td");
     for (var j=0; j<tds.length; ++j) {
       var td = tds[j];
       if (isSelected(td)) {
-        timeValueConcatenation += td.id + ",";
+        timesForThisPeriod += td.id.slice(dayAndHalfDay.length) + ',';
       }
     }
-  }
 
-  var inputToPutThingsIn = document.getElementById("timeValuesToSubmit");
-  inputToPutThingsIn.value = timeValueConcatenation;
+    var inputToPutTimesIn = document.getElementById(dayAndHalfDay + 'Times');
+    inputToPutTimesIn.value = timesForThisPeriod;
+  }
 }

@@ -25,33 +25,7 @@ html(lang='en')
           each result in formresults
             li
               table(style="table-layout: fixed; width: 100%")
-                tr
-                  td Name
-                  td= result.name
-                tr
-                  td Email
-                  td= result.email
-                tr
-                  td # Passengers
-                  td= result.numPassengers
-                tr
-                  td Drive Monday
-                  td= result.MondayDriveStatus
-                tr
-                  td Driving on Tuesday: 
-                  td= result.TuesdayDriveStatus
-                tr
-                  td Driving on Wednesday: 
-                  td= result.WednesdayDriveStatus
-                tr
-                  td Driving on Thursday: 
-                  td= result.ThursdayDriveStatus
-                tr
-                  td Driving on Friday: 
-                  td= result.FridayDriveStatus
-                tr
-                  td Come/go times: 
-                  td(style="word-wrap: break-word")= result.timeValuesToSubmit
-                tr
-                  td Notes:
-                  td(style="word-wrap: break-word")= result.notes
+                each value,key in result
+                  tr
+                    td= key
+                    td= value

@@ -1,3 +1,4 @@
+-weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 doctype html
 html(lang='en')
   head
@@ -41,7 +42,7 @@ html(lang='en')
             label Click the gray boxes below to paint over the times when you want to leave.
 
             #alltimeinputs
-              each day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+              each day in weekdays
                 h3= day
                 label.radio-inline
                   input(type='radio', name=day + 'DriveStatus', value='must')
@@ -59,12 +60,16 @@ html(lang='en')
                       each hr in hours
                         td.hour(colspan='2')= hr
                         td.halfhour(colspan='2') :30
-                    tr.timeinput
+                    tr(class='timeinput' id='timeinput'+day+AMPM)
                       each hr in hours
                         each increment in [0, 15, 30, 45]
-                          td(id=day+AMPM+(hr*100+increment))
+                          td(id=day+AMPM+(hr*100+increment), class=hr*100+increment)
           .form-group
             label(for='notes') Notes
             input#notes.form-control(type='notes', name='notes')
-          input#timeValuesToSubmit(type='hidden', name='timeValuesToSubmit')
+          each day in weekdays
+            each AMPM in ['AM', 'PM']
+              - nm = day+AMPM+'Times'
+              input(id=nm, type='hidden', name=nm)
+
           button.btn.btn-default(type='submit') Submit
