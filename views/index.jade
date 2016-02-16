@@ -1,4 +1,3 @@
--weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 doctype html
 html(lang='en')
   head
@@ -17,9 +16,9 @@ html(lang='en')
         nav.navbar.navbar-inverse(role='navigation', style='padding-left:130px;')
           ul.nav.navbar-nav
             li.active
-              a(href='/')
-                | Home
-                span.sr-only (current)
+              a(href='/') Home
+            li
+              a(href='/schedule') Schedule
             li
               a(href='/czar') Czar
       br
@@ -33,11 +32,11 @@ html(lang='en')
           .form-group
             label(for='email') Email Address
             input.form-control(type='email', name='email', placeholder='iLai@hmc.edu', required)
-            span#helpBlock.help-block Email will be used to contact you with your carpool assignment
+            span.help-block Email will be used to contact you with your carpool assignment
           .form-group
             label(for='numPassengers') Number of People You Can Drive
             input.form-control(type='number', name='numPassengers', value='0', required)
-            span#helpBlock.help-block Include yourself. Put 0 if you are unable or unwilling to drive
+            span.help-block Include yourself. Put 0 if you are unable or unwilling to drive
           .form-group
             label Click the gray boxes below to paint over the times when you want to leave.
 
@@ -53,7 +52,7 @@ html(lang='en')
                 label.radio-inline
                   input(type='radio', name=day + 'DriveStatus', value='cannot')
                   | Cannot drive
-                each hours, AMPM in {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]}
+                each hours, AMPM in possibleDriveHours
                   h4= AMPM
                   table.timetable
                     tr.timetext
@@ -63,7 +62,7 @@ html(lang='en')
                     tr(class='timeinput' id='timeinput'+day+AMPM)
                       each hr in hours
                         each increment in [0, 15, 30, 45]
-                          td(id=day+AMPM+(hr*100+increment), class=hr*100+increment)
+                          td(id=day+AMPM+(hr*100+increment))
           .form-group
             label(for='notes') Notes
             input#notes.form-control(type='notes', name='notes')

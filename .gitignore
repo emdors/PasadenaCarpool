@@ -32,6 +32,9 @@ node_modules
 # Optional REPL history
 .node_repl_history
 
+# Vim temporary files stuff
+.*.swp
+
 autorestart/update_and_restart_log
 nodepid
 nohup.out

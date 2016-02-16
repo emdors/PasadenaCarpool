@@ -7,7 +7,7 @@ var app = express();
 //var db = new Datastore({filename:__dirname + 'IDEmailData.db', autoload:true});
 
 app.use(bodyParser.urlencoded({extended: true}));
-//app.locals.pretty = true
+app.locals.pretty = true
 
 var MongoClient = require('mongodb').MongoClient;
 
@@ -18,8 +18,11 @@ mongod_URI = "mongodb://localhost:27017/test";
 
 var viewpath = __dirname + '/views/';
 
+var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+var possibleDriveHours = {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]};
+
 app.get("/",function(req,res){
-  res.render(viewpath + "index.jade", {ourtitle: "Hello there"});
+  res.render(viewpath + "index.jade", {weekdays:weekdays, possibleDriveHours:possibleDriveHours});
 });
 
 app.use(express.static("static"));
@@ -39,19 +42,40 @@ var resultsSoFar = [
   TuesdayAMTimes: '700,715,',
   TuesdayPMTimes: '615,645,700,715,730,',
   WednesdayAMTimes: '700,715,',
+  WednesdayPMTimes: '645,700,715,730,',
+  ThursdayAMTimes: '700,715,',
+  ThursdayPMTimes: '',
+  FridayAMTimes: '700,715,',
+  FridayPMTimes: '315,330,345,' },
+{ name: 'Person 2',
+  email: 'otheremail',
+  numPassengers: '3',
+  MondayDriveStatus: 'must',
+  TuesdayDriveStatus: 'must',
+  WednesdayDriveStatus: 'can',
+  ThursdayDriveStatus: 'can',
+  FridayDriveStatus: 'cannot',
+  notes: 'This is a note!',
+  MondayAMTimes: '515,530,545,600,',
+  MondayPMTimes: '430,445,545,600,',
+  TuesdayAMTimes: '700,715,',
+  TuesdayPMTimes: '615,700,715,730,',
+  WednesdayAMTimes: '700,715,',
   WednesdayPMTimes: '615,645,700,715,730,',
   ThursdayAMTimes: '700,715,',
-  ThursdayPMTimes: '615,645,700,715,730,',
-  FridayAMTimes: '700,715,',
-  FridayPMTimes: '315,330,345,' }
+  ThursdayPMTimes: '600,',
+  FridayAMTimes: '700,',
+  FridayPMTimes: '315,345,' },
 ];
 
-function sendCzarPage(req, res) {
-  res.render(viewpath + "czar.jade", {formresults: resultsSoFar});
+app.get("/czar", function (req, res) {
+  res.render(viewpath + "czar.jade", {
+    formresults: resultsSoFar,
+    weekdays: weekdays,
+    possibleDriveHours: possibleDriveHours
+  });
+});
 
-}
-
-app.get("/czar", sendCzarPage);
 
 //app.get("/czar",function(req,res){
 //  var output = "";
@@ -86,7 +110,11 @@ app.post("/times", function(req,res){
   //});
 
   // TODO: Send them to special confirmation page
-  sendCzarPage(req, res);
+  res.redirect("/czar");
+});
+
+app.get('/schedule', function(req,res) {
+  res.render(viewpath+"schedule.jade");
 });
 
 app.get('*', function(req,res) {
