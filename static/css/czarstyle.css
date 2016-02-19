@@ -14,7 +14,9 @@ table.timetable tr.timeview td {
 
 table.timetable tr.timeview td.name {
   height: 1.5em;
-  width: 10em;
+  width: 1.2em;
+  text-align: right;
+  white-space: nowrap;
 }
 
 table.timetable tr.timeview td.driveStatus {
