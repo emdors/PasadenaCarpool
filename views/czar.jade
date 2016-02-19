@@ -41,11 +41,11 @@ html(lang='en')
                 each personData in AMPMData.people
                   tr(class='timeview')
                     td.name= personData.name
-                    each hr in possibleDriveHours[AMPM]
-                      each min in [0, 15, 30, 45]
-                        td(class=personData.canGos[hr*100+min])
+                    each hr,hrIdx in possibleDriveHours[AMPM]
+                      each min,minIdx in [0, 15, 30, 45]
+                        td(class=personData.canGos[hrIdx*4+minIdx].canGo)
                     unless personData.driveStatus == 'can'
-                      td.driveStatus= personData.driveStatus
+                      td.driveStatus= personData.driveStatus + ' drive'
 
           h2 Other Information
           ul
