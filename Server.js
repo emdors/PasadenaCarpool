@@ -3,8 +3,6 @@ var bodyParser = require('body-parser');
 var fs = require('fs');
 
 var app = express();
-//var router = express.Router();
-//var db = new Datastore({filename:__dirname + 'IDEmailData.db', autoload:true});
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.locals.pretty = true
@@ -73,20 +71,10 @@ app.get("/czar", function (req, res) {
   var dataForCzar = {
     weekdays: weekdays,
     possibleDriveHours: possibleDriveHours,
-    // object: each day to obect: AM and PM to object: time to 
-    //    list of 
-    //peoplesTimes: {},
     peoplesTimes: [],
     formResults: resultsSoFar,
   };
   // example:
-  // peoplesTimes: 
-  // { Monday: { AM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}} , PM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}} },
-  //   Tuesday: { AM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}}, PM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}} },
-  //   Wednesday: { AM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}}, PM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}} },
-  //   Thursday: { AM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}}, PM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}} },
-  //   Friday: { AM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}}, PM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}} } }
-
   //peoplesTimes: [ {day: 'Monday', times: [
   // { halfday: 'AM', people: [
   //   {name: 'Adam', driveStatus: 'can', canGos: {400: 'selected', 415: 'unselected'}},
@@ -100,10 +88,8 @@ app.get("/czar", function (req, res) {
 
   for (var dayIdx=0; dayIdx<weekdays.length; dayIdx++) {
     var day = weekdays[dayIdx];
-    //dataForCzar.peoplesTimes[day] = {};
     var dayData = {day: day, times: []};
     for (var ampm in possibleDriveHours) {
-      //dataForCzar.peoplesTimes[day][ampm] = {};
       dayData.times.push({halfday: ampm, people: []});
     }
 
@@ -134,9 +120,6 @@ app.get("/czar", function (req, res) {
             driveStatus: result[day + 'DriveStatus'],
             canGos: canGos
           });
-        //dataForCzar.peoplesTimes[day][ampm][result.name] = {
-        //  canGos: canGos, driveStatus: result[day+'DriveStatus']
-        //};
       }
     }
   }
@@ -147,7 +130,6 @@ app.get("/czar", function (req, res) {
       var ampmdata = dayData.times[ampmIdx];
       // Sort the people by their earliest 'selected' entry
       ampmdata.people.sort(function(p1, p2) {
-        //for (var timeIdx=0; timeIdx<p1.canGos.length; timeIdx++) {
         for (var times in p1.canGos) {
           if (p1.canGos[times] == 'selected') return -1;
           if (p2.canGos[times] == 'selected') return 1;
@@ -156,8 +138,6 @@ app.get("/czar", function (req, res) {
       });
     }
   }
-
-  //console.log(JSON.stringify(dataForCzar, null, 1));
 
   res.render(viewpath + "czar.jade", dataForCzar);
 });

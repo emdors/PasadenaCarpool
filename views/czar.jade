@@ -26,10 +26,8 @@ html(lang='en')
         if formResults.length == 0
           | None yet
         else
-          //-each dayData, day in peoplesTimes
           each dayData in peoplesTimes
             h3= dayData.day
-            //-each AMPMData, AMPM in dayData
             each AMPMData in dayData.times
               - AMPM = AMPMData.halfday
               h4= AMPM
@@ -40,44 +38,14 @@ html(lang='en')
                     td.hour(colspan='2')= hr
                     td.halfhour(colspan='2') :30
                   td
-                //-each personData, name in AMPMData
                 each personData in AMPMData.people
                   tr(class='timeview')
                     td.name= personData.name
-                    //-each canGo, min in personData.canGos
                     each hr in possibleDriveHours[AMPM]
                       each min in [0, 15, 30, 45]
                         td(class=personData.canGos[hr*100+min])
-                        //-td= JSON.stringify(personData)
-                    //-each hr in possibleDriveHours[AMPM]
-                    //-  each min in [0, 15, 30, 45]
-                    //-    //-td(class=personData.canGos[(hr*100+min).toString()])
-                    //-    td= personData.canGos[400]
                     unless personData.driveStatus == 'can'
                       td.driveStatus= personData.driveStatus
-
-
-          //-ul
-          //-  each day in weekdays
-          //-    h3= day
-          //-    each hours, AMPM in possibleDriveHours
-          //-      h4= AMPM
-          //-      table.timetable
-          //-        tr.timetext
-          //-          td
-          //-          each hr in hours
-          //-            td.hour(colspan='2')= hr
-          //-            td.halfhour(colspan='2') :30
-          //-          td
-          //-        - todayTimeName = day + AMPM + 'Times'
-          //-        each thisPersonsTimes in peoplesTimes
-          //-          tr(class='timeview')
-          //-            //td.name= formSub.name
-          //-            td.name= thisPersonsTimes.
-          //-            each hr in hours
-          //-              each min in [0, 15, 30, 45]
-          //-                td(class=thisPersonsTimes.times[hr][min])
-          //-            td.driveStatus= thisPersonsTimes.driveStatus
 
           h2 Other Information
           ul
