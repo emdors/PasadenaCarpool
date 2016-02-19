@@ -28,52 +28,138 @@ app.get("/",function(req,res){
 app.use(express.static("static"));
 
 var resultsSoFar = [
-{ name: 'Adam',
-  email: 'adunlap@hmc.edu',
-  numPassengers: '3',
-  MondayDriveStatus: 'can',
-  TuesdayDriveStatus: 'must',
-  WednesdayDriveStatus: 'can',
-  ThursdayDriveStatus: 'cannot',
-  FridayDriveStatus: 'can',
-  notes: 'This is a note!',
-  MondayAMTimes: '500,515,530,545,600,',
-  MondayPMTimes: '430,445,500,545,600,',
-  TuesdayAMTimes: '700,715,',
-  TuesdayPMTimes: '615,645,700,715,730,',
-  WednesdayAMTimes: '700,715,',
-  WednesdayPMTimes: '645,700,715,730,',
-  ThursdayAMTimes: '700,715,',
-  ThursdayPMTimes: '',
-  FridayAMTimes: '700,715,',
-  FridayPMTimes: '315,330,345,' },
-{ name: 'Person 2',
-  email: 'otheremail',
-  numPassengers: '3',
-  MondayDriveStatus: 'must',
-  TuesdayDriveStatus: 'must',
-  WednesdayDriveStatus: 'can',
-  ThursdayDriveStatus: 'can',
-  FridayDriveStatus: 'cannot',
-  notes: 'This is a note!',
-  MondayAMTimes: '515,530,545,600,',
-  MondayPMTimes: '430,445,545,600,',
-  TuesdayAMTimes: '700,715,',
-  TuesdayPMTimes: '615,700,715,730,',
-  WednesdayAMTimes: '700,715,',
-  WednesdayPMTimes: '615,645,700,715,730,',
-  ThursdayAMTimes: '700,715,',
-  ThursdayPMTimes: '600,',
-  FridayAMTimes: '700,',
-  FridayPMTimes: '315,345,' },
+//{ name: 'Adam',
+//  email: 'adunlap@hmc.edu',
+//  numPassengers: '3',
+//  MondayDriveStatus: 'can',
+//  TuesdayDriveStatus: 'must',
+//  WednesdayDriveStatus: 'can',
+//  ThursdayDriveStatus: 'cannot',
+//  FridayDriveStatus: 'can',
+//  notes: 'This is a note!',
+//  MondayAMTimes: '500,515,530,545,600,',
+//  MondayPMTimes: '430,445,500,545,600,',
+//  TuesdayAMTimes: '700,715,',
+//  TuesdayPMTimes: '615,645,700,715,730,',
+//  WednesdayAMTimes: '700,715,',
+//  WednesdayPMTimes: '645,700,715,730,',
+//  ThursdayAMTimes: '700,715,',
+//  ThursdayPMTimes: '',
+//  FridayAMTimes: '700,715,',
+//  FridayPMTimes: '315,330,345,' },
+//{ name: 'Person 2',
+//  email: 'otheremail',
+//  numPassengers: '3',
+//  MondayDriveStatus: 'must',
+//  TuesdayDriveStatus: 'must',
+//  WednesdayDriveStatus: 'can',
+//  ThursdayDriveStatus: 'can',
+//  FridayDriveStatus: 'cannot',
+//  notes: 'This is a note!',
+//  MondayAMTimes: '515,530,545,600,',
+//  MondayPMTimes: '430,445,545,600,',
+//  TuesdayAMTimes: '700,715,',
+//  TuesdayPMTimes: '615,700,715,730,',
+//  WednesdayAMTimes: '700,715,',
+//  WednesdayPMTimes: '615,645,700,715,730,',
+//  ThursdayAMTimes: '700,715,',
+//  ThursdayPMTimes: '600,',
+//  FridayAMTimes: '700,',
+//  FridayPMTimes: '315,345,' },
 ];
 
 app.get("/czar", function (req, res) {
-  res.render(viewpath + "czar.jade", {
-    formresults: resultsSoFar,
+
+  var dataForCzar = {
     weekdays: weekdays,
-    possibleDriveHours: possibleDriveHours
-  });
+    possibleDriveHours: possibleDriveHours,
+    // object: each day to obect: AM and PM to object: time to 
+    //    list of 
+    //peoplesTimes: {},
+    peoplesTimes: [],
+    formResults: resultsSoFar,
+  };
+  // example:
+  // peoplesTimes: 
+  // { Monday: { AM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}} , PM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}} },
+  //   Tuesday: { AM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}}, PM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}} },
+  //   Wednesday: { AM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}}, PM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}} },
+  //   Thursday: { AM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}}, PM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}} },
+  //   Friday: { AM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}}, PM: {'Adam' : {canGos: {400:'selected', 415:'unselected'}, driveStatus: 'can'}} } }
+
+  //peoplesTimes: [ {day: 'Monday', times: [
+  // { halfday: 'AM', people: [
+  //   {name: 'Adam', driveStatus: 'can', canGos: {400: 'selected', 415: 'unselected'}},
+  //   {name: 'Bob', driveStatus: 'can',  canGos: {400: 'unselected', 415: 'selected'}}
+  // ]},
+  // { halfay: 'pm', people: [
+  //   {name: 'Bob', driveStatus: 'can',  canGos: {400: 'selected', 415: 'unselected'}}
+  //   {name: 'Adam', driveStatus: 'can', canGos: {400: 'unselected', 415: 'selected'}},
+  // ]},
+  //]}]
+
+  for (var dayIdx=0; dayIdx<weekdays.length; dayIdx++) {
+    var day = weekdays[dayIdx];
+    //dataForCzar.peoplesTimes[day] = {};
+    var dayData = {day: day, times: []};
+    for (var ampm in possibleDriveHours) {
+      //dataForCzar.peoplesTimes[day][ampm] = {};
+      dayData.times.push({halfday: ampm, people: []});
+    }
+
+    dataForCzar.peoplesTimes.push(dayData);
+  }
+  for (var resultIdx=0; resultIdx<resultsSoFar.length; resultIdx++) {
+    var result = resultsSoFar[resultIdx];
+    for (var dayIdx=0; dayIdx<weekdays.length; dayIdx++) {
+      var day = weekdays[dayIdx];
+      for (var ampm in possibleDriveHours) {
+        var thisPersonsTimes = result[day+ampm+'Times'];
+        var canGos = {};
+
+        for (var hrIdx = 0; hrIdx<possibleDriveHours[ampm].length; hrIdx++) {
+          var hr = possibleDriveHours[ampm][hrIdx];
+          for (var min=0; min<60; min += 15) {
+            var hrMin = hr*100 + min;
+            var canGo = thisPersonsTimes.indexOf(hrMin) != -1;
+            canGos[hrMin] = canGo? 'selected' : 'unselected';
+          }
+        }
+        dataForCzar.peoplesTimes.find(
+            d => d.day == day
+          ).times.find(
+            hd => hd.halfday == ampm
+          ).people.push({
+            name: result.name,
+            driveStatus: result[day + 'DriveStatus'],
+            canGos: canGos
+          });
+        //dataForCzar.peoplesTimes[day][ampm][result.name] = {
+        //  canGos: canGos, driveStatus: result[day+'DriveStatus']
+        //};
+      }
+    }
+  }
+
+  for (var dayIdx=0; dayIdx<dataForCzar.peoplesTimes.length; dayIdx++) {
+    var dayData = dataForCzar.peoplesTimes[dayIdx];
+    for (var ampmIdx=0; ampmIdx<dayData.times.length; ampmIdx++) {
+      var ampmdata = dayData.times[ampmIdx];
+      // Sort the people by their earliest 'selected' entry
+      ampmdata.people.sort(function(p1, p2) {
+        //for (var timeIdx=0; timeIdx<p1.canGos.length; timeIdx++) {
+        for (var times in p1.canGos) {
+          if (p1.canGos[times] == 'selected') return -1;
+          if (p2.canGos[times] == 'selected') return 1;
+        }
+        return 0;
+      });
+    }
+  }
+
+  //console.log(JSON.stringify(dataForCzar, null, 1));
+
+  res.render(viewpath + "czar.jade", dataForCzar);
 });
 
 
@@ -97,7 +183,7 @@ app.get("/czar", function (req, res) {
 
 app.post("/times", function(req,res){
   resultsSoFar.push(req.body);
-  console.log(req.body);
+  //console.log(req.body);
 
   //weeklyCommuteFormBody = req.body;
   //MongoClient.connect(mongod_URI, function(err, db) {

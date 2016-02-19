@@ -23,43 +23,69 @@ html(lang='en')
       br
       .container.theme-showcase(role='main')
         h1 Form Results
-        ul
-          each day in weekdays
-            h3= day
-            each hours, AMPM in possibleDriveHours
+        if formResults.length == 0
+          | None yet
+        else
+          //-each dayData, day in peoplesTimes
+          each dayData in peoplesTimes
+            h3= dayData.day
+            //-each AMPMData, AMPM in dayData
+            each AMPMData in dayData.times
+              - AMPM = AMPMData.halfday
               h4= AMPM
               table.timetable
                 tr.timetext
                   td
-                  each hr in hours
+                  each hr in possibleDriveHours[AMPM]
                     td.hour(colspan='2')= hr
                     td.halfhour(colspan='2') :30
                   td
-                - todayTimeName = day + AMPM + 'Times'
-                - sortedResults = formresults.slice().sort(function(a,b) { return b[todayTimeName] < a[todayTimeName]? 1 : (a[todayTimeName] < b[todayTimeName] ? -1 : 0) ; })
-                each formSub in sortedResults
+                //-each personData, name in AMPMData
+                each personData in AMPMData.people
                   tr(class='timeview')
-                    td.name= formSub.name
-                    each hr in hours
-                      each increment in [0, 15, 30, 45]
-                        - relevantResult = formSub[todayTimeName]
-                        - splitResult = relevantResult.split(",")
-                        - timeAsNumber = (hr*100+increment).toString();
-                        - isSelected = splitResult.indexOf(timeAsNumber) != -1
-                        - classText = isSelected? 'selected' : 'unselected'
-                        td(id=day+AMPM+(hr*100+increment), class=classText)
-                    - todayDriveStatus = formSub[day + 'DriveStatus']
-                    td.driveStatus
-                      unless todayDriveStatus == 'can'
-                        = todayDriveStatus + ' drive'
+                    td.name= personData.name
+                    //-each canGo, min in personData.canGos
+                    each hr in possibleDriveHours[AMPM]
+                      each min in [0, 15, 30, 45]
+                        td(class=personData.canGos[hr*100+min])
+                        //-td= JSON.stringify(personData)
+                    //-each hr in possibleDriveHours[AMPM]
+                    //-  each min in [0, 15, 30, 45]
+                    //-    //-td(class=personData.canGos[(hr*100+min).toString()])
+                    //-    td= personData.canGos[400]
+                    unless personData.driveStatus == 'can'
+                      td.driveStatus= personData.driveStatus
 
-        h2 Other Information
-        ul
-          each result in formresults
-            li
-              table(style="table-layout: fixed; width: 100%")
-                each value,key in result
-                  if key.substr(-'Times'.length) != 'Times' && key.substr(-'DriveStatus'.length) != 'DriveStatus'
-                    tr
-                      td= key
-                      td= value
+
+          //-ul
+          //-  each day in weekdays
+          //-    h3= day
+          //-    each hours, AMPM in possibleDriveHours
+          //-      h4= AMPM
+          //-      table.timetable
+          //-        tr.timetext
+          //-          td
+          //-          each hr in hours
+          //-            td.hour(colspan='2')= hr
+          //-            td.halfhour(colspan='2') :30
+          //-          td
+          //-        - todayTimeName = day + AMPM + 'Times'
+          //-        each thisPersonsTimes in peoplesTimes
+          //-          tr(class='timeview')
+          //-            //td.name= formSub.name
+          //-            td.name= thisPersonsTimes.
+          //-            each hr in hours
+          //-              each min in [0, 15, 30, 45]
+          //-                td(class=thisPersonsTimes.times[hr][min])
+          //-            td.driveStatus= thisPersonsTimes.driveStatus
+
+          h2 Other Information
+          ul
+            each result in formResults
+              li
+                table(style="table-layout: fixed; width: 100%")
+                  each value,key in result
+                    if key.substr(-'Times'.length) != 'Times' && key.substr(-'DriveStatus'.length) != 'DriveStatus'
+                      tr
+                        td= key
+                        td= value
