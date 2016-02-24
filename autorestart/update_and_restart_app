@@ -6,6 +6,9 @@
     cd ..
     git pull --rebase
 
+    # Install new modules if they were added
+    npm install
+
     kill $(cat nodepid) || true
 
     nohup node Server.js &

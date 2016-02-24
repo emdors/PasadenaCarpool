@@ -1,0 +1,42 @@
+body {
+  margin-bottom: 130px;
+}
+
+table.timetable {
+  border-collapse: separate;
+  border-spacing: 1px;
+}
+
+table.timetable tr.timeview td {
+  height: 1.5em;
+  width:  1.2em;
+}
+
+table.timetable tr.timeview td.name {
+  height: 1.5em;
+  width: 1.2em;
+  text-align: right;
+  white-space: nowrap;
+}
+
+table.timetable tr.timeview td.driveStatus {
+  height: 1.5em;
+  width: 10em;
+  padding: 0 10px;
+}
+
+table.timetable tr.timeview td.unselected {
+  background-color: #e0e0e0;
+}
+
+table.timetable tr.timeview td.selected {
+  background-color: #66ccff;
+}
+
+table.timetable tr.timetext td.hour {
+  font-size: 130%;
+}
+
+table.timetable tr.timetext td.halfhour {
+  font-size: 80%;
+}

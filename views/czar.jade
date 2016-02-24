@@ -8,6 +8,7 @@ html(lang='en')
     script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
     link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css')
     script(src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js')
+    link(rel='stylesheet', href='css/czarstyle.css')
   body
     div
       div
@@ -15,17 +16,44 @@ html(lang='en')
           ul.nav.navbar-nav
             li
               a(href='/') Home
+            li
+              a(href='/schedule') Schedule
             li.active
               a(href='/czar') Czar
-              span.sr-only (current)
       br
       .container.theme-showcase(role='main')
         h1 Form Results
-        ul
-          each result in formresults
-            li
-              table(style="table-layout: fixed; width: 100%")
-                each value,key in result
-                  tr
-                    td= key
-                    td= value
+        if formResults.length == 0
+          | None yet
+        else
+          each dayData in peoplesTimes
+            h3= dayData.day
+            each AMPMData in dayData.times
+              - AMPM = AMPMData.halfday
+              h4= AMPM
+              table.timetable
+                tr.timetext
+                  td
+                  each hr in possibleDriveHours[AMPM]
+                    td.hour(colspan='2')= hr
+                    td.halfhour(colspan='2') :30
+                  td
+                each personData in AMPMData.people
+                  tr(class='timeview')
+                    td.name= personData.name
+                    each hr,hrIdx in possibleDriveHours[AMPM]
+                      each min,minIdx in [0, 15, 30, 45]
+                        td(class=personData.canGos[hrIdx*4+minIdx].canGo)
+                    unless personData.driveStatus == 'can'
+                      td.driveStatus= personData.driveStatus + ' drive'
+
+          h2 Other Information
+          ul
+            each result in formResults
+              li
+                table(style="table-layout: fixed; width: 100%")
+                  each value,key in result
+                    if key.substr(-'Times'.length) != 'Times' && key.substr(-'DriveStatus'.length) != 'DriveStatus'
+                      tr
+                        td= key
+                        td= value

@@ -3,11 +3,9 @@ var bodyParser = require('body-parser');
 var fs = require('fs');
 
 var app = express();
-//var router = express.Router();
-//var db = new Datastore({filename:__dirname + 'IDEmailData.db', autoload:true});
 
 app.use(bodyParser.urlencoded({extended: true}));
-//app.locals.pretty = true
+app.locals.pretty = true
 
 var MongoClient = require('mongodb').MongoClient;
 
@@ -18,40 +16,157 @@ mongod_URI = "mongodb://localhost:27017/test";
 
 var viewpath = __dirname + '/views/';
 
+var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+var possibleDriveHours = {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]};
+
 app.get("/",function(req,res){
-  res.render(viewpath + "index.jade", {ourtitle: "Hello there"});
+  res.render(viewpath + "index.jade", {weekdays:weekdays, possibleDriveHours:possibleDriveHours});
 });
 
 app.use(express.static("static"));
 
-var resultsSoFar = [
-{ name: 'Adam',
-  email: 'adunlap@hmc.edu',
-  numPassengers: '3',
-  MondayDriveStatus: 'can',
-  TuesdayDriveStatus: 'must',
-  WednesdayDriveStatus: 'can',
-  ThursdayDriveStatus: 'cannot',
-  FridayDriveStatus: 'can',
-  notes: 'This is a note!',
-  MondayAMTimes: '500,515,530,545,600,',
-  MondayPMTimes: '430,445,500,545,600,',
-  TuesdayAMTimes: '700,715,',
-  TuesdayPMTimes: '615,645,700,715,730,',
-  WednesdayAMTimes: '700,715,',
-  WednesdayPMTimes: '615,645,700,715,730,',
-  ThursdayAMTimes: '700,715,',
-  ThursdayPMTimes: '615,645,700,715,730,',
-  FridayAMTimes: '700,715,',
-  FridayPMTimes: '315,330,345,' }
-];
+var resultsSoFar =
+[ { name: 'Adam',
+    email: 'adam@gmail.com',
+    numPassengers: '4',
+    MondayDriveStatus: 'can',
+    TuesdayDriveStatus: 'can',
+    WednesdayDriveStatus: 'must',
+    ThursdayDriveStatus: 'can',
+    FridayDriveStatus: 'can',
+    notes: 'Ponies are awesome.',
+    MondayAMTimes: '530,545,600,',
+    MondayPMTimes: '515,530,545,600,615,',
+    TuesdayAMTimes: '645,700,715,',
+    TuesdayPMTimes: '345,400,415,',
+    WednesdayAMTimes: '745,800,815,830,845,',
+    WednesdayPMTimes: '415,430,445,500,515,530,',
+    ThursdayAMTimes: '',
+    ThursdayPMTimes: '430,445,500,515,530,545,',
+    FridayAMTimes: '1015,1030,1045,',
+    FridayPMTimes: '445,500,515,530,545,' },
+  { name: 'Bob',
+    email: 'Bob@gmail.com',
+    numPassengers: '8',
+    MondayDriveStatus: 'can',
+    TuesdayDriveStatus: 'cannot',
+    WednesdayDriveStatus: 'can',
+    ThursdayDriveStatus: 'can',
+    FridayDriveStatus: 'can',
+    notes: 'Dogs are awesome.',
+    MondayAMTimes: '1000,1015,1030,1045,',
+    MondayPMTimes: '600,615,630,',
+    TuesdayAMTimes: '600,615,630,645,',
+    TuesdayPMTimes: '630,645,700,715,730,',
+    WednesdayAMTimes: '615,630,645,700,',
+    WednesdayPMTimes: '515,530,545,600,',
+    ThursdayAMTimes: '',
+    ThursdayPMTimes: '415,430,445,500,515,530,',
+    FridayAMTimes: '845,900,915,930,945,',
+    FridayPMTimes: '400,415,430,445,500,515,' },
+  { name: 'Caroline',
+    email: 'carol@ine.org',
+    numPassengers: '0',
+    MondayDriveStatus: 'can',
+    TuesdayDriveStatus: 'can',
+    WednesdayDriveStatus: 'can',
+    ThursdayDriveStatus: 'can',
+    FridayDriveStatus: 'cannot',
+    notes: 'Ines are awesome',
+    MondayAMTimes: '700,715,730,745,',
+    MondayPMTimes: '400,415,430,445,',
+    TuesdayAMTimes: '830,845,900,915,',
+    TuesdayPMTimes: '530,545,600,615,',
+    WednesdayAMTimes: '1030,1045,',
+    WednesdayPMTimes: '545,600,615,630,645,',
+    ThursdayAMTimes: '',
+    ThursdayPMTimes: '545,600,615,630,645,',
+    FridayAMTimes: '545,600,615,630,',
+    FridayPMTimes: '515,530,545,600,615,630,645,700,715,730,745,800,815,' } ];
 
-function sendCzarPage(req, res) {
-  res.render(viewpath + "czar.jade", {formresults: resultsSoFar});
+app.get("/czar", function (req, res) {
 
-}
+  var dataForCzar = {
+    weekdays: weekdays,
+    possibleDriveHours: possibleDriveHours,
+    peoplesTimes: [],
+    formResults: resultsSoFar,
+  };
+  // example:
+  //peoplesTimes: [ {day: 'Monday', times: [
+  // { halfday: 'AM', people: [
+  //   {name: 'Adam', driveStatus: 'can', canGos: [{time:400, canGo:'selected'},   {time:415, canGo:'unselected'}]},
+  //   {name: 'Bob', driveStatus: 'can',  canGos: [{time:400, canGo:'unselected'}, {time:415, canGo:'selected'}]}
+  // ]},
+  // { halfay: 'pm', people: [
+  //   {name: 'Bob', driveStatus: 'can',  canGos: [{time:400, canGo:'selected'},   {time:415, canGo:'unselected'}]}
+  //   {name: 'Adam', driveStatus: 'can', canGos: [{time:400, canGo:'unselected'}, {time:415, canGo:'selected'}]},
+  // ]},
+  //]}]
 
-app.get("/czar", sendCzarPage);
+  for (var dayIdx=0; dayIdx<weekdays.length; dayIdx++) {
+    var day = weekdays[dayIdx];
+    var dayData = {day: day, times: []};
+    for (var ampm in possibleDriveHours) {
+      dayData.times.push({halfday: ampm, people: []});
+    }
+
+    dataForCzar.peoplesTimes.push(dayData);
+  }
+  for (var resultIdx=0; resultIdx<resultsSoFar.length; resultIdx++) {
+    var result = resultsSoFar[resultIdx];
+    for (var dayIdx=0; dayIdx<weekdays.length; dayIdx++) {
+      var day = weekdays[dayIdx];
+      for (var ampm in possibleDriveHours) {
+        var thisPersonsTimes = result[day+ampm+'Times'];
+        var canGos = [];
+
+        for (var hrIdx = 0; hrIdx<possibleDriveHours[ampm].length; hrIdx++) {
+          var hr = possibleDriveHours[ampm][hrIdx];
+          for (var min=0; min<60; min += 15) {
+            var hrMin = hr*100 + min;
+            var canGo = thisPersonsTimes.indexOf(hrMin) != -1;
+            canGos.push({time:hrMin, canGo: canGo? 'selected' : 'unselected'});
+          }
+        }
+        // Using filter instead of find because node on Knuth does not have find
+        // Also why I'm using the function(x) {return y;} syntax rather than x=>y
+        dataForCzar.peoplesTimes.filter(
+            //d => d.day == day
+            function(d) { return d.day == day; }
+          )[0].times.filter(
+            //hd => hd.halfday == ampm
+            function (hd) { return hd.halfday == ampm; }
+          )[0].people.push({
+            name: result.name,
+            driveStatus: result[day + 'DriveStatus'],
+            canGos: canGos
+          });
+      }
+    }
+  }
+
+  for (var dayIdx=0; dayIdx<dataForCzar.peoplesTimes.length; dayIdx++) {
+    var dayData = dataForCzar.peoplesTimes[dayIdx];
+    for (var ampmIdx=0; ampmIdx<dayData.times.length; ampmIdx++) {
+      var ampmdata = dayData.times[ampmIdx];
+      // Sort the people by their earliest/latest 'selected' entry (earliest if
+      // PM, latest if AM)
+      ampmdata.people.sort(function(p1, p2) {
+        for (var canGoIdx=0; canGoIdx<p1.canGos.length; canGoIdx++) {
+          var realIdx = ampmdata.halfday == 'AM'?
+            p1.canGos.length-canGoIdx-1 : canGoIdx;
+          if (p1.canGos[realIdx].canGo == 'selected') return -1;
+          if (p2.canGos[realIdx].canGo == 'selected') return 1;
+        }
+        return 0;
+      });
+    }
+  }
+
+  res.render(viewpath + "czar.jade", dataForCzar);
+});
+
 
 //app.get("/czar",function(req,res){
 //  var output = "";
@@ -73,7 +188,8 @@ app.get("/czar", sendCzarPage);
 
 app.post("/times", function(req,res){
   resultsSoFar.push(req.body);
-  console.log(req.body);
+  //console.log(req.body);
+  console.log(resultsSoFar);
 
   //weeklyCommuteFormBody = req.body;
   //MongoClient.connect(mongod_URI, function(err, db) {
@@ -86,7 +202,11 @@ app.post("/times", function(req,res){
   //});
 
   // TODO: Send them to special confirmation page
-  sendCzarPage(req, res);
+  res.redirect("/czar");
+});
+
+app.get('/schedule', function(req,res) {
+  res.render(viewpath+"schedule.jade");
 });
 
 app.get('*', function(req,res) {
