@@ -74,6 +74,7 @@ window.onload = function() {
 // When the form is submitted, figure out what class (color) each box is and
 // put that into a form input so that it'll send it with the POST
 function submitForm() {
+
   var timeform = document.getElementById("timeForm");
   var timeinputs = timeform.getElementsByClassName("timeinput");
 
@@ -94,4 +95,43 @@ function submitForm() {
     var inputToPutTimesIn = document.getElementById(dayAndHalfDay + 'Times');
     inputToPutTimesIn.value = timesForThisPeriod;
   }
+}
+
+function validateForm() {
+  //Grab all of the variables from the fourm
+  var timeForm = document.getElementById("timeForm");
+  var name = timeForm.name.value;
+  var email = timeForm.email.value;
+  var numPassengers = timeForm.numPassengers.value;
+
+  // This is a list of days of the week for looping puposes
+  var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+  //Look at the email adress and insure that it is not blank and make
+  //sure it is of the right format
+  if (email == ""){
+    console.log("No email entered");
+  }else if(email.indexOf('@') == -1){
+    console.log("in propper email adress");
+  }
+
+  //Make sure the name is not blank
+  if (name == ""){
+    console.log("must fill in name");
+  }
+
+  //If the person puts zero as the number of people in their car
+  //make sure that the have checked Cannot drive for all of their
+  //values
+  if (numPassengers == 0){
+    for (var i = 0; i < weekdays.length; i++){
+      var statusName = weekdays[i].concat("DriveStatus[2].checked");
+      var status = window["timeForm.".concat(statusName)]//.statusName.value;
+      console.log(status)
+    }
+  }
+  console.log(document.getElementById("timeForm"));
+
+
+  return false;
 }
