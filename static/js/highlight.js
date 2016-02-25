@@ -109,29 +109,87 @@ function validateForm() {
 
   //Look at the email adress and insure that it is not blank and make
   //sure it is of the right format
+  var emailError = false;
+
+  
+  
+
   if (email == ""){
     console.log("No email entered");
+    emailError = true;
+    timeForm.email.style.borderColor = "red";
+
   }else if(email.indexOf('@') == -1){
-    console.log("in propper email adress");
+    console.log("impropper email adress");
+    emailError = true;
+    timeForm.email.style.borderColor = "red";
   }
 
   //Make sure the name is not blank
+  var nameError = false;
   if (name == ""){
     console.log("must fill in name");
+    nameError = true;
+    timeForm.name.style.borderColor = "red";
+
   }
 
   //If the person puts zero as the number of people in their car
   //make sure that the have checked Cannot drive for all of their
   //values
+  var drivingError = false;
   if (numPassengers == 0){
-    for (var i = 0; i < weekdays.length; i++){
-      var statusName = weekdays[i].concat("DriveStatus[2].checked");
-      var status = window["timeForm.".concat(statusName)]//.statusName.value;
-      console.log(status)
-    }
+    drivingError = timeForm.MondayDriveStatus[2].checked && 
+                    timeForm.TuesdayDriveStatus[2].checked &&
+                    timeForm.WednesdayDriveStatus[2].checked &&
+                    timeForm.ThursdayDriveStatus[2].checked &&
+                    timeForm.FridayDriveStatus[2].checked;
+    
+    drivingError = !drivingError
+    
   }
-  console.log(document.getElementById("timeForm"));
+
+  //Color all of the boxes correctly 
+  if (drivingError){
+    timeForm.numPassengers.style.borderColor = "red";
+  }else{
+    timeForm.numPassengers.style.borderColor = "green";
+  }
+
+  if (nameError){
+    timeForm.name.style.borderColor = "red";
+  }else{
+    timeForm.name.style.borderColor = "green";
+  }
+
+  if (emailError){
+    timeForm.email.style.borderColor = "red";
+  }else{
+    timeForm.email.style.borderColor = "green";
+  }
+
+  //Now we put all of the errors together into a resulting error.
+  var resultingError = nameError || emailError || drivingError;
+
+  //If there is a resulting error give the user a pop up box telling them what is wrong
+  if (resultingError){
+    var alertString = "There were a couple of errors in your forum: \n \n ";
+
+    if (nameError){
+      alertString = alertString.concat("You forgot to fill in your name. \n \n");
+    }
+
+    if (emailError){
+      alertString = alertString.concat("Either you forgot to fill in your email or it is incorrectly formated. \n \n ")
+    }
+
+    if (drivingError){
+      alertString = alertString.concat("In the number of passengers section you said you did not have a car but in one of the times you listed that you can drive that day. please either click the \"Cannot drive\" box or fill in the size of your car.");
+    }
+
+    window.alert(alertString);
+  }
 
 
-  return false;
+  return !resultingError;
 }
