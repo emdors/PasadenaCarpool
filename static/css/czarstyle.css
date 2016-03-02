@@ -33,6 +33,14 @@ table.timetable tr.timeview td.selected {
   background-color: #66ccff;
 }
 
+table.timetable tr.timeview td.selected[selected="asDriver"] {
+  border-style: solid;
+  border-color: red;
+}
+table.timetable tr.timeview td.selected[mousedover="true"] {
+  border-style: solid;
+}
+
 table.timetable tr.timetext td.hour {
   font-size: 130%;
 }
