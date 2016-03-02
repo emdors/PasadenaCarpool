@@ -38,11 +38,11 @@ html(lang='en')
             input.form-control(type='number', name='numPassengers', value='0', required)
             span.help-block Include yourself. Put 0 if you are unable or unwilling to drive
           .form-group
-            label Click the gray boxes below to paint over the times when you want to leave.
+            label Drag over the gray boxes below to paint over the times when you want to leave.
 
             #alltimeinputs
               each day in weekdays
-                h3= day
+                h4= day
                 label.radio-inline
                   input(type='radio', name=day + 'DriveStatus', value='must')
                   | Must Drive
@@ -53,7 +53,7 @@ html(lang='en')
                   input(type='radio', name=day + 'DriveStatus', value='cannot')
                   | Cannot drive
                 each hours, AMPM in possibleDriveHours
-                  h4= AMPM
+                  h5= AMPM
                   table.timetable
                     tr.timetext
                       each hr in hours
