@@ -8,6 +8,7 @@ html(lang='en')
     script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
     link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css')
     script(src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js')
+    script(src='js/selectcars.js')
     link(rel='stylesheet', href='css/czarstyle.css')
   body
     div
@@ -23,29 +24,30 @@ html(lang='en')
       br
       .container.theme-showcase(role='main')
         h1 Form Results
-        if formResults.length == 0
-          | None yet
-        else
-          each dayData in peoplesTimes
-            h3= dayData.day
-            each AMPMData in dayData.times
-              - AMPM = AMPMData.halfday
-              h4= AMPM
-              table.timetable
-                tr.timetext
-                  td
-                  each hr in possibleDriveHours[AMPM]
-                    td.hour(colspan='2')= hr
-                    td.halfhour(colspan='2') :30
-                  td
-                each personData in AMPMData.people
-                  tr(class='timeview')
-                    td.name= personData.name
-                    each hr,hrIdx in possibleDriveHours[AMPM]
-                      each min,minIdx in [0, 15, 30, 45]
-                        td(id=dayData.day+AMPM+(hr*100), selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0))
-                    unless personData.driveStatus == 'can'
-                      td.driveStatus= personData.driveStatus + ' drive'
+        #timeResults
+          if formResults.length == 0
+            | None yet
+          else
+            each dayData in peoplesTimes
+              h3= dayData.day
+              each AMPMData in dayData.times
+                - AMPM = AMPMData.halfday
+                h4= AMPM
+                table.timetable
+                  tr.timetext
+                    td
+                    each hr in possibleDriveHours[AMPM]
+                      td.hour(colspan='2')= hr
+                      td.halfhour(colspan='2') :30
+                    td
+                  each personData in AMPMData.people
+                    tr(class='timeview')
+                      td.name= personData.name
+                      each hr,hrIdx in possibleDriveHours[AMPM]
+                        each min,minIdx in [0, 15, 30, 45]
+                          td(id=dayData.day+AMPM+(hr*100), selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0))
+                      unless personData.driveStatus == 'can'
+                        td.driveStatus= personData.driveStatus + ' drive'
 
           h2 Other Information
           ul
