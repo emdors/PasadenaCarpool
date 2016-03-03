@@ -37,12 +37,15 @@ table.timetable tr.timeview td[selected="true"] {
   background-color: #66ccff;
 }
 
-table.timetable tr.timeview td.selected[selected="asDriver"] {
+table.timetable tr.timeview td[selected="true"][carstatus="driver"] {
   border-style: solid;
   border-color: red;
+  border-width: 3px;
 }
-table.timetable tr.timeview td.selected[mousedover="true"] {
+table.timetable tr.timeview td[selected="true"][mousedover="true"] {
   border-style: solid;
+  border-color: black;
+  border-width: 3px;
 }
 
 table.timetable tr.timetext td.hour {

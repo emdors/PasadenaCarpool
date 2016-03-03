@@ -16,8 +16,7 @@ window.onload = function() {
     var tds = ti.getElementsByTagName("td");
     for (var tdIdx=0; tdIdx<tds.length; ++tdIdx) {
       var td = tds[tdIdx];
-      if (td.className == 'selected') {
-        td.setAttribute('mousedover', 'false');
+      if (td.getAttribute('selected')) {
         td.onmouseover = function() {
           this.setAttribute('mousedover', 'true');
         }
@@ -25,7 +24,7 @@ window.onload = function() {
           this.setAttribute('mousedover', 'false');
         }
         td.onclick = function() {
-          this.setAttribute('selected', 'asDriver');
+          this.setAttribute('carstatus', 'driver');
         }
       }
     }
