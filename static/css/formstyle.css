@@ -4,7 +4,6 @@ body {
 
 table.timetable {
   border-collapse: separate;
-  border-spacing: 1px;
 }
 
 div#alltimeinputs {
@@ -19,10 +18,12 @@ div#alltimeinputs {
 table.timetable tr.timeinput td {
   height: 1.5em;
   width:  1.2em;
+  border-left: 1px solid white;
+  border-top: 1px solid white;
 }
 
 table.timetable tr.timeinput td[leftLine] {
-  border-left: 1px solid black;
+  border-left: 1px solid #a0a0a0;
 }
 
 table.timetable tr.timeinput td[selected="false"] {
