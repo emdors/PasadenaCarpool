@@ -43,7 +43,7 @@ html(lang='en')
                     td.name= personData.name
                     each hr,hrIdx in possibleDriveHours[AMPM]
                       each min,minIdx in [0, 15, 30, 45]
-                        td(class=personData.canGos[hrIdx*4+minIdx].canGo)
+                        td(id=dayData.day+AMPM+(hr*100), selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0))
                     unless personData.driveStatus == 'can'
                       td.driveStatus= personData.driveStatus + ' drive'
 

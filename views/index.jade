@@ -28,14 +28,14 @@ html(lang='en')
         form#timeForm(method='POST', action='/times', onsubmit='submitForm();')
           .form-group
             label(for='name') Name
-            input#name.form-control(type='text', name='name', placeholder='Isabella Lai', required)
+            input#name.form-control(type='text', name='name', placeholder='Isabella Lai', required, style="width: auto;")
           .form-group
             label(for='email') Email Address
-            input.form-control(type='email', name='email', placeholder='iLai@hmc.edu', required)
+            input.form-control(type='email', name='email', placeholder='iLai@hmc.edu', required, style="width: auto;")
             span.help-block Email will be used to contact you with your carpool assignment
           .form-group
             label(for='numPassengers') Number of People You Can Drive
-            input.form-control(type='number', name='numPassengers', value='0', required)
+            input.form-control(type='number', name='numPassengers', value='0', required, style="width: auto;")
             span.help-block Include yourself. Put 0 if you are unable or unwilling to drive
           .form-group
             label Drag over the gray boxes below to paint over the times when you want to leave.
@@ -60,9 +60,9 @@ html(lang='en')
                         td.hour(colspan='2')= hr
                         td.halfhour(colspan='2') :30
                     tr(class='timeinput' id='timeinput'+day+AMPM)
-                      each hr in hours
+                      each hr,hrIdx in hours
                         each increment in [0, 15, 30, 45]
-                          td(id=day+AMPM+(hr*100+increment))
+                          td(id=day+AMPM+(hr*100+increment), selected='false', leftLine=(hrIdx != 0 && increment == 0))
           .form-group
             label(for='notes') Notes
             input#notes.form-control(type='notes', name='notes')

@@ -25,11 +25,15 @@ table.timetable tr.timeview td.driveStatus {
   padding: 0 10px;
 }
 
-table.timetable tr.timeview td.unselected {
+table.timetable tr.timeview td[leftLine] {
+  border-left: 1px solid black;
+}
+
+table.timetable tr.timeview td[selected="false"] {
   background-color: #e0e0e0;
 }
 
-table.timetable tr.timeview td.selected {
+table.timetable tr.timeview td[selected="true"] {
   background-color: #66ccff;
 }
 

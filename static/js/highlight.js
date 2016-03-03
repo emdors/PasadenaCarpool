@@ -3,7 +3,7 @@ var selected = "selected";
 var unselected = "unselected";
 
 function isSelected(el) {
-  return el.className == selected;
+  return el.getAttribute('selected') == 'true';
 }
 
 // Global variables keep track of if user is mousing over stuff and if they are
@@ -23,20 +23,17 @@ window.onload = function() {
     for (var j=0; j<tds.length; ++j) {
       var td = tds[j];
 
-      // Start each box as unselected
-      td.className = unselected;
-
       // When moused over, if we are currently selecting or unselecting, set
       // this box to the appropriate class
       td.onmouseover = function() {
         if (mouseCurrentlyDown) {
           if (isSelected(this)) {
             if (!isCurrentlySelecting) {
-              this.className = unselected;
+              this.setAttribute('selected','false');
             }
           } else {
             if (isCurrentlySelecting) {
-              this.className = selected;
+              this.setAttribute('selected','true');
             }
           }
         }
@@ -47,10 +44,10 @@ window.onload = function() {
       td.onmousedown = function() {
         mouseCurrentlyDown = true;
         if (!isSelected(this)) {
-          this.className = selected;
+          this.setAttribute('selected','true');
           isCurrentlySelecting = true;
         } else {
-          this.className = unselected;
+          this.setAttribute('selected','false');
           isCurrentlySelecting = false;
         }
       }

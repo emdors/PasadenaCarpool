@@ -21,11 +21,15 @@ table.timetable tr.timeinput td {
   width:  1.2em;
 }
 
-table.timetable tr.timeinput td.unselected {
+table.timetable tr.timeinput td[leftLine] {
+  border-left: 1px solid black;
+}
+
+table.timetable tr.timeinput td[selected="false"] {
   background-color: #e0e0e0;
 }
 
-table.timetable tr.timeinput td.selected {
+table.timetable tr.timeinput td[selected="true"] {
   background-color: #66ccff;
 }
 

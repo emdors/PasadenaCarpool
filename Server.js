@@ -126,7 +126,7 @@ app.get("/czar", function (req, res) {
           for (var min=0; min<60; min += 15) {
             var hrMin = hr*100 + min;
             var canGo = thisPersonsTimes.indexOf(hrMin) != -1;
-            canGos.push({time:hrMin, canGo: canGo? 'selected' : 'unselected'});
+            canGos.push({time:hrMin, canGo: canGo});
           }
         }
         // Using filter instead of find because node on Knuth does not have find
@@ -156,8 +156,8 @@ app.get("/czar", function (req, res) {
         for (var canGoIdx=0; canGoIdx<p1.canGos.length; canGoIdx++) {
           var realIdx = ampmdata.halfday == 'AM'?
             p1.canGos.length-canGoIdx-1 : canGoIdx;
-          if (p1.canGos[realIdx].canGo == 'selected') return -1;
-          if (p2.canGos[realIdx].canGo == 'selected') return 1;
+          if (p1.canGos[realIdx].canGo) return -1;
+          if (p2.canGos[realIdx].canGo) return 1;
         }
         return 0;
       });
