@@ -24,10 +24,40 @@ window.onload = function() {
         td.onmouseleave = function() {
           this.setAttribute('mousedover', 'false');
         }
+        //This function deals with being able to pick drivers and 
+        //Pasengers 
         td.onclick = function() {
-          this.setAttribute('selected', 'asDriver');
+          if (this.getAttribute('selected') == 'asPassenger'){
+            this.setAttribute('selected', 'asDriver');
+          } else if (this.getAttribute('selected') == 'asDriver'){
+            this.setAttribute('selected', '');
+          } else{
+            this.setAttribute('selected', 'asPassenger');
+          }
         }
       }
     }
   }
+}
+
+function makeCar(data){
+  var timeResults = document.getElementById("timeResults");
+
+  console.log(data);
+  console.log(timeResults);
+  
+  //Make table to hold the names of the new cars
+  var carTable = document.createElement('TABLE');
+  carTable.className = 'carTable'
+
+  for (var i = 0; i < 5; i++) {
+    var row = carTable.insertRow(i);
+    cell1 = row.insertCell(0);
+    cell2 = row.insertCell(1);
+    cell1.innerHTML = "Pasenger"
+    cell2.innerHTML = "Bob"
+
+  };
+
+  document.getElementById(data+'Cars').appendChild(carTable);
 }

@@ -37,6 +37,12 @@ table.timetable tr.timeview td.selected[selected="asDriver"] {
   border-style: solid;
   border-color: red;
 }
+
+table.timetable tr.timeview td.selected[selected="asPassenger"] {
+  border-style: solid;
+  border-color: orange;
+}
+
 table.timetable tr.timeview td.selected[mousedover="true"] {
   border-style: solid;
 }
@@ -47,4 +53,13 @@ table.timetable tr.timetext td.hour {
 
 table.timetable tr.timetext td.halfhour {
   font-size: 80%;
+}
+
+table.carTable tr td{
+  border-style: solid;
+  border-color: black;
+
+}
+table.carTable {
+  float: left;
 }
