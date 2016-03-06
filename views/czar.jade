@@ -30,6 +30,11 @@ html(lang='en')
           else
             each dayData in peoplesTimes
               h3= dayData.day
+
+              //If the finished car is hit then we save what day we are using and call the make car function.
+              button(class="btn btn-default",value='ADD' ,onClick='return makeCar("#{dayData.day}");') Finish Car
+              button(class="btn btn-default") Delete Car
+
               each AMPMData in dayData.times
                 - AMPM = AMPMData.halfday
                 h4= AMPM
@@ -45,9 +50,18 @@ html(lang='en')
                       td.name= personData.name
                       each hr,hrIdx in possibleDriveHours[AMPM]
                         each min,minIdx in [0, 15, 30, 45]
+
                           td(id=dayData.day+AMPM+(hr*100), selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0), carstatus='unassigned', mousedover='false')
                       unless personData.driveStatus == 'can'
                         td.driveStatus= personData.driveStatus + ' drive'
+
+              //Create a car location which is where we will add cars
+              div(id= dayData.day + 'Cars')
+                h3 #{dayData.day}  Cars
+
+              br(style="clear:both")
+              
+
 
           h2 Other Information
           ul
