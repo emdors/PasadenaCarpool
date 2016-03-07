@@ -38,6 +38,10 @@ table.timetable tr.timeview td[selected="true"] {
   background-color: #66ccff;
 }
 
+table.timetable tr.timeview[inCar = 'true'] td[selected="true"] {
+  background-color: #51bd5e;
+}
+
 table.timetable tr.timeview td[selected="true"][mousedover="true"] {
   border-style: solid;
   border-color: black;
