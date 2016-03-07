@@ -74,7 +74,7 @@ function makeCar(day){
   var time = ''
 
   //go through the am table and split it apart into each forum submision
-  var trs = amTable.getElementsByTagName("tr");
+  var trs = amTable.getElementsByClassName('timeview');
   for (var trIdx=0; trIdx<trs.length; ++trIdx) {
     var tr = trs[trIdx];
     //Get the entries for this submision
