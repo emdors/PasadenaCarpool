@@ -23,7 +23,7 @@ table.timetable tr.timeview td {
   height: 1.5em;
   width:  1.2em;
   border-left: 1px solid white;
-  border-top: 1px solid white;
+  border-bottom: 1px solid white;
 }
 
 table.timetable tr.timeview td[leftLine] {

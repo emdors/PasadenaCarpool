@@ -41,28 +41,41 @@ html(lang='en')
             label Drag over the gray boxes below to paint over the times when you want to leave.
 
             #alltimeinputs
-              each day in weekdays
-                h4= day
+              each dayData in peoplesTimes
+                h3= dayData.day
                 label.radio-inline
-                  input(type='radio', name=day + 'DriveStatus', value='must')
+                  input(type='radio', name=dayData.day + 'DriveStatus', value='must')
                   | Must Drive
                 label.radio-inline
-                  input(type='radio', name=day + 'DriveStatus', value='can', checked)
+                  input(type='radio', name=dayData.day + 'DriveStatus', value='can', checked)
                   | Can drive
                 label.radio-inline
-                  input(type='radio', name=day + 'DriveStatus', value='cannot')
+                  input(type='radio', name=dayData.day + 'DriveStatus', value='cannot')
                   | Cannot drive
-                each hours, AMPM in possibleDriveHours
-                  h5= AMPM
+                each AMPMData in dayData.times
+                  - AMPM = AMPMData.halfday
+                  h4= AMPM
                   table.timetable
                     tr.timetext
-                      each hr in hours
+                      td
+                      each hr in possibleDriveHours[AMPM]
                         td.hour(colspan='2')= hr
                         td.halfhour(colspan='2') :30
-                    tr(class='timeinput' id='timeinput'+day+AMPM)
-                      each hr,hrIdx in hours
+                      td
+                    tr(class='timeinput' id='timeinput'+dayData.day+AMPM)
+                      td.name You
+                      each hr,hrIdx in possibleDriveHours[AMPM]
                         each increment in [0, 15, 30, 45]
-                          td(id=day+AMPM+(hr*100+increment), selected='false', leftLine=(hrIdx != 0 && increment == 0))
+                          td(id=dayData.day+AMPM+(hr*100+increment), selected='false', leftLine=(hrIdx != 0 && increment == 0))
+                    each personData in AMPMData.people
+                      tr(class='timeview')
+                        td.name= personData.name
+                        each hr,hrIdx in possibleDriveHours[AMPM]
+                          each min,minIdx in [0, 15, 30, 45]
+                            td(id=dayData.day+AMPM+(hr*100), selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0), carstatus='unassigned', mousedover='false')
+                        unless personData.driveStatus == 'can'
+                          td.driveStatus= personData.driveStatus + ' drive'
+
           .form-group
             label(for='notes') Notes
             input#notes.form-control(type='notes', name='notes')
