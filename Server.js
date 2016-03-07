@@ -1,3 +1,4 @@
+"use strict";
 var express = require("express");
 var bodyParser = require('body-parser');
 var fs = require('fs');
@@ -12,7 +13,7 @@ var MongoClient = require('mongodb').MongoClient;
 // mongod URI: localhost:27017
 // switch to 'test' database
 
-mongod_URI = "mongodb://localhost:27017/test";
+var mongod_URI = "mongodb://localhost:27017/test";
 
 var viewpath = __dirname + '/views/';
 
