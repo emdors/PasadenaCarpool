@@ -59,47 +59,53 @@ function makeCar(day){
     }
   }
 
-
-
-
   //Get a list of the time tables and select the am and pm tables we are
   //interested in.
   var timeTables = timeResults.getElementsByClassName("timetable");
   var amTable = timeTables[2*dayNumber]
   var pmTable = timeTables[2*dayNumber + 1]
 
+  var tablesForDay = [amTable, pmTable]
+
   //Create a temporay varable to hold the time, the drivers name and the passengers name
   var driver = ''
   var passengers = []
   var time = ''
 
-  //go through the am table and split it apart into each forum submision
-  var trs = amTable.getElementsByClassName('timeview');
-  for (var trIdx=0; trIdx<trs.length; ++trIdx) {
-    var tr = trs[trIdx];
-    //Get the entries for this submision
-    var tds = tr.getElementsByTagName('td');
+  //Do the following search and creation for both the
+  //am and pm tables
+  for(var i = 0; i < tablesForDay.length; ++i){
+    var currTable = tablesForDay[i]
+    //go through the am table and split it apart into each forum submision
+    var trs = currTable.getElementsByClassName('timeview');
+    for (var trIdx=0; trIdx<trs.length; ++trIdx) {
+      var tr = trs[trIdx];
+      //Get the entries for this submision
+      var tds = tr.getElementsByTagName('td');
 
-    //We can start at 1 because the first entry is a name
-    for (var tdIdx = 1; tdIdx < tds.length; ++tdIdx){
-      var td = tds[tdIdx]
 
-      //if it is a driver save the name and time and reset the car status
-      //as well as set there inCar attribute to true
-      if(td.getAttribute('carstatus') == 'driver'){
-        driver = tr.getElementsByClassName('name')[0].innerHTML
-        time = td.getAttribute('id')
+      //We can start at 1 because the first entry is a name
+      for (var tdIdx = 1; tdIdx < tds.length; ++tdIdx){
+        var td = tds[tdIdx]
 
-        td.setAttribute('carstatus', '')
+        //if it is a driver save the name and time and reset the car status
+        //as well as set there inCar attribute to true
+        if(td.getAttribute('carstatus') == 'driver'){
+          driver = tr.getElementsByClassName('name')[0].innerHTML
+          console.log(tr)
+          time = td.getAttribute('id')
 
-        tr.setAttribute('inCar', 'true')
+          td.setAttribute('carstatus', '')
 
-      //if it is a passenger then add its name to the passenger list and
-      //reset its car status as well as set there inCar attribute to true
-      }else if (td.getAttribute('carstatus') == 'passenger'){
-        passengers.push(tr.getElementsByClassName('name')[0].innerHTML)
-        td.setAttribute('carstatus', '')
-        tr.setAttribute('inCar', 'true')
+          tr.setAttribute('inCar', 'true')
+
+        //if it is a passenger then add its name to the passenger list and
+        //reset its car status as well as set there inCar attribute to true
+        }else if (td.getAttribute('carstatus') == 'passenger'){
+          passengers.push(tr.getElementsByClassName('name')[0].innerHTML)
+          td.setAttribute('carstatus', '')
+          tr.setAttribute('inCar', 'true')
+        }
       }
     }
   }
@@ -108,8 +114,11 @@ function makeCar(day){
   var carTable = document.createElement('TABLE');
   carTable.className = 'carTable'
 
+  //Create a more readable time string
+  var timeString = parseTime(time)
   //Add the time the car is leaving and the driver
-  addToCar(carTable, 'Time Leaving', time,0);
+  addToCar(carTable, 'Time Leaving', timeString,0);
+
   addToCar(carTable, 'Driver', driver,1);
 
   for(var i = 0; i < passengers.length; ++i){
@@ -181,13 +190,8 @@ function deleteCar(day){
           trs[trIdx].setAttribute('inCar', 'false')
         }
       }
-
-
     }
-
-
   }
-
 
   //Remove the car from the cars list.
   for (var i = 0; i < carsToDelete.length; ++i){
@@ -203,5 +207,36 @@ function addToCar(carTable, name, value, rowNum){
   cell2 = row.insertCell(1);
   cell1.innerHTML = name;
   cell2.innerHTML = value;
+}
+
+//This is a helper function which parses a time into a viuallly apealling
+//and uniform way
+function parseTime(time){
+  //Get rid of the first part which has the day.
+  console.log(time)
+  var timeString = time.split('y')[1]
+
+  //save the AM vs PM
+  var endOfTime = timeString.substring(0,2)
+
+  //make the time with a colon in it. We need seperate cases for when
+  //we have 4 digits vs 3 digits of time.
+  if (timeString.length == 5){
+    var startOfTime = timeString.substring(2,3).concat(':')
+    startOfTime = startOfTime.concat(timeString.substring(3))
+
+    //add a space for astetic
+    startOfTime = startOfTime.concat(' ')
+  }else{
+    var startOfTime = timeString.substring(2,4).concat(':')
+    startOfTime = startOfTime.concat(timeString.substring(4))
+
+    //add a space for astetic
+    startOfTime = startOfTime.concat(' ')
+  }
+
+  return startOfTime.concat(endOfTime)
+
+
 }
 
