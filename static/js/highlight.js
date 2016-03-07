@@ -23,32 +23,34 @@ window.onload = function() {
     for (var j=0; j<tds.length; ++j) {
       var td = tds[j];
 
-      // When moused over, if we are currently selecting or unselecting, set
-      // this box to the appropriate class
-      td.onmouseover = function() {
-        if (mouseCurrentlyDown) {
-          if (isSelected(this)) {
-            if (!isCurrentlySelecting) {
-              this.setAttribute('selected','false');
-            }
-          } else {
-            if (isCurrentlySelecting) {
-              this.setAttribute('selected','true');
+      if (td.getAttribute('selected') == 'false') {
+        // When moused over, if we are currently selecting or unselecting, set
+        // this box to the appropriate class
+        td.onmouseover = function() {
+          if (mouseCurrentlyDown) {
+            if (isSelected(this)) {
+              if (!isCurrentlySelecting) {
+                this.setAttribute('selected','false');
+              }
+            } else {
+              if (isCurrentlySelecting) {
+                this.setAttribute('selected','true');
+              }
             }
           }
         }
-      }
 
-      // When mouse is clicked while on a box, swap its state and remember that
-      // the mouse is down and whether we are selecting or unselecting
-      td.onmousedown = function() {
-        mouseCurrentlyDown = true;
-        if (!isSelected(this)) {
-          this.setAttribute('selected','true');
-          isCurrentlySelecting = true;
-        } else {
-          this.setAttribute('selected','false');
-          isCurrentlySelecting = false;
+        // When mouse is clicked while on a box, swap its state and remember that
+        // the mouse is down and whether we are selecting or unselecting
+        td.onmousedown = function() {
+          mouseCurrentlyDown = true;
+          if (!isSelected(this)) {
+            this.setAttribute('selected','true');
+            isCurrentlySelecting = true;
+          } else {
+            this.setAttribute('selected','false');
+            isCurrentlySelecting = false;
+          }
         }
       }
 

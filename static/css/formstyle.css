@@ -15,22 +15,39 @@ div#alltimeinputs {
   user-select: none;
 }
 
-table.timetable tr.timeinput td {
+table.timetable tr.timeinput td, table.timetable tr.timeview td {
   height: 1.5em;
   width:  1.2em;
   border-left: 1px solid white;
-  border-top: 1px solid white;
+  border-bottom: 1px solid white;
 }
 
-table.timetable tr.timeinput td[leftLine] {
+table.timetable td.name {
+  height: 1.5em;
+  width: 1.2em;
+  text-align: right;
+  white-space: nowrap;
+}
+
+table.timetable tr.timeinput td {
+  border-bottom: 2px solid black;
+}
+
+table.timetable tr.timeview td.driveStatus {
+  height: 1.5em;
+  width: 10em;
+  padding: 0 10px;
+}
+
+table.timetable tr.timeinput td[leftLine], table.timetable tr.timeview td[leftLine] {
   border-left: 1px solid #a0a0a0;
 }
 
-table.timetable tr.timeinput td[selected="false"] {
+table.timetable tr.timeinput td[selected="false"], table.timetable tr.timeview td[selected="false"] {
   background-color: #e0e0e0;
 }
 
-table.timetable tr.timeinput td[selected="true"] {
+table.timetable tr.timeinput td[selected="true"], table.timetable tr.timeview td[selected="true"] {
   background-color: #66ccff;
 }
 

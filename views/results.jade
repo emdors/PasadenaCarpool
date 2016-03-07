@@ -1,0 +1,51 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    title Results
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.3.3/angular.min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.3/angular-route.min.js')
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
+    link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css')
+    script(src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js')
+    link(rel='stylesheet', href='css/czarstyle.css')
+  body
+    div
+      div
+        nav.navbar.navbar-inverse(role='navigation', style='padding-left:130px;')
+          ul.nav.navbar-nav
+            li
+              a(href='/') Home
+            li
+              a(href='/schedule') Schedule
+            li
+              a(href='/czar') Czar
+
+            li.active
+              a(href='/results') Forum Results
+      br
+      .container.theme-showcase(role='main')
+        h1 Form Results
+        if formResults.length == 0
+          | None yet
+        else
+          each dayData in peoplesTimes
+            h3= dayData.day
+            each AMPMData in dayData.times
+              - AMPM = AMPMData.halfday
+              h4= AMPM
+              table.timetable
+                tr.timetext
+                  td
+                  each hr in possibleDriveHours[AMPM]
+                    td.hour(colspan='2')= hr
+                    td.halfhour(colspan='2') :30
+                  td
+                each personData in AMPMData.people
+                  tr(class='timeview')
+                    td.name= personData.name
+                    each hr,hrIdx in possibleDriveHours[AMPM]
+                      each min,minIdx in [0, 15, 30, 45]
+                        td(class=personData.canGos[hrIdx*4+minIdx].canGo)
+                    unless personData.driveStatus == 'can'
+                      td.driveStatus= personData.driveStatus + ' drive'
