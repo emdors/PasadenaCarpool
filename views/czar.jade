@@ -51,7 +51,7 @@ html(lang='en')
                       each hr,hrIdx in possibleDriveHours[AMPM]
                         each min,minIdx in [0, 15, 30, 45]
 
-                          td(id=dayData.day+AMPM+(hr*100), selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0), carstatus='unassigned', mousedover='false')
+                          td(id=dayData.day+AMPM+(hr*100 + min), selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0), carstatus='unassigned', mousedover='false')
                       unless personData.driveStatus == 'can'
                         td.driveStatus= personData.driveStatus + ' drive'
               //Create a car location which is where we will add cars

@@ -168,12 +168,20 @@ function deleteCar(day){
   
   //look at each car we are going to delete
   for(var i = 0; i < carsToDelete.length; ++i){
+    namesFromCar = carsToDelete[i].getElementsByTagName('td')
+
+    var timeTable = ''
     //determine which table it should be in by looking at the time
-    //TODO implement
-    var timeTable = timeResults.getElementsByClassName("timetable")[2*dayNumber]
+    var timeString = namesFromCar[1].innerHTML
+ 
+    if(timeString.substring(timeString.length-2) == 'AM'){
+      timeTable = timeResults.getElementsByClassName("timetable")[2*dayNumber]
+    }else{
+      timeTable = timeResults.getElementsByClassName("timetable")[2*dayNumber + 1]
+    }
 
     //Get all of the names from this car.
-    namesFromCar = carsToDelete[i].getElementsByTagName('td')
+    
 
     //Check the names from this car verse the time table
     for(var nameIdx = 3; nameIdx < namesFromCar.length; nameIdx += 2){
