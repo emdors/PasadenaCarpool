@@ -68,7 +68,11 @@ table.timetable tr.timetext td.halfhour {
 table.carTable tr td{
   border-style: solid;
   border-color: black;
-  
+}
+
+table.carTable[selected="true"] tr td{
+  border-style: solid;
+  border-color: red;
 
 }
 table.carTable {
