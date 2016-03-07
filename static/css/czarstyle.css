@@ -38,20 +38,24 @@ table.timetable tr.timeview td[selected="true"] {
   background-color: #66ccff;
 }
 
+table.timetable tr.timeview td[selected="true"][mousedover="true"] {
+  border-style: solid;
+  border-color: black;
+  border-width: 3px;
+}
 
-table.timetable tr.timeview td.selected[selected="asDriver"] {
+table.timetable tr.timeview td[selected="true"][carstatus="driver"] {
   border-style: solid;
   border-color: red;
+  border-width: 3px;
 }
 
-table.timetable tr.timeview td.selected[selected="asPassenger"] {
+table.timetable tr.timeview td[selected="true"][carstatus="passenger"] {
   border-style: solid;
   border-color: orange;
+  border-width: 3px;
 }
 
-table.timetable tr.timeview td.selected[mousedover="true"] {
-  border-style: solid;
-}
 
 table.timetable tr.timetext td.hour {
   font-size: 130%;
@@ -64,8 +68,9 @@ table.timetable tr.timetext td.halfhour {
 table.carTable tr td{
   border-style: solid;
   border-color: black;
+  
 
 }
 table.carTable {
   float: left;
-}
+  

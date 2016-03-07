@@ -54,7 +54,6 @@ html(lang='en')
                           td(id=dayData.day+AMPM+(hr*100), selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0), carstatus='unassigned', mousedover='false')
                       unless personData.driveStatus == 'can'
                         td.driveStatus= personData.driveStatus + ' drive'
-
               //Create a car location which is where we will add cars
               div(id= dayData.day + 'Cars')
                 h3 #{dayData.day}  Cars

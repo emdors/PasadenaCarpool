@@ -16,40 +16,31 @@ window.onload = function() {
     var tds = ti.getElementsByTagName("td");
     for (var tdIdx=0; tdIdx<tds.length; ++tdIdx) {
       var td = tds[tdIdx];
-//<<<<<<< HEAD
-//      if (td.getAttribute('selected')) {
-//=======
-      if (td.className == 'selected') {
-        td.setAttribute('mousedover', 'false');
-//>>>>>>> tempCar
-        // td.onmouseover = function() {
-        //   this.setAttribute('mousedover', 'true');
-        // }
-        // td.onmouseleave = function() {
-        //   this.setAttribute('mousedover', 'false');
-        // }
-//<<<<<<< HEAD
-        // td.onclick = function() {
-        //   this.setAttribute('carstatus', 'driver');
-//=======
+
+      if (td.getAttribute('selected')) {
+        td.onmouseover = function() {
+          this.setAttribute('mousedover', 'true');
+        }
+        td.onmouseleave = function() {
+          this.setAttribute('mousedover', 'false');
+        }
+
         //This function deals with being able to pick drivers and 
         //Pasengers 
         td.onclick = function() {
-          if (this.getAttribute('selected') == 'asPassenger'){
-            this.setAttribute('selected', 'asDriver');
-          } else if (this.getAttribute('selected') == 'asDriver'){
-            this.setAttribute('selected', '');
+          if (this.getAttribute('carstatus') == 'passenger'){
+            this.setAttribute('carstatus', 'driver');
+          } else if (this.getAttribute('carstatus') == 'driver'){
+            this.setAttribute('carstatus', '');
           } else{
-            this.setAttribute('selected', 'asPassenger');
+            this.setAttribute('carstatus', 'passenger');
           }
-//>>>>>>> tempCar
         }
       }
     }
   }
 }
-//<<<<<<< HEAD
-//=======
+
 
 function makeCar(data){
   var timeResults = document.getElementById("timeResults");
@@ -72,4 +63,4 @@ function makeCar(data){
 
   document.getElementById(data+'Cars').appendChild(carTable);
 }
-//>>>>>>> tempCar
+
