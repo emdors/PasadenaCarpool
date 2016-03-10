@@ -122,12 +122,19 @@ function makeCar(day){
             driver = tr.getElementsByClassName('name')[0].innerHTML
 
             //Make sure that this person did not say that they could not drive
-            if(restrictions == 'cannot drive')
+            if(restrictions == 'cannot drive'){
               carError = true
               errorString = errorString.concat('You made someone a driver who cannot drive that day. \n')
+            }
 
           }else{
             passengers.push(tr.getElementsByClassName('name')[0].innerHTML)
+
+            //If the person said they must drive they cannot be a passenger
+            if(restrictions == 'must drive'){
+              carError = true
+              errorString = errorString.concat('You made someone a passenger who must drive that day. \n')
+            }
           }
 
 
@@ -139,6 +146,12 @@ function makeCar(day){
     }
   }
   
+  //Check if the drive string is still empty. In this case let the user know that they
+  //forgot to add a driver.
+  if(driver == ''){
+    carError = true
+    errorString = errorString.concat('you did not select a driver. \n')
+  }
   //Check if there is a car error, in which case notify the user change the 
   //in car status of all the passengers and exit the function
   if(carError){
