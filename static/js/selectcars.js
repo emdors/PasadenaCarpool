@@ -72,6 +72,11 @@ function makeCar(day){
   var passengers = []
   var time = ''
 
+  //Variable to do with error checking
+  var trOfCar = []
+  var carError = false
+  var errorString = 'While you were trying to make a car there were the following errors: \n'
+
   //Do the following search and creation for both the
   //am and pm tables
   for(var i = 0; i < tablesForDay.length; ++i){
@@ -90,26 +95,77 @@ function makeCar(day){
 
         //if it is a driver save the name and time and reset the car status
         //as well as set there inCar attribute to true
-        if(td.getAttribute('carstatus') == 'driver'){
-          driver = tr.getElementsByClassName('name')[0].innerHTML
-          console.log(tr)
-          time = td.getAttribute('id')
+        if((td.getAttribute('carstatus') == 'driver') || (td.getAttribute('carstatus') == 'passenger')){
+          
+
+          //if there is no time currently then change it, otherwise make
+          //sure the times are the same
+          if (time == ''){
+            time = td.getAttribute('id')
+          }else{
+            if (!(time == td.getAttribute('id')) ){
+              carError = true
+              errorString = errorString.concat('You entered multiple times for one car. \n')
+            }
+          }
+
+          //if there is restrictions on driving keep this info
+          var restrictions = ''
+
+          if (tr.getElementsByClassName('driveStatus').length == 1)
+            restrictions = tr.getElementsByClassName('driveStatus')[0].innerHTML
+          
+
+
+          //Set the driver name or add the passenger
+          if(td.getAttribute('carstatus') == 'driver'){
+            driver = tr.getElementsByClassName('name')[0].innerHTML
+
+            //Make sure that this person did not say that they could not drive
+            if(restrictions == 'cannot drive'){
+              carError = true
+              errorString = errorString.concat('You made someone a driver who cannot drive that day. \n')
+            }
+
+          }else{
+            passengers.push(tr.getElementsByClassName('name')[0].innerHTML)
+
+            //If the person said they must drive they cannot be a passenger
+            if(restrictions == 'must drive'){
+              carError = true
+              errorString = errorString.concat('You made someone a passenger who must drive that day. \n')
+            }
+          }
+
 
           td.setAttribute('carstatus', '')
-
           tr.setAttribute('inCar', 'true')
-
-        //if it is a passenger then add its name to the passenger list and
-        //reset its car status as well as set there inCar attribute to true
-        }else if (td.getAttribute('carstatus') == 'passenger'){
-          passengers.push(tr.getElementsByClassName('name')[0].innerHTML)
-          td.setAttribute('carstatus', '')
-          tr.setAttribute('inCar', 'true')
+          trOfCar.push(tr)
         }
       }
     }
   }
   
+  //Check if the drive string is still empty. In this case let the user know that they
+  //forgot to add a driver.
+  if(driver == ''){
+    carError = true
+    errorString = errorString.concat('you did not select a driver. \n')
+  }
+  //Check if there is a car error, in which case notify the user change the 
+  //in car status of all the passengers and exit the function
+  if(carError){
+    window.alert(errorString)
+
+    for(var i = 0; i < trOfCar.length; ++i){
+      trOfCar[i].setAttribute('inCar', 'false')
+    }
+
+    return
+
+  }
+  console.log(trOfCar)
+
   //Make table to hold the names of the new cars
   var carTable = document.createElement('TABLE');
   carTable.className = 'carTable'
