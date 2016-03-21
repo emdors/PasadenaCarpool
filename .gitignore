@@ -40,3 +40,4 @@ nodepid
 nohup.out
 
 data/
+google_secrets.json

@@ -25,10 +25,10 @@ var session = require( 'express-session' )
 
 // API Access link for creating client ID and secret:
 // https://code.google.com/apis/console/
-var GOOGLE_CLIENT_ID      = "279399539426-1i0aea9npr8tjb8j9r9g0ol91jh8206v.apps.googleusercontent.com"
-  , GOOGLE_CLIENT_SECRET  = "P9DYLvxckP9hzzqcy8JnH9i2";
+var google_secrets = require('./google_secrets.json');
 
 var viewpath = __dirname + '/views/';
+var userdatapath = __dirname + '/data/users/';
 
 var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 var possibleDriveHours = {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]};
@@ -67,8 +67,8 @@ passport.deserializeUser(function(obj, done) {
 //   credentials (in this case, an accessToken, refreshToken, and Google
 //   profile), and invoke a callback with a user object.
 passport.use(new GoogleStrategy({
-    clientID:     GOOGLE_CLIENT_ID,
-    clientSecret: GOOGLE_CLIENT_SECRET,
+    clientID:     google_secrets.web.client_id,
+    clientSecret: google_secrets.web.client_secret,
     //NOTE :
     //Carefull ! and avoid usage of Private IP, otherwise you will get the device_id device_name issue for Private IP during authentication
     //The workaround is to set up thru the google cloud console a fully qualified domain name such as http://mydomain:3000/ 
@@ -87,7 +87,7 @@ passport.use(new GoogleStrategy({
       // to associate the Google account with a user record in your database,
       // and return that user instead.
       console.log(profile.email)
-      fs.readFile(__dirname + '/data/' + profile.email, function (err, data) {
+      fs.readFile(userdatapath + profile.email, function (err, data) {
         if (err) {
           return done(false)
           
@@ -191,7 +191,7 @@ app.post("/times", ensureAuthenticated, function(req,res){
 app.post("/newUser", ensureAuthenticated, function(req,res){
   
 
-  fs.writeFile(__dirname+"/data/"+req.body.email, "", function(err) {
+  fs.writeFile(userdatapath+req.body.email, "", function(err) {
     if(err) {
         return console.log(err);
     }
