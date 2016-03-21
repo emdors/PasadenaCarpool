@@ -38,3 +38,5 @@ node_modules
 autorestart/update_and_restart_log
 nodepid
 nohup.out
+
+data/
