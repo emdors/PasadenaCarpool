@@ -93,7 +93,7 @@ passport.use(new GoogleStrategy({
           
         }else{
           console.log(data);
-          return done(null, data);
+          return done(null, profile.email);
         }
       });
     });
@@ -197,7 +197,7 @@ app.post("/newUser", ensureAuthenticated, function(req,res){
     }
     console.log("The file was saved!");
   }); 
-  res.redirect("/newUser")
+  res.redirect("/newUser", { user: req.user })
 });
 
 app.get('/login', function(req, res){
@@ -213,7 +213,7 @@ app.get('/noEmail', function(req,res) {
   res.render(viewpath+"noEmail.jade");
 });
 
-app.get('/newUser', function(req, res){
+app.get('/newUser', ensureAuthenticated , function(req, res){
   res.render(viewpath+"addUser.jade")
 });
 
