@@ -13,7 +13,7 @@ var MongoClient = require('mongodb').MongoClient;
 // mongod URI: localhost:27017
 // switch to 'test' database
 
-var mongod_URI = "mongodb://localhost:27017/test";
+var mongod_URI = "mongodb://localhost:27017/carpool";
 
 var viewpath = __dirname + '/views/';
 
@@ -22,28 +22,52 @@ var possibleDriveHours = {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]};
 
 app.use(express.static("static"));
 
-var resultsSoFar = require('./startingdata').data;
+//var resultsSoFar = require('./startingdata').data;
+
+function getResultsSoFar(callback) {
+  MongoClient.connect(mongod_URI, function(err, db) {
+    if (err != null) {
+      console.error(err);
+    }
+    db.collection('people').find().toArray(function(err, items) {
+      var item = items[0];
+      console.log(JSON.stringify(item));
+      
+      callback(item.data);
+    });
+    //cursor.each(function(err, doc) {
+    //  if (doc != null) {
+    //    console.log('RECEIVED A COMMUTE: doc.name');
+    //    console.log(JSON.stringify(doc));
+    //  }
+    //});
+
+  });
+}
 
 app.get("/",function(req,res){
-  var dataForIndex = {
-    weekdays: weekdays,
-    possibleDriveHours: possibleDriveHours,
-    peoplesTimes: resultsSoFar.parseddata,
-    formResults: resultsSoFar.rawdata,
-  };
-  res.render(viewpath + "index.jade", dataForIndex);
+  getResultsSoFar(function(resultsSoFar) {
+    var dataForIndex = {
+      weekdays: weekdays,
+      possibleDriveHours: possibleDriveHours,
+      peoplesTimes: resultsSoFar.parseddata,
+      formResults: resultsSoFar.rawdata,
+    };
+    res.render(viewpath + "index.jade", dataForIndex);
+  });
 });
 
 app.get("/czar", function (req, res) {
+  getResultsSoFar(function(resultsSoFar) {
+    var dataForCzar = {
+      weekdays: weekdays,
+      possibleDriveHours: possibleDriveHours,
+      peoplesTimes: resultsSoFar.parseddata,
+      formResults: resultsSoFar.rawdata,
+    };
 
-  var dataForCzar = {
-    weekdays: weekdays,
-    possibleDriveHours: possibleDriveHours,
-    peoplesTimes: resultsSoFar.parseddata,
-    formResults: resultsSoFar.rawdata,
-  };
-
-  res.render(viewpath + "czar.jade", dataForCzar);
+    res.render(viewpath + "czar.jade", dataForCzar);
+  });
 });
 
 
