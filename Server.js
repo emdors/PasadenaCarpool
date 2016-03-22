@@ -7,13 +7,6 @@ var fs = require('fs');
 var app = express();
 var server = require( 'http' ).createServer( app )
 
-var MongoClient = require('mongodb').MongoClient;
-
-// mongod URI: localhost:27017
-// switch to 'test' database
-
-var mongod_URI = "mongodb://localhost:27017/carpool";
-
 //Things needed for passport authetification
 
 var util = require( 'util' )
@@ -40,9 +33,6 @@ var possibleDriveHours = {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]};
 
 var resultsSoFar = require('./startingdata').data;
 var exampleResults = require('./exampleData').data;
-
-
-
 
 app.use(cookieParser());
 app.use( bodyParser.json());
@@ -132,37 +122,36 @@ app.get("/czar", ensureAuthenticated ,function (req, res) {
 
 app.post("/times", ensureAuthenticated, function(req,res){
   resultsSoFar.rawdata.push(req.body);
-    var result = req.body;
-    for (var dayIdx=0; dayIdx<weekdays.length; dayIdx++) {
-      var day = weekdays[dayIdx];
-      for (var ampm in possibleDriveHours) {
-        var thisPersonsTimes = result[day+ampm+'Times'];
-        var canGos = [];
+  var result = req.body;
+  for (var dayIdx=0; dayIdx<weekdays.length; dayIdx++) {
+    var day = weekdays[dayIdx];
+    for (var ampm in possibleDriveHours) {
+      var thisPersonsTimes = result[day+ampm+'Times'];
+      var canGos = [];
 
-        for (var hrIdx = 0; hrIdx<possibleDriveHours[ampm].length; hrIdx++) {
-          var hr = possibleDriveHours[ampm][hrIdx];
-          for (var min=0; min<60; min += 15) {
-            var hrMin = hr*100 + min;
-            var canGo = thisPersonsTimes.indexOf(hrMin) != -1;
-            canGos.push({time:hrMin, canGo: canGo});
-          }
+      for (var hrIdx = 0; hrIdx<possibleDriveHours[ampm].length; hrIdx++) {
+        var hr = possibleDriveHours[ampm][hrIdx];
+        for (var min=0; min<60; min += 15) {
+          var hrMin = hr*100 + min;
+          var canGo = thisPersonsTimes.indexOf(hrMin) != -1;
+          canGos.push({time:hrMin, canGo: canGo});
         }
-        // Using filter instead of find because node on Knuth does not have find
-        // Also why I'm using the function(x) {return y;} syntax rather than x=>y
-        resultsSoFar.parseddata.filter(
-            //d => d.day == day
-            function(d) { return d.day == day; }
-          )[0].times.filter(
-            //hd => hd.halfday == ampm
-            function (hd) { return hd.halfday == ampm; }
-          )[0].people.push({
-            name: result.name,
-            driveStatus: result[day + 'DriveStatus'],
-            canGos: canGos
-          });
       }
+      // Using filter instead of find because node on Knuth does not have find
+      // Also why I'm using the function(x) {return y;} syntax rather than x=>y
+      resultsSoFar.parseddata.filter(
+          //d => d.day == day
+          function(d) { return d.day == day; }
+        )[0].times.filter(
+          //hd => hd.halfday == ampm
+          function (hd) { return hd.halfday == ampm; }
+        )[0].people.push({
+          name: result.name,
+          driveStatus: result[day + 'DriveStatus'],
+          canGos: canGos
+        });
     }
-  //}
+  }
 
   for (var dayIdx=0; dayIdx<resultsSoFar.parseddata.length; dayIdx++) {
     var dayData = resultsSoFar.parseddata[dayIdx];
@@ -182,8 +171,6 @@ app.post("/times", ensureAuthenticated, function(req,res){
     }
   }
 
-
-
   //console.log(req.body);
   console.log(resultsSoFar);
 
@@ -192,7 +179,6 @@ app.post("/times", ensureAuthenticated, function(req,res){
 });
 
 app.post("/newUser", ensureAuthenticated, function(req,res){
-  
 
   fs.writeFile(userdatapath+req.body.email, "", function(err) {
     if(err) {
@@ -280,22 +266,6 @@ app.get('*', function(req,res) {
 app.listen(3005,function(){
   console.log("Live at Port 3005");
 });
-
-// mongodb objects are referred to as "documents"
-var insertWeeklyCommuteDocument = function(db, weeklyCommuteFormBody, callback) {
-  db.collection('weeklyCommutes').insertOne(weeklyCommuteFormBody, function(err, result) {
-    console.log("Inserted a weekly commute document into weeklyCommutes collection");
-    callback(result);
-  });
-};
-
-var findWeeklyCommutes = function(db, callback) {
-   var cursor = db.collection('weeklyCommutes').find();
-   var docs = [];
-   
-   console.log(docs)
-   return docs;
-};
 
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
