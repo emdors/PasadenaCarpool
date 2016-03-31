@@ -38,6 +38,14 @@ table.timetable tr.timeview td[selected="true"] {
   background-color: #66ccff;
 }
 
+table.timetable tr.timeview[isDriver="true"] td[selected="true"]{
+  background-color: #b31aff
+}
+
+table.timetable tr.timeview[isPassenger="true"] td[selected="true"]{
+  background-color: #b38600
+}
+
 table.timetable tr.timeview[inCar = 'true'] td[selected="true"] {
   background-color: #51bd5e;
 }

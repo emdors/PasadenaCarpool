@@ -30,12 +30,15 @@ window.onload = function() {
         //This function deals with being able to pick drivers and 
         //Pasengers 
         td.onclick = function() {
-          if (this.getAttribute('carstatus') == 'passenger'){
-            this.setAttribute('carstatus', 'driver');
-          } else if (this.getAttribute('carstatus') == 'driver'){
-            this.setAttribute('carstatus', '');
-          } else{
-            this.setAttribute('carstatus', 'passenger');
+          //Make sure that we can only change the car status of selected tiles.
+          if(this.getAttribute('selected') == 'true'){
+            if (this.getAttribute('carstatus') == 'passenger'){
+              this.setAttribute('carstatus', 'driver');
+            } else if (this.getAttribute('carstatus') == 'driver'){
+              this.setAttribute('carstatus', '');
+            } else{
+              this.setAttribute('carstatus', 'passenger');
+            }
           }
         }
       }
@@ -96,8 +99,6 @@ function makeCar(day){
         //if it is a driver save the name and time and reset the car status
         //as well as set there inCar attribute to true
         if((td.getAttribute('carstatus') == 'driver') || (td.getAttribute('carstatus') == 'passenger')){
-          
-
           //if there is no time currently then change it, otherwise make
           //sure the times are the same
           if (time == ''){
@@ -119,12 +120,24 @@ function makeCar(day){
 
           //Set the driver name or add the passenger
           if(td.getAttribute('carstatus') == 'driver'){
+            //If there is already a driver set then throw an error
+            if (!(driver == '') ){
+              errorString = errorString.concat('You picked two drivers. \n')
+              carError = true
+            }
+
             driver = tr.getElementsByClassName('name')[0].innerHTML
 
             //Make sure that this person did not say that they could not drive
             if(restrictions == 'cannot drive'){
               carError = true
               errorString = errorString.concat('You made someone a driver who cannot drive that day. \n')
+            }
+
+            if(tr.getAttribute('isPassenger' == 'true')){
+              carError = true
+              errorString = errorString.concat('You made someone a driver who is already a passenger going the otherway. \n')
+
             }
 
           }else{
@@ -135,12 +148,25 @@ function makeCar(day){
               carError = true
               errorString = errorString.concat('You made someone a passenger who must drive that day. \n')
             }
+
+            //If the person is a driver in another car then they cannot be a passenger in this car
+            if(tr.getAttribute('isDriver') == 'true'){
+              carError = true
+              errorString = errorString.concat('You made someone a passenger who is already a driver going the otherway. \n')
+            }
           }
 
 
-          td.setAttribute('carstatus', '')
-          tr.setAttribute('inCar', 'true')
-          trOfCar.push(tr)
+          //check if the person is alread in a car.
+          if(tr.getAttribute('inCar') == 'true'){
+            errorString = errorString.concat('You tried to but someone who is already in a car. \n')
+            carError = true
+            td.setAttribute('carstatus', '')
+          }else{
+            td.setAttribute('carstatus', '')
+            tr.setAttribute('inCar', 'true')
+            trOfCar.push(tr)
+          }
         }
       }
     }
@@ -164,7 +190,7 @@ function makeCar(day){
     return
 
   }
-  console.log(trOfCar)
+
 
   //Make table to hold the names of the new cars
   var carTable = document.createElement('TABLE');
@@ -179,7 +205,10 @@ function makeCar(day){
 
   for(var i = 0; i < passengers.length; ++i){
     addToCar(carTable, 'Passenger', passengers[i], 2 + i);
+    setIsAt(passengers[i], 'true', dayNumber, 'isPassenger')
   }
+  //Set the person as a driver in the AM and PM tables
+  setIsAt(driver, "true", dayNumber, 'isDriver')
 
   //Set behavior so that when this table is clicked we can 
   //denote that it has been selected.
@@ -190,6 +219,7 @@ function makeCar(day){
         this.setAttribute('selected', 'true')
       }
     }
+
 
   document.getElementById(day+'Cars').appendChild(carTable);
 }
@@ -207,7 +237,6 @@ function deleteCar(day){
   var carTables = carsElement.getElementsByClassName('carTable');
 
   for (var i = 0; i < carTables.length; ++i){
-    console.log(carTables[i].getAttribute('selected'))
     if (carTables[i].getAttribute('selected') == 'true'){
       carsToDelete.push(carTables[i])
     }
@@ -243,6 +272,13 @@ function deleteCar(day){
     for(var nameIdx = 3; nameIdx < namesFromCar.length; nameIdx += 2){
       var name = namesFromCar[nameIdx].innerHTML
 
+      //If this was the driver reset the isdriver status
+      if(nameIdx == 3){
+        setIsAt(name, 'false', dayNumber, 'isDriver')
+      }else{
+        setIsAt(name, 'false', dayNumber, 'isPassenger')
+      }
+
       //Now go through all of the submissions and check to see if the 
       //names are the same and set their inCar status equal to false.
       var trs = timeTable.getElementsByClassName('timeview')
@@ -277,7 +313,7 @@ function addToCar(carTable, name, value, rowNum){
 //and uniform way
 function parseTime(time){
   //Get rid of the first part which has the day.
-  console.log(time)
+
   var timeString = time.split('y')[1]
 
   //save the AM vs PM
@@ -300,6 +336,29 @@ function parseTime(time){
   }
 
   return startOfTime.concat(endOfTime)
+}
+
+//This function is a helper function which sets wheter a person is a driver or not 
+function setIsAt(name, status, dayNumber, attribute){
+  var timeResults = document.getElementById("timeResults");
+
+  var timeTables = timeResults.getElementsByClassName("timetable");
+  var amTable = timeTables[2*dayNumber]
+  var pmTable = timeTables[2*dayNumber + 1]
+  var tablesForDay = [amTable, pmTable]
+
+  for(var i = 0; i < tablesForDay.length; ++i){
+    table = tablesForDay[i]
+    var trs = table.getElementsByClassName("timeview");
+
+    for(var trNum = 0; trNum < trs.length; ++trNum){
+      //if we have found the name set the status
+      tr = trs[trNum]
+      if (name == tr.getElementsByClassName('name')[0].innerHTML){
+        tr.setAttribute(attribute, status)
+      }
+    }
+  } 
 
 
 }
