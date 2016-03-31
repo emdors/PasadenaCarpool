@@ -1,14 +1,13 @@
 "use strict";
 var express = require("express");
 var bodyParser = require('body-parser');
-
 var fs = require('fs');
+var current_week_number = require('current-week-number');
+var server = require('http').createServer(app)
+var async = require('async');
 
 var app = express();
-var server = require( 'http' ).createServer( app )
-
 //Things needed for passport authetification
-
 var util = require( 'util' )
 var cookieParser = require('cookie-parser');
 var passport = require( 'passport' )
@@ -96,6 +95,141 @@ passport.use(new GoogleStrategy({
 app.use( passport.initialize());
 app.use( passport.session());
 
+// Get the filename for the user data for the given week. If there's no
+// argument, use *next* week. Returns string like 2016-03-21, the date of the
+// Monday starting that week.
+function userDataFileName(dateInput) {
+  var date;
+
+  if (typeof dateInput === 'string' && dateInput.length) {
+    date = new Date(dateInput);
+  } else if (dateInput instanceof Date) {
+    date = dateInput;
+  } else {
+    date = new Date();
+    date.setDate(date.getDate() + 7);
+  }
+  
+  // Magic to set the day to the previous Monday...
+  date.setDate(date.getDate() - date.getDay() + 1);
+
+  // Return it in right format
+  return date.toISOString().slice(0,10);
+}
+
+//console.log(userDataFileName());
+//console.log(userDataFileName('1 January 2016'));
+//console.log(userDataFileName('1 January 2017'));
+//console.log(userDataFileName('1 January 2018'));
+//console.log(userDataFileName('2 January 2016'));
+//console.log(userDataFileName('3 January 2016'));
+//console.log(userDataFileName('4 January 2016'));
+//console.log(userDataFileName('5 January 2016'));
+//console.log(userDataFileName('6 January 2016'));
+//console.log(userDataFileName('7 January 2016'));
+//console.log(userDataFileName('8 January 2016'));
+//console.log(userDataFileName('9 January 2016'));
+//console.log(userDataFileName('10 January 2016'));
+//console.log(userDataFileName('31 December 2016'));
+//console.log(userDataFileName('30 December 2016'));
+//console.log(userDataFileName('29 December 2016'));
+//console.log(userDataFileName('28 December 2016'));
+//console.log(userDataFileName('27 December 2016'));
+//console.log(userDataFileName('26 December 2016'));
+//console.log(userDataFileName('25 December 2016'));
+//console.log(userDataFileName('29 Febuary 2016'));
+//console.log(userDataFileName('28 Febuary 2016'));
+//console.log(userDataFileName('3 March 2044')); // should be 2044-02-29
+//console.log(userDataFileName('29 Febuary 2044')); // should be 2044-02-29
+//console.log(userDataFileName('8 September 2017'));
+//console.log(userDataFileName('12 August 2018'));
+//console.log(userDataFileName('17 October 2017'));
+
+function parseData(callback) {
+  fs.readdir(userdatapath, function(err, files) {
+    if (err) {
+      console.log('Failed reading the user data directory');
+      process.exit(1);
+    }
+
+    var thisWeeksScheduleFilename = userDataFileName();
+    console.log(thisWeeksScheduleFilename);
+
+    async.map(files, function(userEmail, callback) {
+      var fullFilename = userdatapath + userEmail + '/schedules/'
+                         + thisWeeksScheduleFilename;
+      fs.readFile(fullFilename, 'utf8', function(err, data) {
+        if (err) {
+          console.log('Got error (' + fullFilename + ')');
+          callback(null, undefined);
+        } else {
+          callback(err, JSON.parse(data));
+        }
+      });
+    }, function(err, allResultsUnfiltered) {
+      console.log(allResultsUnfiltered);
+      var allResults = allResultsUnfiltered.filter(function(r) { return r !== undefined; });
+      var parsedResults = {}; // something
+
+      for (var dayIdx=0; dayIdx<weekdays.length; dayIdx++) {
+        var day = weekdays[dayIdx];
+        for (var ampm in possibleDriveHours) {
+          var thisPersonsTimes = result[day+ampm+'Times'];
+          var canGos = [];
+
+          for (var hrIdx = 0; hrIdx<possibleDriveHours[ampm].length; hrIdx++) {
+            var hr = possibleDriveHours[ampm][hrIdx];
+            for (var min=0; min<60; min += 15) {
+              var hrMin = hr*100 + min;
+              var canGo = thisPersonsTimes.indexOf(hrMin) != -1;
+              canGos.push({time:hrMin, canGo: canGo});
+            }
+          }
+          // Using filter instead of find because node on Knuth does not have find
+          // Also why I'm using the function(x) {return y;} syntax rather than x=>y
+          resultsSoFar.parseddata.filter(
+              //d => d.day == day
+              function(d) { return d.day == day; }
+            )[0].times.filter(
+              //hd => hd.halfday == ampm
+              function (hd) { return hd.halfday == ampm; }
+            )[0].people.push({
+              name: result.name,
+              driveStatus: result[day + 'DriveStatus'],
+              canGos: canGos
+            });
+        }
+      }
+
+      for (var dayIdx=0; dayIdx<resultsSoFar.parseddata.length; dayIdx++) {
+        var dayData = resultsSoFar.parseddata[dayIdx];
+        for (var ampmIdx=0; ampmIdx<dayData.times.length; ampmIdx++) {
+          var ampmdata = dayData.times[ampmIdx];
+          // Sort the people by their earliest/latest 'selected' entry (earliest if
+          // PM, latest if AM)
+          ampmdata.people.sort(function(p1, p2) {
+            for (var canGoIdx=0; canGoIdx<p1.canGos.length; canGoIdx++) {
+              var realIdx = ampmdata.halfday == 'AM'?
+                p1.canGos.length-canGoIdx-1 : canGoIdx;
+              if (p1.canGos[realIdx].canGo) return -1;
+              if (p2.canGos[realIdx].canGo) return 1;
+            }
+            return 0;
+          });
+        }
+      }
+
+      callback(allResults);
+    });
+
+
+
+
+  });
+}
+
+parseData();
+
 app.get("/", ensureAuthenticated ,function(req,res){
   var dataForIndex = {
     user: req.user,
@@ -123,53 +257,6 @@ app.get("/czar", ensureAuthenticated ,function (req, res) {
 app.post("/times", ensureAuthenticated, function(req,res){
   resultsSoFar.rawdata.push(req.body);
   var result = req.body;
-  for (var dayIdx=0; dayIdx<weekdays.length; dayIdx++) {
-    var day = weekdays[dayIdx];
-    for (var ampm in possibleDriveHours) {
-      var thisPersonsTimes = result[day+ampm+'Times'];
-      var canGos = [];
-
-      for (var hrIdx = 0; hrIdx<possibleDriveHours[ampm].length; hrIdx++) {
-        var hr = possibleDriveHours[ampm][hrIdx];
-        for (var min=0; min<60; min += 15) {
-          var hrMin = hr*100 + min;
-          var canGo = thisPersonsTimes.indexOf(hrMin) != -1;
-          canGos.push({time:hrMin, canGo: canGo});
-        }
-      }
-      // Using filter instead of find because node on Knuth does not have find
-      // Also why I'm using the function(x) {return y;} syntax rather than x=>y
-      resultsSoFar.parseddata.filter(
-          //d => d.day == day
-          function(d) { return d.day == day; }
-        )[0].times.filter(
-          //hd => hd.halfday == ampm
-          function (hd) { return hd.halfday == ampm; }
-        )[0].people.push({
-          name: result.name,
-          driveStatus: result[day + 'DriveStatus'],
-          canGos: canGos
-        });
-    }
-  }
-
-  for (var dayIdx=0; dayIdx<resultsSoFar.parseddata.length; dayIdx++) {
-    var dayData = resultsSoFar.parseddata[dayIdx];
-    for (var ampmIdx=0; ampmIdx<dayData.times.length; ampmIdx++) {
-      var ampmdata = dayData.times[ampmIdx];
-      // Sort the people by their earliest/latest 'selected' entry (earliest if
-      // PM, latest if AM)
-      ampmdata.people.sort(function(p1, p2) {
-        for (var canGoIdx=0; canGoIdx<p1.canGos.length; canGoIdx++) {
-          var realIdx = ampmdata.halfday == 'AM'?
-            p1.canGos.length-canGoIdx-1 : canGoIdx;
-          if (p1.canGos[realIdx].canGo) return -1;
-          if (p2.canGos[realIdx].canGo) return 1;
-        }
-        return 0;
-      });
-    }
-  }
 
   //console.log(req.body);
   console.log(resultsSoFar);
