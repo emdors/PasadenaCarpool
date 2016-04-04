@@ -89,4 +89,12 @@ table.carTable[selected="true"] tr td{
 }
 table.carTable {
   float: left;
+
+}
+
+table + table{
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+    
   

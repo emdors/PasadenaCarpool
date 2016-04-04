@@ -51,7 +51,7 @@ window.onload = function() {
 //adds a new car to the car list.
 function makeCar(day){
   var timeResults = document.getElementById("timeResults");
-
+  console.log(timeResults)
   //determine the numerical value of this day of the week so we know 
   //which tables we should look at
   var dayNumber = 0
@@ -62,6 +62,12 @@ function makeCar(day){
     }
   }
 
+
+  //Check to see the overide box is check
+  var overide = document.getElementsByClassName('override')[dayNumber].checked;
+  //reset status
+  document.getElementsByClassName('override')[dayNumber].checked = false;
+  
   //Get a list of the time tables and select the am and pm tables we are
   //interested in.
   var timeTables = timeResults.getElementsByClassName("timetable");
@@ -180,7 +186,7 @@ function makeCar(day){
   }
   //Check if there is a car error, in which case notify the user change the 
   //in car status of all the passengers and exit the function
-  if(carError){
+  if(carError && !overide){
     window.alert(errorString)
 
     for(var i = 0; i < trOfCar.length; ++i){
@@ -256,27 +262,32 @@ function deleteCar(day){
     namesFromCar = carsToDelete[i].getElementsByTagName('td')
 
     var timeTable = ''
+    var otherTimeTable = ''
     //determine which table it should be in by looking at the time
     var timeString = namesFromCar[1].innerHTML
  
     if(timeString.substring(timeString.length-2) == 'AM'){
       timeTable = timeResults.getElementsByClassName("timetable")[2*dayNumber]
+      otherTimeTable = timeResults.getElementsByClassName("timetable")[2*dayNumber + 1]
     }else{
       timeTable = timeResults.getElementsByClassName("timetable")[2*dayNumber + 1]
-    }
-
-    //Get all of the names from this car.
-    
+      otherTimeTable = timeResults.getElementsByClassName("timetable")[2*dayNumber]
+    }    
 
     //Check the names from this car verse the time table
     for(var nameIdx = 3; nameIdx < namesFromCar.length; nameIdx += 2){
       var name = namesFromCar[nameIdx].innerHTML
 
-      //If this was the driver reset the isdriver status
-      if(nameIdx == 3){
-        setIsAt(name, 'false', dayNumber, 'isDriver')
-      }else{
-        setIsAt(name, 'false', dayNumber, 'isPassenger')
+      //First we want to see if this person is in a car in the other table
+      var inOtherCar = checkInCar(name, otherTimeTable)
+      console.log(inOtherCar)
+      //If they are not in a car during another time recent their status
+      if (!inOtherCar){
+        if(nameIdx == 3){
+          setIsAt(name, 'false', dayNumber, 'isDriver')
+        }else{
+          setIsAt(name, 'false', dayNumber, 'isPassenger')
+        }
       }
 
       //Now go through all of the submissions and check to see if the 
@@ -297,6 +308,57 @@ function deleteCar(day){
   for (var i = 0; i < carsToDelete.length; ++i){
     carsElement.removeChild(carsToDelete[i])
   }
+
+}
+
+function checkForCompletion(){
+  //extract the time tables from the website
+  var timeResults = document.getElementById("timeResults");
+  var timeTables = timeResults.getElementsByClassName("timetable")
+
+  //Set the complete variable equal to true
+  var complete = true
+
+
+  //Now for each table on the site, make sure that every peroson is in a car.
+  for (var tableIdx = 0; tableIdx < timeTables.length; ++tableIdx){
+    table = timeTables[tableIdx];
+
+    //get a list of each person entry for the table.
+    var trs = table.getElementsByClassName('timeview');
+
+    //check to see if each person is in a car
+    for (var trIdx = 0; trIdx < trs.length; ++trIdx){
+      tr = trs[trIdx]
+      // if the person is not in a car check if they listed that they wanted to drive at some time:
+      if(!(tr.getAttribute('inCar') == 'true')){
+        //get the list of cells
+        tds = tr.getElementsByTagName('td');
+
+        //go through all the cells and if we see one time that isSelected we know that this person
+        //should be in a car but is not so we know that this page is not complete so set
+        //complete equal to false
+        for(var tdIdx = 1; tdIdx < tds.length; ++tdIdx){
+          td = tds[tdIdx];
+          if (td.getAttribute('selected') == 'true'){
+            complete = false
+          }
+        }
+      }
+    }
+
+
+
+  }
+
+  //If the forum is not complete alert the user.
+  if(!complete){
+    window.alert("forum is incomplete")
+  }else{
+    window.alert("forum is complete")
+  }
+
+  return complete
 
 }
 
@@ -359,7 +421,22 @@ function setIsAt(name, status, dayNumber, attribute){
       }
     }
   } 
+}
 
+//This function goes through the time table and checks if a person is in a car in a given time table
+function checkInCar(name, timeTable){
+  var trs = timeTable.getElementsByClassName('timeview')
+
+  for(var trIdx = 0; trIdx < trs.length; ++trIdx){
+    //If the name of the submission is the same as the one on the table 
+    //set in car to false.
+    if (name == trs[trIdx].getElementsByClassName('name')[0].innerHTML){
+      return trs[trIdx].getAttribute('inCar') == 'true'
+    }
+    //if there name is not in this table return false
+    
+  }
+  return false
 
 }
 

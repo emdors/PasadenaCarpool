@@ -2,7 +2,7 @@ doctype html
 html(lang='en')
   head
     meta(charset='UTF-8')
-    title Pasadena Carpool Czar Tools
+    title Example Czar Page
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.3.3/angular.min.js')
     script(src='//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.3/angular-route.min.js')
     script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
@@ -19,7 +19,7 @@ html(lang='en')
               a(href='/') Home
             li
               a(href='/schedule') Schedule
-            li.active
+            li
               a(href='/czar') Czar
             li
               a(href='/newUser') Add New User
@@ -27,36 +27,9 @@ html(lang='en')
               a(href='/logout') Logout
       br
       .container.theme-showcase(role='main')
-        h1 Form Results
-
-        P Infromation when looking at the time forum:
-        p If this is your First time Czaring, please look at the #[a(href='/howToCzar') how to czar page] for instruction
-            on how to czar. For quick reference:
-          ul
-            li Blue: Possible times the preson can leave.
-            li Green: The person is already in a car for this trip.
-            li Purple: This person has been selected as a driver in The other direction so they must be a driver in 
-            this direction.
-
-            li Brown: This person has been selected as a passenger in The other direction so they must be a passenger in this direction.
-
-            li Click finish car when you have a complete car
-
-        
-        p Information when making a new car:
-          ul
-            li Orange Boarders, single click: This person has been selected as a passenger in the current car.
-            li Red Boarders, one more click: This person has been selected as a driver in the current car.
-            li to deselect someone click once more, for a total of three clicks.
-
-        
-        p Information when deleting cars:
-          ul
-            li To select car click on table once, it will turn red.
-            li To deselect car click on table again, boarders will turn black again.
-            li Click delete car once you hav selected the cars you wish to delete.
+        h1 Example Form Results
           
-        form#timeResults(method='POST', action='/czarData', onSubmit = '')
+        form#timeResults(method='POST', action='/example', onSubmit = '')
           if formResults.length == 0
             | None yet
           else
@@ -64,8 +37,8 @@ html(lang='en')
               h3= dayData.day
 
               //If the finished car is hit then we save what day we are using and call the make car function.
-              button(class="btn btn-default",value='ADD', type='button' ,onClick='return makeCar("#{dayData.day}");') Finish Car
-              button(class="btn btn-default",value='ADD', type='button' ,onClick='return deleteCar("#{dayData.day}");') Delete Car
+              button(class="btn btn-default",value='ADD', type="button" ,onClick='return makeCar("#{dayData.day}");') Finish Car
+              button(class="btn btn-default",value='ADD', type="button" ,onClick='return deleteCar("#{dayData.day}");') Delete Car
               input(id='agreement', type='checkbox', class="override")
               | Overide Error Checking
 
@@ -93,17 +66,5 @@ html(lang='en')
                 h3 #{dayData.day}  Cars
 
               br(style="clear:both")
-              
 
           button.btn.btn-default(type='submit', onClick='return checkForCompletion();') Submit Schedule 
-
-          h2 Other Information
-          ul
-            each result in formResults
-              li
-                table(style="table-layout: fixed; width: 100%")
-                  each value,key in result
-                    if key.substr(-'Times'.length) != 'Times' && key.substr(-'DriveStatus'.length) != 'DriveStatus'
-                      tr
-                        td= key
-                        td= value

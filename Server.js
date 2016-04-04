@@ -34,6 +34,7 @@ var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 var possibleDriveHours = {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]};
 
 var resultsSoFar = require('./startingdata').data;
+var exampleResults = require('./exampleData').data;
 
 
 
@@ -44,7 +45,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.locals.pretty = true
 
 app.use(express.static("static"));
-app.use(session({ secret: 'secret', key: 'user', cookie: { maxAge: 60000, secure: false }}));
+app.use(session({ secret: 'secret', key: 'user', cookie: { maxAge: 6000000, secure: false }}));
 
 
 // Passport session setup.
@@ -210,11 +211,38 @@ app.get('/schedule', ensureAuthenticated, function(req,res) {
 });
 
 app.get('/noEmail', function(req,res) {
-  res.render(viewpath+"noEmail.jade");
+  res.render(viewpath+"noEmail.jade", { user: req.user });
 });
 
 app.get('/newUser', ensureAuthenticated , function(req, res){
-  res.render(viewpath+"addUser.jade")
+  res.render(viewpath+"addUser.jade", { user: req.user })
+});
+
+app.get('/howToCzar', ensureAuthenticated, function(req, res){
+  res.render(viewpath+"howToCzar.jade", { user: req.user })
+
+});
+
+app.get('/exampleCzar', ensureAuthenticated, function(req, res){
+  var dataForCzar = {
+    user: req.user,
+    weekdays: ['Monday'],
+    possibleDriveHours: possibleDriveHours,
+    peoplesTimes: exampleResults.parseddata,
+    formResults: exampleResults.rawdata,
+  };
+
+  res.render(viewpath+"exampleCzar.jade", dataForCzar)
+});
+
+app.post('/example', ensureAuthenticated, function(req,res){
+  
+  res.redirect('/schedule')
+});
+
+app.post('/czarData', ensureAuthenticated, function(req,res){
+  
+  res.redirect('/schedule')
 });
 
 // GET /auth/google
