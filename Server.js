@@ -12,7 +12,7 @@ var MongoClient = require('mongodb').MongoClient;
 // mongod URI: localhost:27017
 // switch to 'test' database
 
-var mongod_URI = "mongodb://localhost:27017/test";
+var mongod_URI = "mongodb://localhost:27017/carpool";
 
 //Things needed for passport authetification
 
@@ -102,7 +102,6 @@ passport.use(new GoogleStrategy({
 ));
 app.use( passport.initialize());
 app.use( passport.session());
-
 
 app.get("/", ensureAuthenticated ,function(req,res){
   var dataForIndex = {
