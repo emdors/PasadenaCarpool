@@ -56,53 +56,50 @@ html(lang='en')
             li Click delete car once you have selected the cars you wish to delete.
           
         form#timeResults(method='POST', action='/czarData', onSubmit = '')
-          if formResults.length == 0
-            | None yet
-          else
-            each dayData in peoplesTimes
-              h3= dayData.day
+          each dayData in peoplesTimes
+            h3= dayData.day
 
-              //If the finished car is hit then we save what day we are using and call the make car function.
-              button(class="btn btn-default",value='ADD', type='button' ,onClick='return makeCar("#{dayData.day}");') Finish Car
-              button(class="btn btn-default",value='ADD', type='button' ,onClick='return deleteCar("#{dayData.day}");') Delete Car
-              input(id='agreement', type='checkbox', class="override")
-              | Overide Error Checking
+            //If the finished car is hit then we save what day we are using and call the make car function.
+            button(class="btn btn-default",value='ADD', type='button' ,onClick='return makeCar("#{dayData.day}");') Finish Car
+            button(class="btn btn-default",value='ADD', type='button' ,onClick='return deleteCar("#{dayData.day}");') Delete Car
+            input(id='agreement', type='checkbox', class="override")
+            | Overide Error Checking
 
-              each AMPMData in dayData.times
-                - AMPM = AMPMData.halfday
-                h4= AMPM
-                table.timetable
-                  tr.timetext
-                    td
-                    each hr in possibleDriveHours[AMPM]
-                      td.hour(colspan='2')= hr
-                      td.halfhour(colspan='2') :30
-                    td
-                  each personData in AMPMData.people
-                    tr(class='timeview')
-                      td.name= personData.name
-                      each hr,hrIdx in possibleDriveHours[AMPM]
-                        each min,minIdx in [0, 15, 30, 45]
+            each AMPMData in dayData.times
+              - AMPM = AMPMData.halfday
+              h4= AMPM
+              table.timetable
+                tr.timetext
+                  td
+                  each hr in possibleDriveHours[AMPM]
+                    td.hour(colspan='2')= hr
+                    td.halfhour(colspan='2') :30
+                  td
+                each personData in AMPMData.people
+                  tr(class='timeview')
+                    td.name= personData.name
+                    each hr,hrIdx in possibleDriveHours[AMPM]
+                      each min,minIdx in [0, 15, 30, 45]
 
-                          td(id=dayData.day+AMPM+(hr*100 + min), selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0), carstatus='unassigned', mousedover='false')
-                      unless personData.driveStatus == 'can'
-                        td.driveStatus= personData.driveStatus + ' drive'
-              //Create a car location which is where we will add cars
-              div(id= dayData.day + 'Cars')
-                h3 #{dayData.day}  Cars
+                        td(id=dayData.day+AMPM+(hr*100 + min), selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0), carstatus='unassigned', mousedover='false')
+                    unless personData.driveStatus == 'can'
+                      td.driveStatus= personData.driveStatus + ' drive'
+            //Create a car location which is where we will add cars
+            div(id= dayData.day + 'Cars')
+              h3 #{dayData.day}  Cars
 
-              br(style="clear:both")
+            br(style="clear:both")
               
 
           button.btn.btn-default(type='submit', onClick='return checkForCompletion();') Submit Schedule 
 
-          h2 Other Information
-          ul
-            each result in formResults
-              li
-                table(style="table-layout: fixed; width: 100%")
-                  each value,key in result
-                    if key.substr(-'Times'.length) != 'Times' && key.substr(-'DriveStatus'.length) != 'DriveStatus'
-                      tr
-                        td= key
-                        td= value
+          //-h2 Other Information
+          //-ul
+          //-  each result in formResults
+          //-    li
+          //-      table(style="table-layout: fixed; width: 100%")
+          //-        each value,key in result
+          //-          if key.substr(-'Times'.length) != 'Times' && key.substr(-'DriveStatus'.length) != 'DriveStatus'
+          //-            tr
+          //-              td= key
+          //-              td= value

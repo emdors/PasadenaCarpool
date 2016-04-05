@@ -30,7 +30,6 @@ var userdatapath = __dirname + '/data/users/';
 var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 var possibleDriveHours = {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]};
 
-var resultsSoFar = require('./startingdata').data;
 var exampleResults = require('./exampleData').data;
 
 app.use(cookieParser());
@@ -145,7 +144,7 @@ function userDataFileName(dateInput) {
 //console.log(userDataFileName('12 August 2018'));
 //console.log(userDataFileName('17 October 2017'));
 
-function parseData(callback) {
+function parseData(parseDataCallback) {
   fs.readdir(userdatapath, function(err, files) {
     if (err) {
       console.log('Failed reading the user data directory');
@@ -153,7 +152,7 @@ function parseData(callback) {
     }
 
     var thisWeeksScheduleFilename = userDataFileName();
-    console.log(thisWeeksScheduleFilename);
+    //console.log(thisWeeksScheduleFilename);
 
     async.map(files, function(userEmail, callback) {
       var fullFilename = userdatapath + userEmail + '/schedules/'
@@ -169,97 +168,104 @@ function parseData(callback) {
     }, function(err, allResultsUnfiltered) {
       console.log(allResultsUnfiltered);
       var allResults = allResultsUnfiltered.filter(function(r) { return r !== undefined; });
-      var parsedResults = {}; // something
+      var parsedResults = [];
+      for (var dayIdx=0; dayIdx<weekdays.length; ++dayIdx) {
+        parsedResults.push({"day":weekdays[dayIdx], "times":[{"halfday": "AM", "people" : []}, {"halfday":"PM", "people":[]}]});
+      }
 
-      for (var dayIdx=0; dayIdx<weekdays.length; dayIdx++) {
-        var day = weekdays[dayIdx];
-        for (var ampm in possibleDriveHours) {
-          var thisPersonsTimes = result[day+ampm+'Times'];
-          var canGos = [];
+      for (var resultIdx=0; resultIdx < allResults.length; ++resultIdx) {
+        var result = allResults[resultIdx];
 
-          for (var hrIdx = 0; hrIdx<possibleDriveHours[ampm].length; hrIdx++) {
-            var hr = possibleDriveHours[ampm][hrIdx];
-            for (var min=0; min<60; min += 15) {
-              var hrMin = hr*100 + min;
-              var canGo = thisPersonsTimes.indexOf(hrMin) != -1;
-              canGos.push({time:hrMin, canGo: canGo});
+        for (var dayIdx=0; dayIdx<weekdays.length; dayIdx++) {
+          var day = weekdays[dayIdx];
+          for (var ampm in possibleDriveHours) {
+            var thisPersonsTimes = result[day+ampm+'Times'];
+            var canGos = [];
+
+            for (var hrIdx = 0; hrIdx<possibleDriveHours[ampm].length; hrIdx++) {
+              var hr = possibleDriveHours[ampm][hrIdx];
+              for (var min=0; min<60; min += 15) {
+                var hrMin = hr*100 + min;
+                var canGo = thisPersonsTimes.indexOf(hrMin) != -1;
+                canGos.push({time:hrMin, canGo: canGo});
+              }
             }
+            // Using filter instead of find because node on Knuth does not have find
+            // Also why I'm using the function(x) {return y;} syntax rather than x=>y
+            parsedResults.filter(
+                //d => d.day == day
+                function(d) { return d.day == day; }
+              )[0].times.filter(
+                //hd => hd.halfday == ampm
+                function (hd) { return hd.halfday == ampm; }
+              )[0].people.push({
+                name: result.name,
+                driveStatus: result[day + 'DriveStatus'],
+                canGos: canGos
+              });
           }
-          // Using filter instead of find because node on Knuth does not have find
-          // Also why I'm using the function(x) {return y;} syntax rather than x=>y
-          resultsSoFar.parseddata.filter(
-              //d => d.day == day
-              function(d) { return d.day == day; }
-            )[0].times.filter(
-              //hd => hd.halfday == ampm
-              function (hd) { return hd.halfday == ampm; }
-            )[0].people.push({
-              name: result.name,
-              driveStatus: result[day + 'DriveStatus'],
-              canGos: canGos
+        }
+
+        for (var dayIdx=0; dayIdx<parsedResults.length; dayIdx++) {
+          var dayData = parsedResults[dayIdx];
+          for (var ampmIdx=0; ampmIdx<dayData.times.length; ampmIdx++) {
+            var ampmdata = dayData.times[ampmIdx];
+            // Sort the people by their earliest/latest 'selected' entry (earliest if
+            // PM, latest if AM)
+            ampmdata.people.sort(function(p1, p2) {
+              for (var canGoIdx=0; canGoIdx<p1.canGos.length; canGoIdx++) {
+                var realIdx = ampmdata.halfday == 'AM'?
+                  p1.canGos.length-canGoIdx-1 : canGoIdx;
+                if (p1.canGos[realIdx].canGo) return -1;
+                if (p2.canGos[realIdx].canGo) return 1;
+              }
+              return 0;
             });
+          }
         }
       }
 
-      for (var dayIdx=0; dayIdx<resultsSoFar.parseddata.length; dayIdx++) {
-        var dayData = resultsSoFar.parseddata[dayIdx];
-        for (var ampmIdx=0; ampmIdx<dayData.times.length; ampmIdx++) {
-          var ampmdata = dayData.times[ampmIdx];
-          // Sort the people by their earliest/latest 'selected' entry (earliest if
-          // PM, latest if AM)
-          ampmdata.people.sort(function(p1, p2) {
-            for (var canGoIdx=0; canGoIdx<p1.canGos.length; canGoIdx++) {
-              var realIdx = ampmdata.halfday == 'AM'?
-                p1.canGos.length-canGoIdx-1 : canGoIdx;
-              if (p1.canGos[realIdx].canGo) return -1;
-              if (p2.canGos[realIdx].canGo) return 1;
-            }
-            return 0;
-          });
-        }
-      }
-
-      callback(allResults);
+      parseDataCallback(parsedResults);
     });
-
-
-
-
   });
 }
 
-parseData();
-
 app.get("/", ensureAuthenticated ,function(req,res){
-  var dataForIndex = {
-    user: req.user,
-    weekdays: weekdays,
-    possibleDriveHours: possibleDriveHours,
-    peoplesTimes: resultsSoFar.parseddata,
-    formResults: resultsSoFar.rawdata,
-  };
-  res.render(viewpath + "index.jade", dataForIndex);
+  parseData(function(parsed) {
+    var dataForIndexPage = {
+      user: req.user,
+      weekdays: weekdays,
+      possibleDriveHours: possibleDriveHours,
+      peoplesTimes: parsed
+    };
+    res.render(viewpath + "index.jade", dataForIndexPage);
+  });
 });
 
 app.get("/czar", ensureAuthenticated ,function (req, res) {
 
-  var dataForCzar = {
-    user: req.user,
-    weekdays: weekdays,
-    possibleDriveHours: possibleDriveHours,
-    peoplesTimes: resultsSoFar.parseddata,
-    formResults: resultsSoFar.rawdata,
-  };
+  parseData(function(parsed) {
+    var dataForCzarPage = {
+      user: req.user,
+      weekdays: weekdays,
+      possibleDriveHours: possibleDriveHours,
+      peoplesTimes: parsed
+    };
 
-  res.render(viewpath + "czar.jade", dataForCzar);
+    res.render(viewpath + "czar.jade", dataForCzarPage);
+  });
 });
 
 app.post("/times", ensureAuthenticated, function(req,res){
-  resultsSoFar.rawdata.push(req.body);
-  var result = req.body;
 
-  //console.log(req.body);
-  console.log(resultsSoFar);
+  var thisWeeksScheduleFilename = userDataFileName();
+
+  fs.writeFile(userdatapath+req.user+'/schedules/'+thisWeeksScheduleFilename,
+      JSON.stringify(req.body), function(err) {
+        if (err) {
+          console.log(err);
+        }
+      });
 
   // TODO: Send them to special confirmation page
   res.redirect("/czar");
@@ -267,13 +273,24 @@ app.post("/times", ensureAuthenticated, function(req,res){
 
 app.post("/newUser", ensureAuthenticated, function(req,res){
 
-  fs.writeFile(userdatapath+req.body.email, "", function(err) {
+  fs.mkdir(userdatapath+req.body.email, function(err) {
     if(err) {
-        return console.log(err);
+        console.log(err);
     }
-    console.log("The file was saved!");
-  }); 
-  res.redirect("/newUser", { user: req.user })
+    fs.mkdir(userdatapath+req.body.email+'/schedules', function(err) {
+      if(err) {
+          console.log(err);
+      }
+      fs.writeFile(userdatapath+req.body.email+'/preferences', "", function(err) {
+        if(err) {
+            console.log(err);
+        }
+        console.log("User " + req.body.email + " created");
+      });
+    });
+  });
+
+  res.redirect("/newUser")
 });
 
 app.get('/login', function(req, res){
