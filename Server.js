@@ -7,6 +7,7 @@ var server = require('http').createServer(app)
 var async = require('async');
 
 var app = express();
+
 //Things needed for passport authetification
 var util = require( 'util' )
 var cookieParser = require('cookie-parser');
@@ -31,7 +32,6 @@ var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 var possibleDriveHours = {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]};
 
 var exampleResults = require('./exampleData').data;
-
 app.use(cookieParser());
 app.use( bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -70,7 +70,7 @@ passport.use(new GoogleStrategy({
     //Also both sign-in button + callbackURL has to be share the same url, otherwise two cookies will be created and lead to lost your session
     //if you use it.
     callbackURL: google_secrets.web.redirect_uris[per_server_settings.google_server_uri_num || 0],
-    passReqToCallback   : true
+    passReqToCallback: true
   },
   function(request, accessToken, refreshToken, profile, done) {
     // asynchronous verification, for effect...
@@ -80,7 +80,6 @@ passport.use(new GoogleStrategy({
       // represent the logged-in user.  In a typical application, you would want
       // to associate the Google account with a user record in your database,
       // and return that user instead.
-      console.log(profile.email)
       fs.access(userdatapath + profile.email, function (err) {
         if (err) {
           return done(false)
@@ -242,7 +241,7 @@ app.get("/", ensureAuthenticated ,function(req,res){
   });
 });
 
-app.get("/czar", ensureAuthenticated ,function (req, res) {
+app.get("/czar", ensureAuthenticated, function(req, res) {
 
   parseData(function(parsed) {
     var dataForCzarPage = {
@@ -299,7 +298,10 @@ app.get('/login', function(req, res){
 
 
 app.get('/schedule', ensureAuthenticated, function(req,res) {
-  res.render(viewpath+"schedule.jade",{ user: req.user });
+  res.render(viewpath+"schedule.jade", { user: req.user,
+    userscars : [{ 'driver':'Louise', 'AM':{ 'time':'10:30 AM', 'passengers':['George', 'Alex', 'Johanna', 'Emel'] }, 'PM':{'time':'4:45 PM', 'passengers':['Harkness', 'Jessie']}},
+                 { 'driver':'Louise', 'AM':{ 'time':'10:30 AM', 'passengers':['George', 'Alex', 'Johanna', 'Emel'] }, 'PM':{'time':'4:45 PM', 'passengers':['Harkness', 'Jessie']}}],
+    allcars : [ { 'driver':'Louise', 'AM':{ 'time':'10:30 AM', 'passengers':['George', 'Alex', 'Johanna', 'Emel'] }, 'PM':{'time':'4:45 PM', 'passengers':['Harkness', 'Jessie']}}, { 'driver':'Louise', 'AM':{ 'time':'10:30 AM', 'passengers':['George', 'Alex', 'Johanna', 'Emel'] }, 'PM':{'time':'4:45 PM', 'passengers':['Harkness', 'Jessie']}} ] });
 });
 
 app.get('/noEmail', function(req,res) {

@@ -31,18 +31,7 @@ html(lang='en')
           | Your times
         form#timeForm(method='POST', action='/times', onsubmit='submitForm();')
           .form-group
-            label(for='name') Name
-            input#name.form-control(type='text', name='name', placeholder='Isabella Lai', required, style="width: auto;")
-          .form-group
-            label(for='email') Email Address
-            input.form-control(type='email', name='email', placeholder='iLai@hmc.edu', required, style="width: auto;")
-            span.help-block Email will be used to contact you with your carpool assignment
-          .form-group
-            label(for='numPassengers') Number of People You Can Drive
-            input.form-control(type='number', name='numPassengers', value='0', required, style="width: auto;")
-            span.help-block Include yourself. Put 0 if you are unable or unwilling to drive
-          .form-group
-            label Drag over the gray boxes below to paint over the times when you want to leave.
+            label Drag over the gray boxes below to paint over the times when you can leave.
 
             #alltimeinputs
               each dayData in peoplesTimes
