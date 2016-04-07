@@ -26,6 +26,11 @@ var session = require( 'express-session' )
 // API Access link for creating client ID and secret:
 // https://code.google.com/apis/console/
 var google_secrets = require('./google_secrets.json');
+try {
+  var per_server_settings = require('./data/settings.json');
+} catch(e) {
+  var per_server_settings = {};
+}
 
 var viewpath = __dirname + '/views/';
 var userdatapath = __dirname + '/data/users/';
@@ -76,7 +81,7 @@ passport.use(new GoogleStrategy({
     //then edit your /etc/hosts local file to point on your private IP. 
     //Also both sign-in button + callbackURL has to be share the same url, otherwise two cookies will be created and lead to lost your session
     //if you use it.
-    callbackURL: google_secrets.web.redirect_uris[0],
+    callbackURL: google_secrets.web.redirect_uris[per_server_settings.google_server_uri_num || 0],
     passReqToCallback   : true
   },
   function(request, accessToken, refreshToken, profile, done) {
