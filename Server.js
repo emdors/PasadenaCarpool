@@ -45,7 +45,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.locals.pretty = true
 
 app.use(express.static("static"));
-app.use(session({ secret: 'secret', key: 'user', cookie: { maxAge: 6000000, secure: false }}));
+app.use(session({ secret: 'secret', key: 'user', cookie: { secure: false }, resave: false, saveUninitialized: false}));
 
 
 // Passport session setup.
@@ -76,7 +76,7 @@ passport.use(new GoogleStrategy({
     //then edit your /etc/hosts local file to point on your private IP. 
     //Also both sign-in button + callbackURL has to be share the same url, otherwise two cookies will be created and lead to lost your session
     //if you use it.
-    callbackURL: "http://devbox.example.com:3005/auth/google/callback",
+    callbackURL: google_secrets.web.redirect_uris[0],
     passReqToCallback   : true
   },
   function(request, accessToken, refreshToken, profile, done) {
@@ -88,12 +88,10 @@ passport.use(new GoogleStrategy({
       // to associate the Google account with a user record in your database,
       // and return that user instead.
       console.log(profile.email)
-      fs.readFile(userdatapath + profile.email, function (err, data) {
+      fs.access(userdatapath + profile.email, function (err) {
         if (err) {
           return done(false)
-          
         }else{
-          console.log(data);
           return done(null, profile.email);
         }
       });
