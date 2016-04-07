@@ -353,9 +353,9 @@ function checkForCompletion(){
 
   //If the forum is not complete alert the user.
   if(!complete){
-    window.alert("forum is incomplete")
+    window.alert("form is incomplete, not everyone is in a car.")
   }else{
-    window.alert("forum is complete")
+    window.alert("form is complete")
   }
 
   return complete

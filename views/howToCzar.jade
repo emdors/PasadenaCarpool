@@ -25,11 +25,22 @@ html(lang='en')
               a(href='/logout') Logout
       br
       .container.theme-showcase(role='main')
-        h1 What is a Czar
 
-        h1 What is the Czar's Job
+        h1 What does the Czar do
 
-        h1 How do you use the Czar tools?
+        p The Czar's job is to look at all of the user's preferences and create a schedule for the week. When you are creating the schedule, you have to balance many different competing priorities. Here is an ordered list of priorities to consider:
+        ol
+          li Individual constraints come first. Once in a while if you really really want to violate a constraint, email/call the person to check if that is ok.
+          li Minimize number of cars required.
+          li Individual preferences come next (e.g. preferences to leave a certain time or to drive or not to drive).
+          li Balance cumulative driving statistics so that everyone has roughly the same driving percentage. (Refer to the statistics sheet for the semester.)
+          li Avoid someone driving home alone from 3:30-6:30pm because of heavy traffic in the late afternoon/evening to Pasadena. That allows the person to use carpool lane.
+          li Avoid someone driving too many times in one week if possible.
+          li Group people who are from the same campus for convenience of drop off in AM/pick up in PM.
+          li Cars can go solo in the morning and that saves a trip to the carpool spot, so try to let cars go solo in the AM.
+          li Balance cars so they are not too squished (some cars can seat 5 comfortably).
+
+        h1 How do you make a schudule / use the Czar tools?
 
         p This tutorial is designed to give you a visual guide of how to use the tools properly to help create cars easily and efficently. The first step in this tutorial is to open the example czar page in a new tab. To do this #[a(href='/exampleCzar') Right click here ] and select "open in new tab". We will manipulate the results in this page so that we can learn the tools.
 
@@ -44,7 +55,7 @@ html(lang='en')
 
         img(src= "/images/tut2.png" width = "50%" height = "50%")
 
-        p Now press the Finish Car button! alot just changed, lets break it down into three parts. First lets take a look at the am table:
+        p Now press the Finish Car button! a lot just changed, lets break it down into three parts. First lets take a look at the am table:
 
         img(src= "/images/tut3.png" width = "50%" height = "50%")
 
@@ -56,7 +67,7 @@ html(lang='en')
 
         img(src= "/images/tut5.png" width = "50%" height = "50%")
 
-        p We now see the car we have just made, notice that it includes the time and the names of the people in the car. also notice that if we click on this car it becomes red. This means that this car is selected and if we now go up and press the delete car button then this car will be removed and everything will be reset. If you want to deselect a car click it again, which will make it black again. try deleting this car.
+        p We now see the car we have just made, notice that it includes the time and the names of the people in the car. Also notice that if we click on this car it becomes red. This means that this car is selected and if we now go up and press the delete car button then this car will be removed and everything will be reset. If you want to deselect a car click it again, which will make it black again. try deleting this car.
 
         p Another important part of the Czar tools is the error checking which stops you from doing invalid things like trying to make two cars at once, or making someone who cannot drive drive and so forth. Lets try to make the error checking go off. To do this try to make car leaving claremont at 4:30pm with Guthrie as a driver and Doren as a passenger. Your pm timetable should look like the following before you press finish car:
 

@@ -56,6 +56,9 @@ html(lang='en')
                 label.radio-inline
                   input(type='radio', name=dayData.day + 'DriveStatus', value='cannot')
                   | Cannot drive
+                label.radio-inline
+                  input(type='radio', name=dayData.day + 'DriveStatus', value='cannot')
+                  | Not In Carpool
                 each AMPMData in dayData.times
                   - AMPM = AMPMData.halfday
                   h4= AMPM
