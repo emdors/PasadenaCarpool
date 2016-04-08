@@ -112,7 +112,7 @@ function userDataFileName(dateInput) {
   date.setDate(date.getDate() - date.getDay() + 1);
 
   // Return it in right format
-  return date.toISOString().slice(0,10);
+  return date.getFullYear() + '-' + ('0'+(date.getMonth()+1)).slice(-2) + '-' + ('0'+date.getDate()).slice(-2);
 }
 
 //console.log(userDataFileName());
