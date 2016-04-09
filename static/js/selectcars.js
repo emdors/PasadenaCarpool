@@ -45,7 +45,9 @@ window.onload = function() {
     }
   }
 }
-
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover();   
+});
 
 //This function is called by the finish car button and 
 //adds a new car to the car list.

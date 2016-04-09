@@ -157,6 +157,9 @@ app.post("/times", ensureAuthenticated, function(req,res){
             function (hd) { return hd.halfday == ampm; }
           )[0].people.push({
             name: result.name,
+            numPassengers: result.numPassengers,
+            email: result.email,
+            notes: result.notes,
             driveStatus: result[day + 'DriveStatus'],
             canGos: canGos
           });
