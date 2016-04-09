@@ -256,15 +256,15 @@ app.get("/czar", ensureAuthenticated, function(req, res) {
 });
 
 app.post("/times", ensureAuthenticated, function(req,res){
+  //Commented out for ui testing.
+  // var thisWeeksScheduleFilename = userDataFileName();
 
-  var thisWeeksScheduleFilename = userDataFileName();
-
-  fs.writeFile(userdatapath+req.user+'/schedules/'+thisWeeksScheduleFilename,
-      JSON.stringify(req.body), function(err) {
-        if (err) {
-          console.log(err);
-        }
-      });
+  // fs.writeFile(userdatapath+req.user+'/schedules/'+thisWeeksScheduleFilename,
+  //     JSON.stringify(req.body), function(err) {
+  //       if (err) {
+  //         console.log(err);
+  //       }
+  //     });
 
   // TODO: Send them to special confirmation page
   res.redirect("/czar");
