@@ -54,7 +54,8 @@ html(lang='en')
             li To select car click on table once, it will turn red.
             li To deselect car click on table again, boarders will turn black again.
             li Click delete car once you have selected the cars you wish to delete.
-          
+
+
         form#timeResults(method='POST', action='/czarData', onSubmit = '')
           each dayData in peoplesTimes
             h3= dayData.day
@@ -76,7 +77,8 @@ html(lang='en')
                     td.halfhour(colspan='2') :30
                   td
                 each personData in AMPMData.people
-                  tr(class='timeview')
+                  tr(class='timeview'  data-toggle="popover" title=personData.name + ' Info' data-content= "Email: " + personData.email + "\n" + "Size of Car: " + personData.numPassengers + "\n" + "Notes: " + personData.notes data-trigger="hover")
+
                     td.name= personData.name
                     each hr,hrIdx in possibleDriveHours[AMPM]
                       each min,minIdx in [0, 15, 30, 45]

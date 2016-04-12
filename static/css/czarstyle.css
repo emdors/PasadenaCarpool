@@ -2,6 +2,10 @@ body {
   margin-bottom: 130px;
 }
 
+.popover {
+    white-space: pre-line;    
+}
+
 table.timetable {
   border-collapse: separate;
 }

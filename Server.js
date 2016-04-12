@@ -198,6 +198,7 @@ function parseData(parseDataCallback) {
                 function (hd) { return hd.halfday == ampm; }
               )[0].people.push({
                 name: result.name,
+                notes: result.notes,
                 driveStatus: result[day + 'DriveStatus'],
                 canGos: canGos
               });
