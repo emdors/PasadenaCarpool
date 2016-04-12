@@ -2,7 +2,6 @@
 var express = require("express");
 var bodyParser = require('body-parser');
 var fs = require('fs');
-var current_week_number = require('current-week-number');
 var server = require('http').createServer(app)
 var async = require('async');
 
