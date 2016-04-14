@@ -114,34 +114,6 @@ function userDataFileName(dateInput) {
   return date.getFullYear() + '-' + ('0'+(date.getMonth()+1)).slice(-2) + '-' + ('0'+date.getDate()).slice(-2);
 }
 
-//console.log(userDataFileName());
-//console.log(userDataFileName('1 January 2016'));
-//console.log(userDataFileName('1 January 2017'));
-//console.log(userDataFileName('1 January 2018'));
-//console.log(userDataFileName('2 January 2016'));
-//console.log(userDataFileName('3 January 2016'));
-//console.log(userDataFileName('4 January 2016'));
-//console.log(userDataFileName('5 January 2016'));
-//console.log(userDataFileName('6 January 2016'));
-//console.log(userDataFileName('7 January 2016'));
-//console.log(userDataFileName('8 January 2016'));
-//console.log(userDataFileName('9 January 2016'));
-//console.log(userDataFileName('10 January 2016'));
-//console.log(userDataFileName('31 December 2016'));
-//console.log(userDataFileName('30 December 2016'));
-//console.log(userDataFileName('29 December 2016'));
-//console.log(userDataFileName('28 December 2016'));
-//console.log(userDataFileName('27 December 2016'));
-//console.log(userDataFileName('26 December 2016'));
-//console.log(userDataFileName('25 December 2016'));
-//console.log(userDataFileName('29 Febuary 2016'));
-//console.log(userDataFileName('28 Febuary 2016'));
-//console.log(userDataFileName('3 March 2044')); // should be 2044-02-29
-//console.log(userDataFileName('29 Febuary 2044')); // should be 2044-02-29
-//console.log(userDataFileName('8 September 2017'));
-//console.log(userDataFileName('12 August 2018'));
-//console.log(userDataFileName('17 October 2017'));
-
 function parseData(parseDataCallback) {
   fs.readdir(userdatapath, function(err, files) {
     if (err) {
@@ -160,7 +132,20 @@ function parseData(parseDataCallback) {
           console.log('Got error (' + fullFilename + ')');
           callback(null, undefined);
         } else {
-          callback(err, JSON.parse(data));
+          //get the preferenence data
+          getPreferences(userEmail, function(preferences){
+            var dataForCallback = {
+              user: userEmail,
+              name: preferences.name,
+              numPassengers: preferences.numPassengers,
+              phoneNumber: preferences.phoneNumber
+            };
+            
+            var scheduleData = JSON.parse(data)
+            for(var key in scheduleData) dataForCallback[key] = scheduleData[key];
+
+            callback(err, dataForCallback);
+          });
         }
       });
     }, function(err, allResultsUnfiltered) {
@@ -200,7 +185,10 @@ function parseData(parseDataCallback) {
                 name: result.name,
                 notes: result.notes,
                 driveStatus: result[day + 'DriveStatus'],
-                canGos: canGos
+                canGos: canGos,
+                numPassengers: result.numPassengers,
+                email: result.user,
+                phoneNumber: result.phoneNumber
               });
           }
         }
@@ -229,7 +217,31 @@ function parseData(parseDataCallback) {
   });
 }
 
+function getPreferences(userEmail, preferencesCallback){
+  var fullFilename = userdatapath + userEmail + "/preferences"
+  fs.readFile(fullFilename, 'utf8', function(err, data) {
+    if (err) {
+      console.log('Got error (' + fullFilename + ')');
+      preferencesCallback(undefined);
+    } else {
+        var myData;
+        try{
+          myData = JSON.parse(data)
+        }
+        catch(e){
+          myData = {
+            name: "",
+            phoneNumber: "",
+            numPassengers: ""
+          }
+        }
+      preferencesCallback(myData);
+    }
+  });
+}
+
 app.get("/", ensureAuthenticated ,function(req,res){
+  
   parseData(function(parsed) {
     var dataForIndexPage = {
       user: req.user,
@@ -237,7 +249,16 @@ app.get("/", ensureAuthenticated ,function(req,res){
       possibleDriveHours: possibleDriveHours,
       peoplesTimes: parsed
     };
-    res.render(viewpath + "index.jade", dataForIndexPage);
+    //check to see if the preferences are empty and if
+    //they are redurect them to the preferences page
+    getPreferences(req.user, function(preferences){
+      if (preferences.name == ""){
+        res.redirect("/preferences");
+      }else{
+        res.render(viewpath + "index.jade", dataForIndexPage);
+      } 
+    }); 
+    
   });
 });
 
@@ -317,6 +338,29 @@ app.get('/howToCzar', ensureAuthenticated, function(req, res){
 
 });
 
+app.get('/preferences', ensureAuthenticated, function(req, res){
+  getPreferences(req.user, function(preferences){
+    var dataForPref = {
+      user: req.user,
+      name: preferences.name,
+      numPassengers: preferences.numPassengers,
+      phoneNumber: preferences.phoneNumber
+    };
+    console.log()
+    res.render(viewpath+"preferences.jade", dataForPref)
+  }); 
+});
+
+app.post("/prefData", ensureAuthenticated, function(req,res){
+
+  fs.writeFile(userdatapath+req.user+'/preferences',
+      JSON.stringify(req.body), function(err) {
+        if (err) {
+          console.log(err);
+        }
+      });
+  res.redirect("/");
+});
 app.get('/exampleCzar', ensureAuthenticated, function(req, res){
   var dataForCzar = {
     user: req.user,
