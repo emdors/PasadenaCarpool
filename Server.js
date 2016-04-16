@@ -64,8 +64,8 @@ passport.use(new GoogleStrategy({
     clientSecret: google_secrets.web.client_secret,
     //NOTE :
     //Carefull ! and avoid usage of Private IP, otherwise you will get the device_id device_name issue for Private IP during authentication
-    //The workaround is to set up thru the google cloud console a fully qualified domain name such as http://mydomain:3000/ 
-    //then edit your /etc/hosts local file to point on your private IP. 
+    //The workaround is to set up thru the google cloud console a fully qualified domain name such as http://mydomain:3000/
+    //then edit your /etc/hosts local file to point on your private IP.
     //Also both sign-in button + callbackURL has to be share the same url, otherwise two cookies will be created and lead to lost your session
     //if you use it.
     callbackURL: google_secrets.web.redirect_uris[per_server_settings.google_server_uri_num || 0],
@@ -74,7 +74,7 @@ passport.use(new GoogleStrategy({
   function(request, accessToken, refreshToken, profile, done) {
     // asynchronous verification, for effect...
     process.nextTick(function () {
-      
+
       // To keep the example simple, the user's Google profile is returned to
       // represent the logged-in user.  In a typical application, you would want
       // to associate the Google account with a user record in your database,
@@ -106,7 +106,7 @@ function userDataFileName(dateInput) {
     date = new Date();
     date.setDate(date.getDate() + 7);
   }
-  
+
   // Magic to set the day to the previous Monday...
   date.setDate(date.getDate() - date.getDay() + 1);
 
@@ -330,12 +330,12 @@ app.get('/exampleCzar', ensureAuthenticated, function(req, res){
 });
 
 app.post('/example', ensureAuthenticated, function(req,res){
-  
+
   res.redirect('/schedule')
 });
 
 app.post('/czarData', ensureAuthenticated, function(req,res){
-  
+
   res.redirect('/schedule')
 });
 
@@ -346,7 +346,7 @@ app.post('/czarData', ensureAuthenticated, function(req,res){
 //   will redirect the user back to this application at /auth/google/callback
 app.get('/auth/google', passport.authenticate('google', { scope: [
        'https://www.googleapis.com/auth/plus.login',
-       'https://www.googleapis.com/auth/plus.profile.emails.read'] 
+       'https://www.googleapis.com/auth/plus.profile.emails.read']
 }));
 
 // GET /auth/google/callback
@@ -354,8 +354,8 @@ app.get('/auth/google', passport.authenticate('google', { scope: [
 //   request.  If authentication fails, the user will be redirected back to the
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
-app.get( '/auth/google/callback', 
-      passport.authenticate( 'google', { 
+app.get( '/auth/google/callback',
+      passport.authenticate( 'google', {
         successRedirect: '/',
         failureRedirect: '/noEmail'
 }));

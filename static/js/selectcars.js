@@ -1,6 +1,6 @@
 var weekdays = [];
 var possibleDriveHours = {};
- 
+
 window.onload = function() {
   var timeResults = document.getElementById("timeResults");
 
@@ -13,7 +13,7 @@ window.onload = function() {
   //Checks if the time tables are clicked and responds accordingly
   var timetables = timeResults.getElementsByClassName("timetable");
   for (var timetableidx=0; timetableidx<timetables.length; ++timetableidx) {
-    
+
     var ti = timetables[timetableidx];
     var tds = ti.getElementsByTagName("td");
     for (var tdIdx=0; tdIdx<tds.length; ++tdIdx) {
@@ -27,8 +27,8 @@ window.onload = function() {
           this.setAttribute('mousedover', 'false');
         }
 
-        //This function deals with being able to pick drivers and 
-        //Pasengers 
+        //This function deals with being able to pick drivers and
+        //Pasengers
         td.onclick = function() {
           //Make sure that we can only change the car status of selected tiles.
           if(this.getAttribute('selected') == 'true'){
@@ -46,15 +46,14 @@ window.onload = function() {
   }
 }
 $(document).ready(function(){
-    $('[data-toggle="popover"]').popover();   
+    $('[data-toggle="popover"]').popover();
 });
 
-//This function is called by the finish car button and 
+//This function is called by the finish car button and
 //adds a new car to the car list.
 function makeCar(day){
   var timeResults = document.getElementById("timeResults");
-  console.log(timeResults)
-  //determine the numerical value of this day of the week so we know 
+  //determine the numerical value of this day of the week so we know
   //which tables we should look at
   var dayNumber = 0
 
@@ -69,7 +68,7 @@ function makeCar(day){
   var overide = document.getElementsByClassName('override')[dayNumber].checked;
   //reset status
   document.getElementsByClassName('override')[dayNumber].checked = false;
-  
+
   //Get a list of the time tables and select the am and pm tables we are
   //interested in.
   var timeTables = timeResults.getElementsByClassName("timetable");
@@ -123,7 +122,7 @@ function makeCar(day){
 
           if (tr.getElementsByClassName('driveStatus').length == 1)
             restrictions = tr.getElementsByClassName('driveStatus')[0].innerHTML
-          
+
 
 
           //Set the driver name or add the passenger
@@ -179,14 +178,14 @@ function makeCar(day){
       }
     }
   }
-  
+
   //Check if the drive string is still empty. In this case let the user know that they
   //forgot to add a driver.
   if(driver == ''){
     carError = true
     errorString = errorString.concat('you did not select a driver. \n')
   }
-  //Check if there is a car error, in which case notify the user change the 
+  //Check if there is a car error, in which case notify the user change the
   //in car status of all the passengers and exit the function
   if(carError && !overide){
     window.alert(errorString)
@@ -199,37 +198,134 @@ function makeCar(day){
 
   }
 
+  // There's no errors! We can continue merrily
 
-  //Make table to hold the names of the new cars
-  var carTable = document.createElement('TABLE');
-  carTable.className = 'carTable'
-
-  //Create a more readable time string
-  var timeString = parseTime(time)
-  //Add the time the car is leaving and the driver
-  addToCar(carTable, 'Time Leaving', timeString,0);
-
-  addToCar(carTable, 'Driver', driver,1);
-
+  // Set the people as drivers/passengers
   for(var i = 0; i < passengers.length; ++i){
-    addToCar(carTable, 'Passenger', passengers[i], 2 + i);
-    setIsAt(passengers[i], 'true', dayNumber, 'isPassenger')
+    setIsAt(passengers[i], 'true', dayNumber, 'isPassenger');
   }
-  //Set the person as a driver in the AM and PM tables
-  setIsAt(driver, "true", dayNumber, 'isDriver')
+  setIsAt(driver, "true", dayNumber, 'isDriver');
 
-  //Set behavior so that when this table is clicked we can 
-  //denote that it has been selected.
-  carTable.onclick = function(){
-      if(this.getAttribute('selected') == 'true'){
-        this.setAttribute('selected', 'false')
-      }else{
-        this.setAttribute('selected', 'true')
+  var isAM = time.contains('AM');
+
+  var timeString = parseTime(time);
+
+
+  // Try to find another car with the same driver name
+  var foundOtherTable = false;
+
+  var carDiv = document.getElementById(day+'Cars');
+  var todaysCartables = carDiv.getElementsByClassName('fullcartable');
+  for (var todaysCartablesIdx=0; todaysCartablesIdx<todaysCartables.length; ++todaysCartablesIdx) {
+    var tbl = todaysCartables[todaysCartablesIdx];
+    var tblBody = todaysCartables[todaysCartablesIdx].getElementsByTagName('tbody')[0];
+    var tblsDriver = tblBody.getElementsByClassName('drivername')[0].innerHTML;
+    if (tblsDriver == driver) {
+      foundOtherTable = true;
+      // We need to add this entry to the existing table
+      var timeRow = tblBody.getElementsByClassName('timerow')[0];
+
+      // Set the time cell
+      timeRow.getElementsByTagName('td')[isAM?0:1].innerHTML = timeString;
+
+      var passengerRows = tblBody.getElementsByClassName('passengerrow');
+      // We need to loop through the passenger rows. We stop this loop when
+      // either we've added all the passengers or used all the rows in the
+      // table. Then, we may have to add more rows
+      var passengerRowIdx = 0;
+      for(; passengerRowIdx < passengerRows.length && passengerRowIdx < passengers.length; ++passengerRowIdx) {
+        passengerRows[passengerRowIdx].getElementsByTagName('td')[isAM?0:1].innerHTML = passengers[passengerRowIdx];
+      }
+      // Add more rows if necessary
+      for(;passengerRowIdx < passengers.length; ++passengerRowIdx) {
+        // Add the passengers
+        var passenger = passengers[passengerRowIdx];
+        var row = document.createElement('tr');
+        row.className = 'passengerrow';
+        var textCell = document.createElement('td');
+        var emptyCell = document.createElement('td');
+        textCell.appendChild(document.createTextNode(passenger));
+        if (isAM) {
+          row.appendChild(textCell);
+          row.appendChild(emptyCell);
+        } else {
+          row.appendChild(emptyCell);
+          row.appendChild(textCell);
+        }
+        tblBody.appendChild(row);
       }
     }
+  }
+  if (!foundOtherTable) {
+    // Create a new table
+    var carTable = document.createElement('table');
+    var carTableBody = document.createElement('tbody');
+    carTable.className = 'table fullcartable table-bordered';
+
+    // Put the driver's name in
+    var driverRow = document.createElement('tr');
+    var driverCell = document.createElement('td');
+    // The name itself goes in a <span>, and the text " (driver)" goes after it.
+    // This is so we can find the driver's name easily
+    var driverNameSpan = document.createElement('span');
+    driverNameSpan.appendChild(document.createTextNode(driver));
+    driverNameSpan.className = 'drivername';
+    driverCell.appendChild(driverNameSpan);
+    driverCell.appendChild(document.createTextNode(' (driver)'));
+    driverCell.setAttribute('colspan', 2);
+    driverRow.appendChild(driverCell);
+    driverRow.className = 'driver';
+    carTableBody.appendChild(driverRow);
+
+    // Put the time in
+    var timeRow = document.createElement('tr');
+    timeRow.className = 'timerow';
+    var fullTimeCell = document.createElement('td');
+    var emptyTimeCell = document.createElement('td');
+    fullTimeCell.appendChild(document.createTextNode(timeString));
+    if (isAM) {
+      timeRow.appendChild(fullTimeCell);
+      timeRow.appendChild(emptyTimeCell);
+    } else {
+      timeRow.appendChild(emptyTimeCell);
+      timeRow.appendChild(fullTimeCell);
+    }
+    carTableBody.appendChild(timeRow);
 
 
-  document.getElementById(day+'Cars').appendChild(carTable);
+    // Add the passengers
+    for (var passengerIdx=0; passengerIdx<passengers.length; ++passengerIdx) {
+      var passenger = passengers[passengerIdx];
+      var row = document.createElement('tr');
+      row.className = 'passengerrow';
+      var textCell = document.createElement('td');
+      var emptyCell = document.createElement('td');
+      textCell.appendChild(document.createTextNode(passenger));
+      if (isAM) {
+        row.appendChild(textCell);
+        row.appendChild(emptyCell);
+      } else {
+        row.appendChild(emptyCell);
+        row.appendChild(textCell);
+      }
+      carTableBody.appendChild(row);
+    }
+
+    carTable.appendChild(carTableBody);
+
+    //Set behavior so that when this table is clicked we can
+    //denote that it has been selected.
+    carTable.onclick = function(){
+        if(this.getAttribute('selected') == 'true'){
+          this.setAttribute('selected', 'false')
+        }else{
+          this.setAttribute('selected', 'true')
+        }
+      }
+
+
+    document.getElementById(day+'Cars').appendChild(carTable);
+  }
 }
 
 
@@ -242,7 +338,7 @@ function deleteCar(day){
   //Get the all the cars for that day and look for ones that are
   //selected
   var carsElement = document.getElementById(day+'Cars');
-  var carTables = carsElement.getElementsByClassName('carTable');
+  var carTables = carsElement.getElementsByClassName('fullcartable');
 
   for (var i = 0; i < carTables.length; ++i){
     if (carTables[i].getAttribute('selected') == 'true'){
@@ -258,7 +354,7 @@ function deleteCar(day){
       dayNumber = i
     }
   }
-  
+
   //look at each car we are going to delete
   for(var i = 0; i < carsToDelete.length; ++i){
     namesFromCar = carsToDelete[i].getElementsByTagName('td')
@@ -267,14 +363,14 @@ function deleteCar(day){
     var otherTimeTable = ''
     //determine which table it should be in by looking at the time
     var timeString = namesFromCar[1].innerHTML
- 
+
     if(timeString.substring(timeString.length-2) == 'AM'){
       timeTable = timeResults.getElementsByClassName("timetable")[2*dayNumber]
       otherTimeTable = timeResults.getElementsByClassName("timetable")[2*dayNumber + 1]
     }else{
       timeTable = timeResults.getElementsByClassName("timetable")[2*dayNumber + 1]
       otherTimeTable = timeResults.getElementsByClassName("timetable")[2*dayNumber]
-    }    
+    }
 
     //Check the names from this car verse the time table
     for(var nameIdx = 3; nameIdx < namesFromCar.length; nameIdx += 2){
@@ -282,7 +378,6 @@ function deleteCar(day){
 
       //First we want to see if this person is in a car in the other table
       var inOtherCar = checkInCar(name, otherTimeTable)
-      console.log(inOtherCar)
       //If they are not in a car during another time recent their status
       if (!inOtherCar){
         if(nameIdx == 3){
@@ -292,12 +387,12 @@ function deleteCar(day){
         }
       }
 
-      //Now go through all of the submissions and check to see if the 
+      //Now go through all of the submissions and check to see if the
       //names are the same and set their inCar status equal to false.
       var trs = timeTable.getElementsByClassName('timeview')
 
       for(var trIdx = 0; trIdx < trs.length; ++trIdx){
-        //If the name of the submission is the same as the one on the table 
+        //If the name of the submission is the same as the one on the table
         //set in car to false.
         if (name == trs[trIdx].getElementsByClassName('name')[0].innerHTML){
           trs[trIdx].setAttribute('inCar', 'false')
@@ -364,6 +459,14 @@ function checkForCompletion(){
 
 }
 
+function submitCars() {
+  for (var dayIdx=0; dayIdx<weekdays.length; ++dayIdx) {
+    var day = weekdays[dayIdx];
+    var dayCarDiv = document.getElementbyId(day+'Cars');
+    // TODO
+  }
+}
+
 //This is a helper function which makes it easiar to add things to cars
 function addToCar(carTable, name, value, rowNum){
   var row = carTable.insertRow(rowNum);
@@ -402,7 +505,7 @@ function parseTime(time){
   return startOfTime.concat(endOfTime)
 }
 
-//This function is a helper function which sets wheter a person is a driver or not 
+//This function is a helper function which sets wheter a person is a driver or not
 function setIsAt(name, status, dayNumber, attribute){
   var timeResults = document.getElementById("timeResults");
 
@@ -422,7 +525,7 @@ function setIsAt(name, status, dayNumber, attribute){
         tr.setAttribute(attribute, status)
       }
     }
-  } 
+  }
 }
 
 //This function goes through the time table and checks if a person is in a car in a given time table
@@ -430,13 +533,13 @@ function checkInCar(name, timeTable){
   var trs = timeTable.getElementsByClassName('timeview')
 
   for(var trIdx = 0; trIdx < trs.length; ++trIdx){
-    //If the name of the submission is the same as the one on the table 
+    //If the name of the submission is the same as the one on the table
     //set in car to false.
     if (name == trs[trIdx].getElementsByClassName('name')[0].innerHTML){
       return trs[trIdx].getAttribute('inCar') == 'true'
     }
     //if there name is not in this table return false
-    
+
   }
   return false
 
