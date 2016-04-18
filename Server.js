@@ -235,9 +235,40 @@ function getPreferences(userEmail, preferencesCallback){
             numPassengers: ""
           }
         }
+      console.log(myData)
       preferencesCallback(myData);
     }
   });
+}
+
+function getContactData(contactDataCallback){
+  fs.readdir(userdatapath, function(err, files) {
+    if (err) {
+      console.log('Failed reading the user data directory');
+      process.exit(1);
+    }
+
+    async.map(files, function(userEmail, callback) {
+      if(userEmail !== undefined){
+        getPreferences(userEmail, function(preferences){
+          var dataForCallback = {
+            user: userEmail,
+            name: preferences.name,
+            numPassengers: preferences.numPassengers,
+            phoneNumber: preferences.phoneNumber
+          };
+          callback(err, dataForCallback);
+        });
+      }else{
+        callback(null, {'test':'shit'} );
+      }
+
+    }, function(err, allResultsUnfiltered) {
+      console.log(allResultsUnfiltered);
+      contactDataCallback(allResultsUnfiltered);
+    });
+  });
+
 }
 
 app.get("/", ensureAuthenticated ,function(req,res){
@@ -336,6 +367,22 @@ app.get('/newUser', ensureAuthenticated , function(req, res){
 app.get('/howToCzar', ensureAuthenticated, function(req, res){
   res.render(viewpath+"howToCzar.jade", { user: req.user })
 
+});
+
+app.get('/external', ensureAuthenticated, function(req, res){
+  res.render(viewpath+"external.jade", { user: req.user })
+
+});
+app.get("/contact", ensureAuthenticated, function(req, res) {
+
+  getContactData(function(parsed) {
+    var contactInfo = {
+      user: req.user,
+      peoplesInfo: parsed
+    };
+
+    res.render(viewpath + "contactinfo.jade", contactInfo);
+  });
 });
 
 app.get('/preferences', ensureAuthenticated, function(req, res){
