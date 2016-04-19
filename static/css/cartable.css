@@ -1,7 +1,7 @@
 table.fullcartable {
   text-align:center; 
   width:auto;
-  float:left;
+  commented-float:left;
   margin:0 10px;
 }
 
@@ -9,3 +9,7 @@ table.fullcartable td {
   min-width: 5em;
 }
 
+.cartablewithbutton {
+  float: left;
+  text-align: center;
+}

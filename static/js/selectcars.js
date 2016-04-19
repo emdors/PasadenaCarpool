@@ -313,18 +313,20 @@ function makeCar(day){
 
     carTable.appendChild(carTableBody);
 
-    //Set behavior so that when this table is clicked we can
-    //denote that it has been selected.
-    carTable.onclick = function(){
-        if(this.getAttribute('selected') == 'true'){
-          this.setAttribute('selected', 'false')
-        }else{
-          this.setAttribute('selected', 'true')
-        }
+    var carDiv = document.createElement('div');
+    carDiv.className = 'cartablewithbutton';
+    var deleteButton = document.createElement('button');
+    deleteButton.className = 'btn btn-default deletecarbtn';
+    deleteButton.setAttribute('type', 'button');
+    deleteButton.appendChild(document.createTextNode('Delete Car'));
+    deleteButton.onclick = function() {
+        // TODO
       }
+    carDiv.appendChild(carTable);
+    carDiv.appendChild(deleteButton);
 
-
-    document.getElementById(day+'Cars').appendChild(carTable);
+    //document.getElementById(day+'Cars').appendChild(carTable);
+    document.getElementById(day+'Cars').appendChild(carDiv);
   }
 }
 
