@@ -251,21 +251,27 @@ function getContactData(contactDataCallback){
     async.map(files, function(userEmail, callback) {
       if(userEmail !== undefined){
         getPreferences(userEmail, function(preferences){
-          var dataForCallback = {
-            user: userEmail,
-            name: preferences.name,
-            numPassengers: preferences.numPassengers,
-            phoneNumber: preferences.phoneNumber
-          };
-          callback(err, dataForCallback);
+          if(preferences == undefined){
+            callback(null, undefined)
+
+          }else{
+            var dataForCallback = {
+              user: userEmail,
+              name: preferences.name,
+              numPassengers: preferences.numPassengers,
+              phoneNumber: preferences.phoneNumber
+            };
+            callback(err, dataForCallback);
+          }
         });
       }else{
-        callback(null, {'test':'shit'} );
+        callback(null, undefined );
       }
 
     }, function(err, allResultsUnfiltered) {
       console.log(allResultsUnfiltered);
-      contactDataCallback(allResultsUnfiltered);
+      var filteredResults = allResultsUnfiltered.filter(function(r) { return r !== undefined; })
+      contactDataCallback(filteredResults);
     });
   });
 
