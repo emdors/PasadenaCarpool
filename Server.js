@@ -135,7 +135,7 @@ function parseData(parseDataCallback) {
           //get the preferenence data
           getPreferences(userEmail, function(preferences){
             var dataForCallback = {
-              user: userEmail,
+              email: preferences.email,
               name: preferences.name,
               numPassengers: preferences.numPassengers,
               phoneNumber: preferences.phoneNumber
@@ -187,7 +187,7 @@ function parseData(parseDataCallback) {
                 driveStatus: result[day + 'DriveStatus'],
                 canGos: canGos,
                 numPassengers: result.numPassengers,
-                email: result.user,
+                email: result.email,
                 phoneNumber: result.phoneNumber
               });
           }
@@ -227,12 +227,16 @@ function getPreferences(userEmail, preferencesCallback){
         var myData;
         try{
           myData = JSON.parse(data)
+          if(myData.email == undefined){
+            myData.email = userEmail
+          }
         }
         catch(e){
           myData = {
             name: "",
             phoneNumber: "",
-            numPassengers: ""
+            numPassengers: "",
+            email: userEmail
           }
         }
       console.log(myData)
@@ -256,7 +260,7 @@ function getContactData(contactDataCallback){
 
           }else{
             var dataForCallback = {
-              user: userEmail,
+              user: preferences.email,
               name: preferences.name,
               numPassengers: preferences.numPassengers,
               phoneNumber: preferences.phoneNumber
@@ -397,9 +401,9 @@ app.get('/preferences', ensureAuthenticated, function(req, res){
       user: req.user,
       name: preferences.name,
       numPassengers: preferences.numPassengers,
-      phoneNumber: preferences.phoneNumber
+      phoneNumber: preferences.phoneNumber,
+      email: preferences.email
     };
-    console.log()
     res.render(viewpath+"preferences.jade", dataForPref)
   }); 
 });
