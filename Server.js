@@ -183,7 +183,7 @@ function parseData(parseDataCallback) {
                 function (hd) { return hd.halfday == ampm; }
               )[0].people.push({
                 name: result.name,
-                notes: result.notes,
+                notes: result[day + 'notes'],
                 driveStatus: result[day + 'DriveStatus'],
                 canGos: canGos,
                 numPassengers: result.numPassengers,

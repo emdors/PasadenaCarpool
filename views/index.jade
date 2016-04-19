@@ -78,9 +78,9 @@ html(lang='en')
                         unless personData.driveStatus == 'can'
                           td.driveStatus= personData.driveStatus + ' drive'
 
-          .form-group
-            label(for='notes') Notes
-            input#notes.form-control(type='notes', name='notes')
+                
+                label(for='notes') #{dayData.day} Notes
+                input#notes.form-control(type='notes', name=dayData.day + 'notes')
           each day in weekdays
             each AMPM in ['AM', 'PM']
               - nm = day+AMPM+'Times'
