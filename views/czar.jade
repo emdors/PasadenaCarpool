@@ -70,7 +70,7 @@ html(lang='en')
             each AMPMData in dayData.times
               - AMPM = AMPMData.halfday
               h4= AMPM
-              table.timetable
+              table.timetable(day=dayData.day, halfday=AMPM)
                 tr.timetext
                   td
                   each hr in possibleDriveHours[AMPM]
@@ -78,13 +78,13 @@ html(lang='en')
                     td.halfhour(colspan='2') :30
                   td
                 each personData in AMPMData.people
-                  tr(class='timeview'  data-toggle="popover" title=personData.name + ' Info' data-content= "Email: " + personData.email + "\n" + "Size of Car: " + personData.numPassengers + "\n" + "Notes: " + personData.notes data-trigger="hover")
+                  tr(class='timeview' name=personData.name email=personData.email data-toggle="popover" title=personData.name + ' Info' data-content= "Email: " + personData.email + "\n" + "Size of Car: " + personData.numPassengers + "\n" + "Notes: " + personData.notes data-trigger="hover")
 
                     td.name= personData.name
                     each hr,hrIdx in possibleDriveHours[AMPM]
                       each min,minIdx in [0, 15, 30, 45]
 
-                        td(id=dayData.day+AMPM+(hr*100 + min), selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0), carstatus='unassigned', mousedover='false')
+                        td(time=dayData.day+AMPM+(hr*100 + min), selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0), carstatus='unassigned', mousedover='false')
                     unless personData.driveStatus == 'can'
                       td.driveStatus= personData.driveStatus + ' drive'
             //Create a car location which is where we will add cars

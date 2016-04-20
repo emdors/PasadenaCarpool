@@ -1,12 +1,31 @@
 var weekdays = [];
 var possibleDriveHours = {};
 
+// Format:
+// cars = {
+//   Monday: {
+//     basuka@gmail.com: {
+//       AM: {
+//         time: '830',
+//         passengers: ['cansako@gmail.com', 'dalgo@g.hmc.edu']
+//       },
+//       PM: {
+//         time: '545',
+//         passengers: ['ffernanke@gmail.com', 'dalgo@g.hmc.edu', 'egantz@g.hmc.edu'']
+//       }
+//     },
+//   },
+// };
+var cars = {};
+
 window.onload = function() {
   var timeResults = document.getElementById("timeResults");
 
   var h3s = timeResults.getElementsByTagName("h3");
   for (var h3idx=0; h3idx<h3s.length; h3idx +=2) {
-    weekdays.push(h3s[h3idx].textContent);
+    var day = h3s[h3idx].textContent;
+    weekdays.push(day);
+    cars[day] = {};
   }
 
 
@@ -44,10 +63,35 @@ window.onload = function() {
       }
     }
   }
+  updateHighlightingForOneDay('Monday');
 }
 $(document).ready(function(){
     $('[data-toggle="popover"]').popover();
 });
+
+function updatePersonHighlighting(day) {
+
+  if (dayNumber === undefined) {
+    for (var i=0; i<weekdays.length; ++i) {
+      updateHighlightingForOneDay(weekdays[i]);
+    }
+  } else {
+    updateHighlightingForOneDay(day);
+  }
+}
+
+function updateHighlightingForOneDay(day) {
+  var amTable = document.querySelector("table.timetable[day="+day+"][halfday=AM]");
+  var pmTable = document.querySelector("table.timetable[day="+day+"][halfday=PM]");
+
+  var personRows = document.querySelectorAll("table.timetable[day="+day+"] .timeview td[time]");
+
+  console.log(amTable);
+  console.log(pmTable);
+  console.log(personRows);
+  console.log(personRows[0].parentNode);
+}
+
 
 //This function is called by the finish car button and
 //adds a new car to the car list.
