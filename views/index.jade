@@ -24,15 +24,18 @@ html(lang='en')
             li
               a(href='/newUser') Add New User
             li
+              a(href='/preferences') Preferences
+            li
+              a(href='/contact') Contact Info
+            li
+              a(href='external') External Links
+            li
               a(href='/logout') Logout
       br
       .container.theme-showcase(role='main')
         h1
           | Your times
         form#timeForm(method='POST', action='/times', onsubmit='submitForm();')
-          .form-group
-            label(for='name') Name
-            input#name.form-control(type='text', name='name', placeholder='Isabella Lai', required, style="width: auto;")
           .form-group
             label Drag over the gray boxes below to paint over the times when you can leave.
 
@@ -75,9 +78,9 @@ html(lang='en')
                         unless personData.driveStatus == 'can'
                           td.driveStatus= personData.driveStatus + ' drive'
 
-          .form-group
-            label(for='notes') Notes
-            input#notes.form-control(type='notes', name='notes')
+                
+                label(for='notes') #{dayData.day} Notes
+                input#notes.form-control(type='notes', name=dayData.day + 'notes')
           each day in weekdays
             each AMPM in ['AM', 'PM']
               - nm = day+AMPM+'Times'
