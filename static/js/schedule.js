@@ -1,5 +1,4 @@
 window.onload = function() {
-  console.log(cars);
   var yourcars = document.getElementById('yourcars');
   var allcars = document.getElementById('allcars');
 

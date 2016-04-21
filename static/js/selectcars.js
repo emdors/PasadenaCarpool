@@ -18,7 +18,6 @@ var weekdays = [];
 var userData = {};
 
 window.onload = function() {
-  console.log(cars);
   var timeResults = document.getElementById("timeResults");
 
   var h3s = timeResults.getElementsByTagName("h3");
