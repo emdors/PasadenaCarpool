@@ -12,6 +12,12 @@ html(lang='en')
     script(src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js')
     link(rel='stylesheet', href='css/schedulestyle.css')
     link(rel='stylesheet', href='css/cartable.css')
+    script(src='dynamic/allPreferences.js')
+    script(src='dynamic/thisweekSchedule.js')
+    script(src='dynamic/currentUser.js')
+    script(src='js/makecartables.js')
+    script(src='js/schedule.js')
+
   body
     div
       div
@@ -35,20 +41,9 @@ html(lang='en')
               a(href='/logout') Logout
       br
       .container.theme-showcase(role='main')
-        each type in [{title:"Your Cars",relevantcars:userscars},{title:"All Cars",relevantcars:allcars}]
-          h1=type.title
-          each car in type.relevantcars
-            table(class='table fullcartable table-bordered')
-              tr.driver
-                td(colspan='2')=car.driver+' (driver)'
-                  //a(title="Car driver", class="tooltip") MyToolTip
-              - var i=0
-              tr
-                td=car.AM.time
-                td=car.PM.time
-              while i<car.AM.passengers.length || i<car.PM.passengers.length
-                tr.passenger
-                  td=car.AM.passengers[i]
-                  td=car.PM.passengers[i]
-                - ++i
-          br(style="clear:both;")
+        div#yourcars
+          h1 Your Cars
+        br(style="clear:both;")
+        div#allcars
+          h1 All Cars
+        br(style="clear:both;")

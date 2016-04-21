@@ -8,6 +8,9 @@ html(lang='en')
     script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
     link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css')
     script(src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js')
+    script(src='dynamic/allPreferences.js')
+    script(src='dynamic/nextweekSchedule.js')
+    script(src='js/makecartables.js')
     script(src='js/selectcars.js')
     link(rel='stylesheet', href='css/czarstyle.css')
     link(rel='stylesheet', href='css/cartable.css')
@@ -64,15 +67,9 @@ html(lang='en')
             li Click delete car once you have selected the cars you wish to delete.
 
 
-        form#timeResults(method='POST', action='/czarData', onSubmit = 'submitCars')
+        form#timeResults(method='POST', action='/czarData', onSubmit='submitCars();')
           each dayData in peoplesTimes
             h3= dayData.day
-
-            //If the finished car is hit then we save what day we are using and call the make car function.
-            button(class="btn btn-default",value='ADD', type='button' ,onClick='return makeCar("#{dayData.day}");') Finish Car
-            button(class="btn btn-default",value='ADD', type='button' ,onClick='return deleteCar("#{dayData.day}");') Delete Car
-            input(id='agreement', type='checkbox', class="override")
-            | Overide Error Checking
 
             each AMPMData in dayData.times
               - AMPM = AMPMData.halfday
@@ -85,15 +82,20 @@ html(lang='en')
                     td.halfhour(colspan='2') :30
                   td
                 each personData in AMPMData.people
-                  tr(class='timeview'  data-toggle="popover" title=personData.name + ' Info' data-content= "Email: " + personData.email + "\n" + "Size of Car: " + personData.numPassengers + "\n" + "Phone Number: " + + personData.phoneNumber + "\n" + "Notes: " + personData.notes data-trigger="hover")
+                  tr(class='timeview' name=personData.name email=personData.email data-toggle="popover" title=personData.name + ' Info' data-content= "Email: " + personData.email + "\n" + "Size of Car: " + personData.numPassengers + "\n" + "Phone Number: " + + personData.phoneNumber + "\n" + "Notes: " + personData.notes data-trigger="hover")
 
                     td.name= personData.name
                     each hr,hrIdx in possibleDriveHours[AMPM]
                       each min,minIdx in [0, 15, 30, 45]
 
-                        td(time=dayData.day+AMPM+(hr*100 + min), selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0), carstatus='unassigned', mousedover='false')
+                        td(time=hr*100 + min, selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0), mousedover='false')
                     unless personData.driveStatus == 'can'
                       td.driveStatus= personData.driveStatus + ' drive'
+            //If the finished car is hit then we save what day we are using and call the make car function.
+            button(class="btn btn-default",value='ADD', type='button' ,onClick='return makeCar("#{dayData.day}");') Finish Car
+            input(id=dayData.day+'Override', type='checkbox')
+            | Overide Error Checking
+
             //Create a car location which is where we will add cars
             div(id= dayData.day + 'Cars')
               h3 #{dayData.day}  Cars
@@ -101,19 +103,6 @@ html(lang='en')
             br(style="clear:both")
               
 
-          button.btn.btn-default(type='submit', onClick='return checkForCompletion();') Submit Schedule 
-          each day in weekdays
-            each AMPM in ['AM', 'PM']
-              - nm = day+AMPM+'Cars'
-              input(id=nm, type='hidden', name=nm)
-
-          //-h2 Other Information
-          //-ul
-          //-  each result in formResults
-          //-    li
-          //-      table(style="table-layout: fixed; width: 100%")
-          //-        each value,key in result
-          //-          if key.substr(-'Times'.length) != 'Times' && key.substr(-'DriveStatus'.length) != 'DriveStatus'
-          //-            tr
-          //-              td= key
-          //-              td= value
+          //-button.btn.btn-default(type='submit', onClick='return checkForCompletion();') Submit Schedule 
+          button.btn.btn-default(type='submit') Save Schedule 
+          input(id="allCars" type='hidden' name="allCars")

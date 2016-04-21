@@ -25,14 +25,16 @@ try {
 }
 
 var viewpath = __dirname + '/views/';
-var userdatapath = __dirname + '/data/users/';
+var datapath = __dirname + '/data/'
+var schedulepath = datapath + '/schedules/'
+var userdatapath = datapath + '/users/';
 
 var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 var possibleDriveHours = {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]};
 
 var exampleResults = require('./exampleData').data;
 app.use(cookieParser());
-app.use( bodyParser.json());
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.locals.pretty = true
 
@@ -144,12 +146,20 @@ function parseData(parseDataCallback) {
             var scheduleData = JSON.parse(data)
             for(var key in scheduleData) dataForCallback[key] = scheduleData[key];
 
+            var newScheduleData = {}
+            for(var key in scheduleData) {
+              if (key != 'name' && key != 'email' && key != 'numPassengers') {
+                newScheduleData[key] = scheduleData[key];
+              }
+            }
+            fs.writeFile(fullFilename, JSON.stringify(newScheduleData));
+
             callback(err, dataForCallback);
           });
         }
       });
     }, function(err, allResultsUnfiltered) {
-      console.log(allResultsUnfiltered);
+      //console.log(allResultsUnfiltered);
       var allResults = allResultsUnfiltered.filter(function(r) { return r !== undefined; });
       var parsedResults = [];
       for (var dayIdx=0; dayIdx<weekdays.length; ++dayIdx) {
@@ -239,11 +249,12 @@ function getPreferences(userEmail, preferencesCallback){
             email: userEmail
           }
         }
-      console.log(myData)
+      //console.log(myData)
       preferencesCallback(myData);
     }
   });
 }
+
 
 function getContactData(contactDataCallback){
   fs.readdir(userdatapath, function(err, files) {
@@ -273,7 +284,7 @@ function getContactData(contactDataCallback){
       }
 
     }, function(err, allResultsUnfiltered) {
-      console.log(allResultsUnfiltered);
+      //console.log(allResultsUnfiltered);
       var filteredResults = allResultsUnfiltered.filter(function(r) { return r !== undefined; })
       contactDataCallback(filteredResults);
     });
@@ -310,10 +321,60 @@ app.get("/czar", ensureAuthenticated, function(req, res) {
       user: req.user,
       weekdays: weekdays,
       possibleDriveHours: possibleDriveHours,
-      peoplesTimes: parsed
+      peoplesTimes: parsed,
     };
 
     res.render(viewpath + "czar.jade", dataForCzarPage);
+  });
+});
+
+function getSchedule(day, callback) {
+  fs.readFile(schedulepath + userDataFileName(day), 'utf8', function(err, data) {
+    if (err || !data) {
+      // Build empty schedule, with an empty object for each day
+      var sch = {};
+      for (var weekdayIdx=0; weekdayIdx<weekdays.length; ++weekdayIdx) {
+        sch[weekdays[weekdayIdx]] = {};
+      }
+      callback(sch);
+    } else {
+      callback(JSON.parse(data));
+    }
+  });
+}
+
+app.get("/dynamic/nextweekSchedule.js", ensureAuthenticated, function(req, res) {
+  getSchedule(undefined, function(sch) {
+    res.send("var cars = " + JSON.stringify(sch));
+  });
+});
+app.get("/dynamic/thisweekSchedule.js", ensureAuthenticated, function(req, res) {
+  getSchedule(new Date(), function(sch) {
+    res.send("var cars = " + JSON.stringify(sch) + ';');
+  });
+});
+app.get("/dynamic/currentUser.js", ensureAuthenticated, function(req, res) {
+  res.send('var user = "' + req.user + '";');
+});
+app.get("/dynamic/allPreferences.js", ensureAuthenticated, function(req, res) {
+  //res.set('Content-Type', 'application/javascript');
+  
+  fs.readdir(userdatapath, function(err, files) {
+    if (err) {
+      console.log('Failed reading the user data directory');
+      process.exit(1);
+    }
+    async.map(files, function(userEmail, callback) {
+      getPreferences(userEmail, function(preferences){
+        callback(undefined, preferences);
+      });
+    }, function(err, allPreferences) {
+      var allPreferencesObj = {};
+      for (var i=0; i<allPreferences.length; ++i) {
+        allPreferencesObj[allPreferences[i].email] = allPreferences[i];
+      }
+      res.send("var allPreferences = " + JSON.stringify(allPreferencesObj));
+    });
   });
 });
 
@@ -329,7 +390,7 @@ app.post("/times", ensureAuthenticated, function(req,res){
       });
 
   // TODO: Send them to special confirmation page
-  res.redirect("/czar");
+  res.redirect("/schedule");
 });
 
 app.post("/newUser", ensureAuthenticated, function(req,res){
@@ -436,8 +497,9 @@ app.post('/example', ensureAuthenticated, function(req,res){
 });
 
 app.post('/czarData', ensureAuthenticated, function(req,res){
-
-  res.redirect('/schedule')
+  console.log(JSON.stringify(req.body));
+  fs.writeFile(schedulepath + userDataFileName(), req.body.allCars);
+  res.redirect('/czar')
 });
 
 // GET /auth/google

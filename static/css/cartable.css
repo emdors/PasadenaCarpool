@@ -1,8 +1,8 @@
 table.fullcartable {
   text-align:center; 
   width:auto;
-  commented-float:left;
-  margin:0 10px;
+  float:left;
+  margin:10px;
 }
 
 table.fullcartable td {

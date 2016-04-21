@@ -42,11 +42,11 @@ table.timetable tr.timeview td[selected="true"] {
   background-color: #66ccff;
 }
 
-table.timetable tr.timeview[isDriver="true"] td[selected="true"]{
+table.timetable tr.timeview[carstatus="driver"] td[selected="true"]{
   background-color: #b31aff
 }
 
-table.timetable tr.timeview[isPassenger="true"] td[selected="true"]{
+table.timetable tr.timeview[carstatus="passenger"] td[selected="true"]{
   background-color: #b38600
 }
 
