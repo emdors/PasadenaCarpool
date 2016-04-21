@@ -100,3 +100,10 @@ table + table{
   margin-left: 10px;
   margin-bottom: 10px;
 }
+
+#modifyCarsInput {
+  width:100%;
+  height:auto;
+  margin:5px 0;
+  padding:3px;
+}

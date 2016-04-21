@@ -335,3 +335,22 @@ function parseTime(time){
 
   return startOfTime.concat(endOfTime)
 }
+
+function populateModifyCarsModal() {
+  document.getElementById('modifyCarsInput').value = JSON.stringify(cars, null, 2);
+}
+
+function saveDirectCarModifyChanges() {
+  var value;
+  try {
+    value = JSON.parse(document.getElementById('modifyCarsInput').value);
+  } catch(e) {
+    alert("JSON parse error: " + e);
+    return;
+  }
+
+  // Save it and close the modal
+  cars = value;
+  $('#modifyCars').modal('hide')
+  updateHighlightingAndTables();
+}

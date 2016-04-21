@@ -502,7 +502,7 @@ app.post('/example', ensureAuthenticated, function(req,res){
 });
 
 app.post('/czarData', ensureAuthenticated, function(req,res){
-  console.log(JSON.stringify(req.body));
+  //console.log(JSON.stringify(req.body));
   fs.writeFile(schedulepath + userDataFileName(), req.body.allCars);
   res.redirect('/czar')
 });
