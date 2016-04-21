@@ -138,6 +138,7 @@ function parseData(parseDataCallback) {
           getPreferences(userEmail, function(preferences){
             var dataForCallback = {
               email: preferences.email,
+              prefEmail: preferences.prefEmail,
               name: preferences.name,
               numPassengers: preferences.numPassengers,
               phoneNumber: preferences.phoneNumber
@@ -198,6 +199,7 @@ function parseData(parseDataCallback) {
                 canGos: canGos,
                 numPassengers: result.numPassengers,
                 email: result.email,
+                prefEmail: result.prefEmail,
                 phoneNumber: result.phoneNumber
               });
           }
@@ -237,16 +239,18 @@ function getPreferences(userEmail, preferencesCallback){
         var myData;
         try{
           myData = JSON.parse(data)
-          if(myData.email == undefined){
-            myData.email = userEmail
+          if(myData.prefEmail == undefined){
+            myData.prefEmail = userEmail
           }
+          myData.email = userEmail
         }
         catch(e){
           myData = {
             name: "",
             phoneNumber: "",
             numPassengers: "",
-            email: userEmail
+            email: userEmail,
+            prefEmail: userEmail
           }
         }
       //console.log(myData)
@@ -271,7 +275,7 @@ function getContactData(contactDataCallback){
 
           }else{
             var dataForCallback = {
-              user: preferences.email,
+              prefEmail: preferences.prefEmail,
               name: preferences.name,
               numPassengers: preferences.numPassengers,
               phoneNumber: preferences.phoneNumber
@@ -463,7 +467,8 @@ app.get('/preferences', ensureAuthenticated, function(req, res){
       name: preferences.name,
       numPassengers: preferences.numPassengers,
       phoneNumber: preferences.phoneNumber,
-      email: preferences.email
+      email: preferences.email,
+      prefEmail: preferences.prefEmail
     };
     res.render(viewpath+"preferences.jade", dataForPref)
   }); 
