@@ -70,6 +70,8 @@ window.onload = function() {
   }
 }
 
+var submitting = false;
+
 // When the form is submitted, figure out what class (color) each box is and
 // put that into a form input so that it'll send it with the POST
 function submitForm() {
@@ -94,101 +96,44 @@ function submitForm() {
     var inputToPutTimesIn = document.getElementById(dayAndHalfDay + 'Times');
     inputToPutTimesIn.value = timesForThisPeriod;
   }
+  submitting = true;
 }
 
-function validateForm() {
-  //Grab all of the variables from the fourm
-  var timeForm = document.getElementById("timeForm");
-  var name = timeForm.name.value;
-  var email = timeForm.email.value;
-  var numPassengers = timeForm.numPassengers.value;
+window.addEventListener("beforeunload", function (e) {
+  if (submitting) return;
+  var changedPage = false;
 
-  // This is a list of days of the week for looping puposes
-  var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  var timeform = document.getElementById("timeForm");
+  var timeinputs = timeform.getElementsByClassName("timeinput");
 
-  //Look at the email adress and insure that it is not blank and make
-  //sure it is of the right format
-  var emailError = false;
+  for (var i=0; i<timeinputs.length; ++i) {
+    var ti = timeinputs[i];
+    var dayAndHalfDay = ti.id.slice('timeinput'.length);
 
-  
-  
+    var timesForThisPeriod = '';
 
-  if (email == ""){
-    console.log("No email entered");
-    emailError = true;
-    timeForm.email.style.borderColor = "red";
-
-  }else if(email.indexOf('@') == -1){
-    console.log("impropper email adress");
-    emailError = true;
-    timeForm.email.style.borderColor = "red";
-  }
-
-  //Make sure the name is not blank
-  var nameError = false;
-  if (name == ""){
-    console.log("must fill in name");
-    nameError = true;
-    timeForm.name.style.borderColor = "red";
-
-  }
-
-  //If the person puts zero as the number of people in their car
-  //make sure that the have checked Cannot drive for all of their
-  //values
-  var drivingError = false;
-  if (numPassengers == 0){
-    drivingError = timeForm.MondayDriveStatus[2].checked && 
-                    timeForm.TuesdayDriveStatus[2].checked &&
-                    timeForm.WednesdayDriveStatus[2].checked &&
-                    timeForm.ThursdayDriveStatus[2].checked &&
-                    timeForm.FridayDriveStatus[2].checked;
-    
-    drivingError = !drivingError
-    
-  }
-
-  //Color all of the boxes correctly 
-  if (drivingError){
-    timeForm.numPassengers.style.borderColor = "red";
-  }else{
-    timeForm.numPassengers.style.borderColor = "green";
-  }
-
-  if (nameError){
-    timeForm.name.style.borderColor = "red";
-  }else{
-    timeForm.name.style.borderColor = "green";
-  }
-
-  if (emailError){
-    timeForm.email.style.borderColor = "red";
-  }else{
-    timeForm.email.style.borderColor = "green";
-  }
-
-  //Now we put all of the errors together into a resulting error.
-  var resultingError = nameError || emailError || drivingError;
-
-  //If there is a resulting error give the user a pop up box telling them what is wrong
-  if (resultingError){
-    var alertString = "There were a couple of errors in your forum: \n \n ";
-
-    if (nameError){
-      alertString = alertString.concat("You forgot to fill in your name. \n \n");
+    var tds = ti.getElementsByTagName("td");
+    for (var j=0; j<tds.length; ++j) {
+      var td = tds[j];
+      if (isSelected(td)) {
+        changedPage = true;
+        break;
+      }
     }
-
-    if (emailError){
-      alertString = alertString.concat("Either you forgot to fill in your email or it is incorrectly formated. \n \n ")
-    }
-
-    if (drivingError){
-      alertString = alertString.concat("In the number of passengers section you said you did not have a car but in one of the times you listed that you can drive that day. please either click the \"Cannot drive\" box or fill in the size of your car.");
-    }
-
-    window.alert(alertString);
   }
 
+  changedPage |= !timeForm.MondayDriveStatus[1].checked ||
+                 !timeForm.TuesdayDriveStatus[1].checked ||
+                 !timeForm.WednesdayDriveStatus[1].checked ||
+                 !timeForm.ThursdayDriveStatus[1].checked ||
+                 !timeForm.FridayDriveStatus[1].checked;
 
-  return !resultingError;
-}
+
+  if (changedPage) {
+    var confirmationMessage = "You have not submitted your times!";
+
+    e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
+    return confirmationMessage;              // Gecko, WebKit, Chrome <34
+  }
+});
+

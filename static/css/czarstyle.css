@@ -19,7 +19,7 @@ table.timetable tr.timeview td.name {
 
 table.timetable tr.timeview td.driveStatus {
   height: 1.5em;
-  width: 10em;
+  width: auto;
   padding: 0 10px;
 }
 
@@ -101,7 +101,7 @@ table + table{
   margin-bottom: 10px;
 }
 
-#modifyCarsInput {
+#directModifyJSONInput {
   width:100%;
   height:auto;
   margin:5px 0;

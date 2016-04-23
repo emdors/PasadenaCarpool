@@ -67,7 +67,7 @@ html(lang='en')
             li Click delete car once you have selected the cars you wish to delete.
 
 
-        form#timeResults(method='POST', action='/czarData', onSubmit='submitCars();')
+        #timeResults
           each dayData in peoplesTimes
             h3= dayData.day
 
@@ -93,9 +93,63 @@ html(lang='en')
                       td.driveStatus= personData.driveStatus + ' drive'
             //If the finished car is hit then we save what day we are using and call the make car function.
             button(class="btn btn-primary",value='ADD', type='button' ,onClick='return makeCar("#{dayData.day}");') Finish Car
-            label.checkbox-inline
-              input(id=dayData.day+'Override', type='checkbox')
-              | Override Error Checking (Dangerous)
+            button.btn.btn-default.btn-sm(type='button', data-toggle='modal', data-target='#directAddCar'+dayData.day)
+              | Directly Enter Car (Advanced)
+            div(id='directAddCar'+dayData.day, class="modal fade", tabindex='-1', role='dialog', aria-labelledby='directAddCar'+dayData.day)
+              .modal-dialog.modal-lg(role='document')
+                .modal-content
+                  .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                      span(aria-hidden='true') ×
+                    h4.modal-title Directly Add Car
+                  .modal-body
+                    form(id='directAddForm'+dayData.day, action="", method="post")
+                      h4 Enter names or emails
+                      .form-group
+                        label.text Driver
+                          input(type='text', name='driver', required, class='driver')
+                      .form-group
+                        label.text AM Time
+                          input(type='time', name='AMtime', value="08:00", required, class='AMtime')
+                        label.text PM Time
+                          input(type='time', name='PMtime', value="17:00", required, class='PMtime')
+                      .form-group
+                        label.text AM Passengers
+                          input(type='text', name='AMpassenger1', class='AMpassenger')
+                        label.text PM Passengers
+                          input(type='text', name='PMpassenger1', class='PMpassenger')
+                      .form-group
+                        label.text AM Passengers
+                          input(type='text', name='AMpassenger2', class='AMpassenger')
+                        label.text PM Passengers
+                          input(type='text', name='PMpassenger2', class='PMpassenger')
+                      .form-group
+                        label.text AM Passengers
+                          input(type='text', name='AMpassenger3', class='AMpassenger')
+                        label.text PM Passengers
+                          input(type='text', name='PMpassenger3', class='PMpassenger')
+                      .form-group
+                        label.text AM Passengers
+                          input(type='text', name='AMpassenger4', class='AMpassenger')
+                        label.text PM Passengers
+                          input(type='text', name='PMpassenger4', class='PMpassenger')
+                      .form-group
+                        label.text AM Passengers
+                          input(type='text', name='AMpassenger5', class='AMpassenger')
+                        label.text PM Passengers
+                          input(type='text', name='PMpassenger5', class='PMpassenger')
+                      .form-group
+                        label.text AM Passengers
+                          input(type='text', name='AMpassenger6', class='AMpassenger')
+                        label.text PM Passengers
+                          input(type='text', name='PMpassenger6', class='PMpassenger')
+                      .form-group
+                        label.text AM Passengers
+                          input(type='text', name='AMpassenger7', class='AMpassenger')
+                        label.text PM Passengers
+                          input(type='text', name='PMpassenger7', class='PMpassenger')
+                  .modal-footer
+                    button.btn.btn-primary(type='button', onClick='directlyAddCar("'+dayData.day+'")') Add Car
 
             //Create a car location which is where we will add cars
             div(id= dayData.day + 'Cars')
@@ -105,26 +159,24 @@ html(lang='en')
 
 
           // Button trigger modal
-          button.btn.btn-default.btn-sm(type='button', data-toggle='modal', data-target='#modifyCars', onClick='populateModifyCarsModal()')
+          button.btn.btn-default.btn-sm(type='button', data-toggle='modal', data-target='#directModifyJSON', onClick='populateModifyCarsModal()')
             | Modify Car JSON Directly (advanced)
           // Modal
-          #modifyCars.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modifyCars')
+          #directModifyJSON.modal.fade(tabindex='-1', role='dialog', aria-labelledby='directModifyJSON')
             .modal-dialog.modal-lg(role='document')
               .modal-content
                 .modal-header
                   button.close(type='button', data-dismiss='modal', aria-label='Close')
                     span(aria-hidden='true') ×
-                  h4#myModalLabel.modal-title Directory Modify Cars
+                  h4.modal-title Directly Modify Cars
                 .modal-body
-                  textarea#modifyCarsInput(rows=20)
+                  textarea#directModifyJSONInput(rows=20)
                   // Will be populated by JS
                 .modal-footer
                   button.btn.btn-default(type='button', data-dismiss='modal') Discard Changes
                   button.btn.btn-primary(type='button', onClick='saveDirectCarModifyChanges()') Save Changes
 
-
-
-          //-button.btn.btn-default(type='submit', onClick='return checkForCompletion();') Submit Schedule 
           p
-          button.btn.btn-primary(type='submit') Save Schedule 
-          input(id="allCars" type='hidden' name="allCars")
+          form#timeResults(method='POST', action='/czarData', onSubmit='submitCars();')
+            button.btn.btn-primary(type='submit') Save Schedule 
+            input(id="allCars" type='hidden' name="allCars")

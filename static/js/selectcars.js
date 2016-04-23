@@ -16,6 +16,7 @@ var weekdays = [];
 //   },
 // };
 var userData = {};
+var changedPage = false;
 
 window.onload = function() {
   var timeResults = document.getElementById("timeResults");
@@ -108,6 +109,7 @@ function updateHighlightingAndTables(day) {
 
 function deleteWholeCar(day, driver) {
   delete cars[day][driver];
+  changedPage = true;
   updateHighlightingAndTables(day);
 }
 
@@ -121,6 +123,7 @@ function deleteCar(day, driver, halfday) {
   if (tableNowEmpty) {
     delete cars[day][driver];
   }
+  changedPage = true;
   updateHighlightingAndTables(day);
 }
 
@@ -176,9 +179,10 @@ function updateHighlightingAndTablesForOneDay(day) {
 //adds a new car to the car list.
 function makeCar(day){
   // Check to see the overide box is checked and reset it
-  var overrideButton = document.getElementById(day+'Override');
-  var override = overrideButton.checked;
-  overrideButton.checked = false;
+  //var overrideButton = document.getElementById(day+'Override');
+  //var override = overrideButton.checked;
+  var override = false;
+  //overrideButton.checked = false;
 
   // Get a list of the time tables and select the am and pm tables we are
   // interested in.
@@ -300,10 +304,12 @@ function makeCar(day){
   cars[day][driver][halfday].time = time;
   cars[day][driver][halfday].passengers = passengers;
 
+  changedPage = true;
   updateHighlightingAndTables(day);
 }
 
 function submitCars() {
+  changedPage = false;
   document.getElementById('allCars').value = JSON.stringify(cars);
 }
 
@@ -337,13 +343,13 @@ function parseTime(time){
 }
 
 function populateModifyCarsModal() {
-  document.getElementById('modifyCarsInput').value = JSON.stringify(cars, null, 2);
+  document.getElementById('directModifyJSONInput').value = JSON.stringify(cars, null, 2);
 }
 
 function saveDirectCarModifyChanges() {
   var value;
   try {
-    value = JSON.parse(document.getElementById('modifyCarsInput').value);
+    value = JSON.parse(document.getElementById('directModifyJSONInput').value);
   } catch(e) {
     alert("JSON parse error: " + e);
     return;
@@ -351,6 +357,79 @@ function saveDirectCarModifyChanges() {
 
   // Save it and close the modal
   cars = value;
-  $('#modifyCars').modal('hide')
+  $('#directModifyJSON').modal('hide')
+  changedPage = true;
   updateHighlightingAndTables();
 }
+
+// Converts a gmail, name, or preferred email to their gmail
+// Uses allPreferences
+function aliasToEmail(alias) {
+  if (alias in allPreferences) {
+    return alias;
+  } else {
+    // They must have given a name or a "preferred email" instead of their
+    // gmail
+    for (var person in allPreferences) {
+      var theirPreferences = allPreferences[person];
+      if (theirPreferences.prefEmail == alias
+          || theirPreferences.name.toLowerCase() == alias.toLowerCase()) {
+        return person;
+      }
+    }
+  }
+}
+
+function directlyAddCar(day, keepOpen) {
+  // Get the modal
+  var theModal = document.getElementById('directAddCar'+day);
+  var theForm = document.getElementById('directAddForm'+day);
+
+  // In the modal, get the different fields
+  var driver = aliasToEmail(theModal.getElementsByClassName('driver')[0].value);
+  var amtime = theModal.getElementsByClassName('AMtime')[0].value;
+  var pmtime = theModal.getElementsByClassName('PMtime')[0].value;
+  var amPassengerInputs = theModal.getElementsByClassName('AMpassenger');
+  var pmPassengerInputs = theModal.getElementsByClassName('PMpassenger');
+
+  // Get the list of passengers
+  var amPassengers = [];
+  for (var i=0; i<amPassengerInputs.length; ++i) {
+    var p = amPassengerInputs[i].value;
+    if (!p) continue;
+    amPassengers.push(aliasToEmail(p));
+  }
+  var pmPassengers = [];
+  for (var i=0; i<pmPassengerInputs.length; ++i) {
+    var p = pmPassengerInputs[i].value;
+    if (!p) continue;
+    pmPassengers.push(aliasToEmail(p));
+  }
+
+  // Change the times to the right format
+  amtime = parseInt(amtime.slice(0,2), 10).toString() + amtime.slice(3,5);
+  pmtime = (parseInt(pmtime.slice(0,2), 10) - 12).toString() + pmtime.slice(3,5);
+
+  theForm.reset();
+
+  // Add the car
+  cars[day][driver] = {
+    AM: {time: amtime, passengers: amPassengers},
+    PM: {time: pmtime, passengers: pmPassengers}
+  };
+  changedPage = true;
+  updateHighlightingAndTables(day);
+
+  if (!keepOpen) {
+    $('#directAddCar'+day).modal('hide')
+  }
+}
+
+window.addEventListener("beforeunload", function (e) {
+  if (changedPage) {
+    var confirmationMessage = "You have unsaved cars!";
+
+    e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
+    return confirmationMessage;              // Gecko, WebKit, Chrome <34
+  }
+});

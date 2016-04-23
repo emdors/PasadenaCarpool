@@ -37,7 +37,7 @@ html(lang='en')
           | Your times
         form#timeForm(method='POST', action='/times', onsubmit='submitForm();')
           .form-group
-            label Drag over the gray boxes below to paint over the times when you can leave.
+            label Drag over the gray boxes in the top rows below to paint over the times when you can leave.
 
             #alltimeinputs
               each dayData in peoplesTimes
@@ -86,4 +86,4 @@ html(lang='en')
               - nm = day+AMPM+'Times'
               input(id=nm, type='hidden', name=nm)
 
-          button.btn.btn-default(type='submit', onClick='return validateForm();') Submit
+          button.btn.btn-default(type='submit') Submit
