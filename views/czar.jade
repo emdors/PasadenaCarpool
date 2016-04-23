@@ -112,41 +112,12 @@ html(lang='en')
                     input(type='time', name='AMtime', value="08:00", required, class='AMtime')
                   label.text PM Time
                     input(type='time', name='PMtime', value="17:00", required, class='PMtime')
-                .form-group
-                  label.text AM Passengers
-                    input(type='text', name='AMpassenger1', class='AMpassenger')
-                  label.text PM Passengers
-                    input(type='text', name='PMpassenger1', class='PMpassenger')
-                .form-group
-                  label.text AM Passengers
-                    input(type='text', name='AMpassenger2', class='AMpassenger')
-                  label.text PM Passengers
-                    input(type='text', name='PMpassenger2', class='PMpassenger')
-                .form-group
-                  label.text AM Passengers
-                    input(type='text', name='AMpassenger3', class='AMpassenger')
-                  label.text PM Passengers
-                    input(type='text', name='PMpassenger3', class='PMpassenger')
-                .form-group
-                  label.text AM Passengers
-                    input(type='text', name='AMpassenger4', class='AMpassenger')
-                  label.text PM Passengers
-                    input(type='text', name='PMpassenger4', class='PMpassenger')
-                .form-group
-                  label.text AM Passengers
-                    input(type='text', name='AMpassenger5', class='AMpassenger')
-                  label.text PM Passengers
-                    input(type='text', name='PMpassenger5', class='PMpassenger')
-                .form-group
-                  label.text AM Passengers
-                    input(type='text', name='AMpassenger6', class='AMpassenger')
-                  label.text PM Passengers
-                    input(type='text', name='PMpassenger6', class='PMpassenger')
-                .form-group
-                  label.text AM Passengers
-                    input(type='text', name='AMpassenger7', class='AMpassenger')
-                  label.text PM Passengers
-                    input(type='text', name='PMpassenger7', class='PMpassenger')
+                each i in [1,2,3,4,5,6]
+                  .form-group
+                    label.text AM Passenger
+                      input(type='text', name='AMpassenger'+i, class='AMpassenger')
+                    label.text PM Passenger
+                      input(type='text', name='PMpassenger'+i, class='PMpassenger')
                   //.modal-footer
                 button.btn.btn-primary(type='button', onClick='directlyAddCar("'+dayData.day+'")') Add Car
                 button.btn.btn-default.btn-sm(type='button', onClick='directlyAddCarClear("'+dayData.day+'")') Clear
