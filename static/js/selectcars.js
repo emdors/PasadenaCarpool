@@ -405,12 +405,12 @@ function directlyAddCar(day) {
   }
 
   // Change the times to the right format
-  amtime = parseInt(amtime.slice(0,2), 10).toString() + amtime.slice(3,5);
+  amtime = parseInt(amtime.slice(0,2), 10).toString() + amtime.slice(amtime.length-2);
   pmHour = parseInt(pmtime.slice(0,2), 10);
   if (pmHour > 12) {
     pmHour -= 12;
   }
-  pmtime = pmHour.toString() + pmtime.slice(3,5);
+  pmtime = pmHour.toString() + pmtime.slice(pmtime.length-2);
 
   // Clear the form!
   document.getElementById('directAddForm'+day).reset();
