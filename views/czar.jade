@@ -93,63 +93,64 @@ html(lang='en')
                       td.driveStatus= personData.driveStatus + ' drive'
             //If the finished car is hit then we save what day we are using and call the make car function.
             button(class="btn btn-primary",value='ADD', type='button' ,onClick='return makeCar("#{dayData.day}");') Finish Car
-            button.btn.btn-default.btn-sm(type='button', data-toggle='modal', data-target='#directAddCar'+dayData.day)
+
+            button.btn.btn-default.btn-sm(type='button', data-toggle='collapse', data-target='#directAddCar'+dayData.day, aria-expanded='false', aria-controls='directAddCar'+dayData.day)
               | Directly Enter Car (Advanced)
-            div(id='directAddCar'+dayData.day, class="modal fade", tabindex='-1', role='dialog', aria-labelledby='directAddCar'+dayData.day)
-              .modal-dialog.modal-lg(role='document')
-                .modal-content
-                  .modal-header
-                    button.close(type='button', data-dismiss='modal', aria-label='Close')
-                      span(aria-hidden='true') ×
-                    h4.modal-title Directly Add Car
-                  .modal-body
-                    form(id='directAddForm'+dayData.day, action="", method="post")
-                      h4 Enter names or emails
-                      .form-group
-                        label.text Driver
-                          input(type='text', name='driver', required, class='driver')
-                      .form-group
-                        label.text AM Time
-                          input(type='time', name='AMtime', value="08:00", required, class='AMtime')
-                        label.text PM Time
-                          input(type='time', name='PMtime', value="17:00", required, class='PMtime')
-                      .form-group
-                        label.text AM Passengers
-                          input(type='text', name='AMpassenger1', class='AMpassenger')
-                        label.text PM Passengers
-                          input(type='text', name='PMpassenger1', class='PMpassenger')
-                      .form-group
-                        label.text AM Passengers
-                          input(type='text', name='AMpassenger2', class='AMpassenger')
-                        label.text PM Passengers
-                          input(type='text', name='PMpassenger2', class='PMpassenger')
-                      .form-group
-                        label.text AM Passengers
-                          input(type='text', name='AMpassenger3', class='AMpassenger')
-                        label.text PM Passengers
-                          input(type='text', name='PMpassenger3', class='PMpassenger')
-                      .form-group
-                        label.text AM Passengers
-                          input(type='text', name='AMpassenger4', class='AMpassenger')
-                        label.text PM Passengers
-                          input(type='text', name='PMpassenger4', class='PMpassenger')
-                      .form-group
-                        label.text AM Passengers
-                          input(type='text', name='AMpassenger5', class='AMpassenger')
-                        label.text PM Passengers
-                          input(type='text', name='PMpassenger5', class='PMpassenger')
-                      .form-group
-                        label.text AM Passengers
-                          input(type='text', name='AMpassenger6', class='AMpassenger')
-                        label.text PM Passengers
-                          input(type='text', name='PMpassenger6', class='PMpassenger')
-                      .form-group
-                        label.text AM Passengers
-                          input(type='text', name='AMpassenger7', class='AMpassenger')
-                        label.text PM Passengers
-                          input(type='text', name='PMpassenger7', class='PMpassenger')
-                  .modal-footer
-                    button.btn.btn-primary(type='button', onClick='directlyAddCar("'+dayData.day+'")') Add Car
+
+            //-button.btn.btn-primary(type='button', data-toggle='collapse', data-target='#collapseExample', aria-expanded='false', aria-controls='collapseExample')
+            //-  | Button with data-target
+
+
+            div(id='directAddCar'+dayData.day, class="collapse")
+              form(id='directAddForm'+dayData.day, action="", method="post")
+                h4 Enter names or emails
+                .form-group
+                  label.text Driver
+                    input(type='text', name='driver', required, class='driver')
+                .form-group
+                  label.text AM Time
+                    input(type='time', name='AMtime', value="08:00", required, class='AMtime')
+                  label.text PM Time
+                    input(type='time', name='PMtime', value="17:00", required, class='PMtime')
+                .form-group
+                  label.text AM Passengers
+                    input(type='text', name='AMpassenger1', class='AMpassenger')
+                  label.text PM Passengers
+                    input(type='text', name='PMpassenger1', class='PMpassenger')
+                .form-group
+                  label.text AM Passengers
+                    input(type='text', name='AMpassenger2', class='AMpassenger')
+                  label.text PM Passengers
+                    input(type='text', name='PMpassenger2', class='PMpassenger')
+                .form-group
+                  label.text AM Passengers
+                    input(type='text', name='AMpassenger3', class='AMpassenger')
+                  label.text PM Passengers
+                    input(type='text', name='PMpassenger3', class='PMpassenger')
+                .form-group
+                  label.text AM Passengers
+                    input(type='text', name='AMpassenger4', class='AMpassenger')
+                  label.text PM Passengers
+                    input(type='text', name='PMpassenger4', class='PMpassenger')
+                .form-group
+                  label.text AM Passengers
+                    input(type='text', name='AMpassenger5', class='AMpassenger')
+                  label.text PM Passengers
+                    input(type='text', name='PMpassenger5', class='PMpassenger')
+                .form-group
+                  label.text AM Passengers
+                    input(type='text', name='AMpassenger6', class='AMpassenger')
+                  label.text PM Passengers
+                    input(type='text', name='PMpassenger6', class='PMpassenger')
+                .form-group
+                  label.text AM Passengers
+                    input(type='text', name='AMpassenger7', class='AMpassenger')
+                  label.text PM Passengers
+                    input(type='text', name='PMpassenger7', class='PMpassenger')
+                  //.modal-footer
+                button.btn.btn-primary(type='button', onClick='directlyAddCar("'+dayData.day+'")') Add Car
+                button.btn.btn-default.btn-sm(type='button', onClick='directlyAddCarClear("'+dayData.day+'")') Clear
+                button.btn.btn-default.btn-sm(type='button', data-toggle='collapse', data-target='#directAddCar'+dayData.day, aria-expanded='false', aria-controls='directAddCar'+dayData.day) Close
 
             //Create a car location which is where we will add cars
             div(id= dayData.day + 'Cars')

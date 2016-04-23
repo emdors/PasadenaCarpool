@@ -379,18 +379,16 @@ function aliasToEmail(alias) {
     }
   }
 }
-
-function directlyAddCar(day, keepOpen) {
+function directlyAddCar(day) {
   // Get the modal
-  var theModal = document.getElementById('directAddCar'+day);
-  var theForm = document.getElementById('directAddForm'+day);
+  var theForm = document.getElementById('directAddCar'+day);
 
   // In the modal, get the different fields
-  var driver = aliasToEmail(theModal.getElementsByClassName('driver')[0].value);
-  var amtime = theModal.getElementsByClassName('AMtime')[0].value;
-  var pmtime = theModal.getElementsByClassName('PMtime')[0].value;
-  var amPassengerInputs = theModal.getElementsByClassName('AMpassenger');
-  var pmPassengerInputs = theModal.getElementsByClassName('PMpassenger');
+  var driver = aliasToEmail(theForm.getElementsByClassName('driver')[0].value);
+  var amtime = theForm.getElementsByClassName('AMtime')[0].value;
+  var pmtime = theForm.getElementsByClassName('PMtime')[0].value;
+  var amPassengerInputs = theForm.getElementsByClassName('AMpassenger');
+  var pmPassengerInputs = theForm.getElementsByClassName('PMpassenger');
 
   // Get the list of passengers
   var amPassengers = [];
@@ -408,9 +406,14 @@ function directlyAddCar(day, keepOpen) {
 
   // Change the times to the right format
   amtime = parseInt(amtime.slice(0,2), 10).toString() + amtime.slice(3,5);
-  pmtime = (parseInt(pmtime.slice(0,2), 10) - 12).toString() + pmtime.slice(3,5);
+  pmHour = parseInt(pmtime.slice(0,2), 10);
+  if (pmHour > 12) {
+    pmHour -= 12;
+  }
+  pmtime = pmHour.toString() + pmtime.slice(3,5);
 
-  theForm.reset();
+  // Clear the form!
+  document.getElementById('directAddForm'+day).reset();
 
   // Add the car
   cars[day][driver] = {
@@ -419,10 +422,11 @@ function directlyAddCar(day, keepOpen) {
   };
   changedPage = true;
   updateHighlightingAndTables(day);
+}
 
-  if (!keepOpen) {
-    $('#directAddCar'+day).modal('hide')
-  }
+function directlyAddCarClear(day) {
+  var theForm = document.getElementById('directAddForm'+day);
+  theForm.reset();
 }
 
 window.addEventListener("beforeunload", function (e) {
