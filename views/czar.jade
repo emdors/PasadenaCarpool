@@ -9,11 +9,19 @@ html(lang='en')
     link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css')
     script(src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js')
     script(src='dynamic/allPreferences.js')
-    script(src='dynamic/nextweekSchedule.js')
+    
+    //There are a series of if statements like this which allow us to use this jade file for both editing the page for this week and next week
+
+    if isNextWeek
+      script(src='dynamic/nextweekSchedule.js')
+    else
+      script(src='dynamic/thisweekSchedule.js')
+    
     script(src='js/makecartables.js')
     script(src='js/selectcars.js')
     link(rel='stylesheet', href='css/czarstyle.css')
     link(rel='stylesheet', href='css/cartable.css')
+
   body
     div
       div
@@ -65,6 +73,29 @@ html(lang='en')
             li To select car click on table once, it will turn red.
             li To deselect car click on table again, boarders will turn black again.
             li Click delete car once you have selected the cars you wish to delete.
+
+
+        br
+
+
+        if isNextWeek
+          p You are currently veiwing the Czarpage which edits the Schuedule for 
+            b the next week. 
+            | If you would like to edit a different week select it from the drop down menu.
+        else
+          p You are currently veiwing the Czarpage which edits the Schuedule for 
+            b this week. 
+            | If you would like to edit a different week select it from the drop down menu.
+
+        div(class='dropdown')
+          button(class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown") Edit Czar Page For
+            span(class="caret")
+          
+          ul(class="dropdown-menu")
+            li 
+              a(href="/czar") Next Week
+            li 
+              a(href="/czarThisWeek") This Week
 
 
         #timeResults
@@ -149,6 +180,12 @@ html(lang='en')
                   button.btn.btn-primary(type='button', onClick='saveDirectCarModifyChanges()') Save Changes
 
           p
-          form#timeResults(method='POST', action='/czarData', onSubmit='submitCars();')
-            button.btn.btn-primary(type='submit') Save Schedule 
-            input(id="allCars" type='hidden' name="allCars")
+
+          if isNextWeek
+            form#timeResults(method='POST', action='/czarData', onSubmit='submitCars();')
+              button.btn.btn-primary(type='submit') Save Schedule 
+              input(id="allCars" type='hidden' name="allCars")
+          else
+            form#timeResults(method='POST', action='/czarDataCurrent', onSubmit='submitCars();')
+              button.btn.btn-primary(type='submit') Save Schedule 
+              input(id="allCars" type='hidden' name="allCars")

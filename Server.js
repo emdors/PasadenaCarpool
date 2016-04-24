@@ -116,14 +116,15 @@ function userDataFileName(dateInput) {
   return date.getFullYear() + '-' + ('0'+(date.getMonth()+1)).slice(-2) + '-' + ('0'+date.getDate()).slice(-2);
 }
 
-function parseData(parseDataCallback) {
+//Pass in the date of data which we want to parse, undefined is nextweeks data
+function parseData(dateToParse, parseDataCallback) {
   fs.readdir(userdatapath, function(err, files) {
     if (err) {
       console.log('Failed reading the user data directory');
       process.exit(1);
     }
-
-    var thisWeeksScheduleFilename = userDataFileName();
+    //If the data we want to pull up is
+    var thisWeeksScheduleFilename = userDataFileName(dateToParse);
     //console.log(thisWeeksScheduleFilename);
 
     async.map(files, function(userEmail, callback) {
@@ -298,7 +299,7 @@ function getContactData(contactDataCallback){
 
 app.get("/", ensureAuthenticated ,function(req,res){
   
-  parseData(function(parsed) {
+  parseData(undefined, function(parsed) {
     var dataForIndexPage = {
       user: req.user,
       weekdays: weekdays,
@@ -320,12 +321,27 @@ app.get("/", ensureAuthenticated ,function(req,res){
 
 app.get("/czar", ensureAuthenticated, function(req, res) {
 
-  parseData(function(parsed) {
+  parseData(undefined, function(parsed) {
     var dataForCzarPage = {
       user: req.user,
       weekdays: weekdays,
       possibleDriveHours: possibleDriveHours,
       peoplesTimes: parsed,
+      isNextWeek: true
+    };
+
+    res.render(viewpath + "czar.jade", dataForCzarPage);
+  });
+});
+
+app.get("/czarThisWeek", ensureAuthenticated, function(req, res) {
+  parseData(new Date, function(parsed) {
+    var dataForCzarPage = {
+      user: req.user,
+      weekdays: weekdays,
+      possibleDriveHours: possibleDriveHours,
+      peoplesTimes: parsed,
+      isNextWeek: false
     };
 
     res.render(viewpath + "czar.jade", dataForCzarPage);
@@ -504,6 +520,11 @@ app.post('/example', ensureAuthenticated, function(req,res){
 app.post('/czarData', ensureAuthenticated, function(req,res){
   //console.log(JSON.stringify(req.body));
   fs.writeFile(schedulepath + userDataFileName(), req.body.allCars);
+  res.redirect('/czar')
+});
+app.post('/czarDataCurrent', ensureAuthenticated, function(req,res){
+  //console.log(JSON.stringify(req.body));
+  fs.writeFile(schedulepath + userDataFileName(new Date()), req.body.allCars);
   res.redirect('/czar')
 });
 
