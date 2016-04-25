@@ -8,8 +8,12 @@ html(lang='en')
     script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
     link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css')
     script(src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js')
+    script(src='dynamic/examplePreferences.js')
+    script(src='dynamic/exampleCars.js')
+    script(src='js/makecartables.js')
     script(src='js/selectcars.js')
     link(rel='stylesheet', href='css/czarstyle.css')
+    link(rel='stylesheet', href='css/cartable.css')
   body
     div
       div
@@ -36,42 +40,65 @@ html(lang='en')
       .container.theme-showcase(role='main')
         h1 Example Form Results
           
-        form#timeResults(method='POST', action='/example', onSubmit = '')
-          if formResults.length == 0
-            | None yet
-          else
-            each dayData in peoplesTimes
-              h3= dayData.day
+        #timeResults
+          each dayData in peoplesTimes
+            h3= dayData.day
 
-              //If the finished car is hit then we save what day we are using and call the make car function.
-              button(class="btn btn-default",value='ADD', type="button" ,onClick='return makeCar("#{dayData.day}");') Finish Car
-              button(class="btn btn-default",value='ADD', type="button" ,onClick='return deleteCar("#{dayData.day}");') Delete Car
-              input(id='agreement', type='checkbox', class="override")
-              | Overide Error Checking
+            each AMPMData in dayData.times
+              - AMPM = AMPMData.halfday
+              h4= AMPM
+              table.timetable(day=dayData.day, halfday=AMPM)
+                tr.timetext
+                  td
+                  each hr in possibleDriveHours[AMPM]
+                    td.hour(colspan='2')= hr
+                    td.halfhour(colspan='2') :30
+                  td
+                each personData in AMPMData.people
+                  tr(class='timeview' name=personData.name email=personData.email data-toggle="popover" title=personData.name + ' Info' data-content= "Email: " + personData.prefEmail + "\n" + "Size of Car: " + personData.numPassengers + "\n" + "Phone Number: " + + personData.phoneNumber + "\n" + "Notes: " + personData.notes data-trigger="hover")
 
-              each AMPMData in dayData.times
-                - AMPM = AMPMData.halfday
-                h4= AMPM
-                table.timetable
-                  tr.timetext
-                    td
-                    each hr in possibleDriveHours[AMPM]
-                      td.hour(colspan='2')= hr
-                      td.halfhour(colspan='2') :30
-                    td
-                  each personData in AMPMData.people
-                    tr(class='timeview')
-                      td.name= personData.name
-                      each hr,hrIdx in possibleDriveHours[AMPM]
-                        each min,minIdx in [0, 15, 30, 45]
+                    td.name= personData.name
+                    each hr,hrIdx in possibleDriveHours[AMPM]
+                      each min,minIdx in [0, 15, 30, 45]
 
-                          td(id=dayData.day+AMPM+(hr*100 + min), selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0), carstatus='unassigned', mousedover='false')
-                      unless personData.driveStatus == 'can'
-                        td.driveStatus= personData.driveStatus + ' drive'
-              //Create a car location which is where we will add cars
-              div(id= dayData.day + 'Cars')
-                h3 #{dayData.day}  Cars
+                        td(time=hr*100 + min, selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0), mousedover='false')
+                    unless personData.driveStatus == 'can'
+                      td.driveStatus= personData.driveStatus + ' drive'
+            //If the finished car is hit then we save what day we are using and call the make car function.
+            button(class="btn btn-primary",value='ADD', type='button' ,onClick='return makeCar("#{dayData.day}");') Finish Car
 
-              br(style="clear:both")
+            button.btn.btn-default.btn-sm(type='button', data-toggle='collapse', data-target='#directAddCar'+dayData.day, aria-expanded='false', aria-controls='directAddCar'+dayData.day)
+              | Directly Enter Car (Advanced)
 
-          button.btn.btn-default(type='submit', onClick='return checkForCompletion();') Submit Schedule 
+            //-button.btn.btn-primary(type='button', data-toggle='collapse', data-target='#collapseExample', aria-expanded='false', aria-controls='collapseExample')
+            //-  | Button with data-target
+
+
+            div(id='directAddCar'+dayData.day, class="collapse")
+              form(id='directAddForm'+dayData.day, action="", method="post")
+                h4 Enter names or emails
+                .form-group
+                  label.text Driver
+                    input(type='text', name='driver', required, class='driver')
+                .form-group
+                  label.text AM Time
+                    input(type='time', name='AMtime', value="08:00", required, class='AMtime')
+                  label.text PM Time
+                    input(type='time', name='PMtime', value="17:00", required, class='PMtime')
+                each i in [1,2,3,4,5,6]
+                  .form-group
+                    label.text AM Passenger
+                      input(type='text', name='AMpassenger'+i, class='AMpassenger')
+                    label.text PM Passenger
+                      input(type='text', name='PMpassenger'+i, class='PMpassenger')
+                  //.modal-footer
+                button.btn.btn-primary(type='button', onClick='directlyAddCar("'+dayData.day+'")') Add Car
+                button.btn.btn-default.btn-sm(type='button', onClick='directlyAddCarClear("'+dayData.day+'")') Clear
+                button.btn.btn-default.btn-sm(type='button', data-toggle='collapse', data-target='#directAddCar'+dayData.day, aria-expanded='false', aria-controls='directAddCar'+dayData.day) Close
+
+            //Create a car location which is where we will add cars
+            div(id= dayData.day + 'Cars')
+              h3 #{dayData.day}  Cars
+
+            br(style="clear:both")
+

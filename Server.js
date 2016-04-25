@@ -18,6 +18,7 @@ var session = require( 'express-session' )
 // API Access link for creating client ID and secret:
 // https://code.google.com/apis/console/
 var google_secrets = require('./google_secrets.json');
+var examplePreferences = require('./examplePreferences.json')
 try {
   var per_server_settings = require('./data/settings.json');
 } catch(e) {
@@ -344,6 +345,8 @@ app.get("/czarThisWeek", ensureAuthenticated, function(req, res) {
       isNextWeek: false
     };
 
+    console.log(JSON.stringify(parsed))
+
     res.render(viewpath + "czar.jade", dataForCzarPage);
   });
 });
@@ -396,6 +399,14 @@ app.get("/dynamic/allPreferences.js", ensureAuthenticated, function(req, res) {
       res.send("var allPreferences = " + JSON.stringify(allPreferencesObj));
     });
   });
+});
+
+app.get("/dynamic/examplePreferences.js", ensureAuthenticated, function(req, res){
+  res.send("var allPreferences = " + JSON.stringify(examplePreferences))
+});
+
+app.get("/dynamic/exampleCars.js", ensureAuthenticated, function(req, res){
+  res.send("var cars = {\"Monday\":{},\"Tuesday\":{},\"Wednesday\":{},\"Thursday\":{},\"Friday\":{}}");
 });
 
 app.post("/times", ensureAuthenticated, function(req,res){
@@ -506,7 +517,6 @@ app.get('/exampleCzar', ensureAuthenticated, function(req, res){
     weekdays: ['Monday'],
     possibleDriveHours: possibleDriveHours,
     peoplesTimes: exampleResults.parseddata,
-    formResults: exampleResults.rawdata,
   };
 
   res.render(viewpath+"exampleCzar.jade", dataForCzar)
@@ -571,3 +581,5 @@ function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
   res.redirect('/login');
 }
+
+
