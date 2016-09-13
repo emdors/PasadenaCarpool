@@ -1,23 +1,14 @@
-//- Should be given a list of cars:
-//- var cars = [ { 'driver':'Louise', 'AM':{ 'time':'10:30 AM', 'passengers':['George', 'Alex', 'Johanna'] }, 'PM':{'time':'4:45 PM', 'passengers':[]}} ]
+
 doctype html
 html(lang='en')
   head
     meta(charset='UTF-8')
-    title Pasadena Carpool Schedule
+    title How to Czar
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.3.3/angular.min.js')
     script(src='//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.3/angular-route.min.js')
     script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
     link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css')
     script(src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js')
-    link(rel='stylesheet', href='css/schedulestyle.css')
-    link(rel='stylesheet', href='css/cartable.css')
-    script(src='dynamic/allPreferences.js')
-    script(src='dynamic/thisweekSchedule.js')
-    script(src='dynamic/currentUser.js')
-    script(src='js/makecartables.js')
-    script(src='js/schedule.js')
-
   body
     div
       div
@@ -25,7 +16,7 @@ html(lang='en')
           ul.nav.navbar-nav
             li
               a(href='/') Home
-            li.active
+            li
               a(href='/schedule') Schedule
             li
               a(href='/czar') Czar
@@ -41,11 +32,13 @@ html(lang='en')
               a(href='external') External Links
             li
               a(href='/logout') Logout
+
       br
       .container.theme-showcase(role='main')
-        div#yourcars
-          h1 Your Cars
-        br(style="clear:both;")
-        div#allcars
-          h1 All Cars
-        br(style="clear:both;")
+
+        h1 What are the statistics over time?
+
+        p Who has been driving the most?
+        p Who has been czaring the most?
+        p Who hasn't been driving at all?
+          
