@@ -475,6 +475,10 @@ app.get('/external', ensureAuthenticated, function(req, res){
   res.render(viewpath+"external.jade", { user: req.user })
 
 });
+app.get('/emergency', ensureAuthenticated, function(req, res){
+  res.render(viewpath+"emergency.jade", { user: req.user })
+
+});
 app.get("/contact", ensureAuthenticated, function(req, res) {
 
   getContactData(function(parsed) {
