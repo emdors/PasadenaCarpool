@@ -313,15 +313,17 @@ function submitCars() {
   document.getElementById('allCars').value = JSON.stringify(cars);
 }
 
+count = 0;
 function makeCarBox(day) {
 var i = document.createElement('div');
 i.className = 'boxed';
 
-var content = document.createTextNode("This is a car for " + day);
+var content = document.createTextNode("This is a car for " + day + " car number " + count);
+count++;
 content.className = 'boxed';
 i.appendChild(content);
 
-alert(day);
+//alert(day);
 
 var d = document.getElementById( day );
 d.appendChild( i );
