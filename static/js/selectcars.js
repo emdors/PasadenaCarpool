@@ -319,7 +319,7 @@ i.className = 'boxed';
 
 var content = document.createTextNode("This is a car for " + day);
 content.className = 'boxed';
-i.appendChild(content)
+i.appendChild(content);
 
 alert(day);
 
