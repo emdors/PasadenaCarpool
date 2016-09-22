@@ -123,13 +123,17 @@ html(lang='en')
                       td.driveStatus= personData.driveStatus + ' drive'
             
             //If the finished car is hit then we save what day we are using and call the make car function.
-            button(class="btn btn-primary",value='ADD', type='button' ,onClick='return makeCar("#{dayData.day}");') Finish Car
+            // CURRENT COMMENTING OUT FINISH CAR BUTTON XXX
+            //button(class="btn btn-primary",value='ADD', type='button' ,onClick='return makeCar("#{dayData.day}");') Finish Car
 
+
+            // make a new car box
+            button(class = "btn btn-primary", type="button", onClick='makeCarBox("#{dayData.day}");') Make New Car
+
+            
             button.btn.btn-default.btn-sm(type='button', data-toggle='collapse', data-target='#directAddCar'+dayData.day, aria-expanded='false', aria-controls='directAddCar'+dayData.day)
               | Directly Enter Car (Advanced)
 
-            // make a new car box
-            button(type="submit", onClick='makeCarBox("#{dayData.day}");')
 
             div(id=dayData.day)
               p The div is here! 
