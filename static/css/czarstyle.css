@@ -6,6 +6,14 @@ body {
     white-space: pre-line;    
 }
 
+.boxed {
+  height: 100px;
+  width: 100px;
+  float:left;
+  margin: 10px;
+  border: 1px solid black ;
+}
+
 table.timetable {
   border-collapse: separate;
 }

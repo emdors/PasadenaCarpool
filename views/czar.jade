@@ -123,11 +123,19 @@ html(lang='en')
                         td(time=hr*100 + min, selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0), mousedover='false')
                     unless personData.driveStatus == 'can'
                       td.driveStatus= personData.driveStatus + ' drive'
+            
             //If the finished car is hit then we save what day we are using and call the make car function.
             button(class="btn btn-primary",value='ADD', type='button' ,onClick='return makeCar("#{dayData.day}");') Finish Car
 
             button.btn.btn-default.btn-sm(type='button', data-toggle='collapse', data-target='#directAddCar'+dayData.day, aria-expanded='false', aria-controls='directAddCar'+dayData.day)
               | Directly Enter Car (Advanced)
+
+            // make a new car box
+            button(type="submit", onClick='makeCarBox("#{dayData.day}");')
+
+            div(id=dayData.day)
+              p The div is here! 
+
 
             //-button.btn.btn-primary(type='button', data-toggle='collapse', data-target='#collapseExample', aria-expanded='false', aria-controls='collapseExample')
             //-  | Button with data-target
