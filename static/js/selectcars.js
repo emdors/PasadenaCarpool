@@ -313,6 +313,20 @@ function submitCars() {
   document.getElementById('allCars').value = JSON.stringify(cars);
 }
 
+function makeCarBox(day) {
+var i = document.createElement('div');
+i.className = 'boxed';
+
+var content = document.createTextNode("This is a car for " + day);
+content.className = 'boxed';
+i.appendChild(content)
+
+alert(day);
+
+var d = document.getElementById( day );
+d.appendChild( i );
+}
+
 //This is a helper function which parses a time into a viuallly apealling
 //and uniform way
 function parseTime(time){
@@ -437,3 +451,4 @@ window.addEventListener("beforeunload", function (e) {
     return confirmationMessage;              // Gecko, WebKit, Chrome <34
   }
 });
+
