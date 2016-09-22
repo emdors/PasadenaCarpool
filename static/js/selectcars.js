@@ -319,14 +319,15 @@ function makeCarBox(day) {
   i.className = 'boxed';
 
   var closeButton = document.createElement('button');
-  closeButton.type= 'button';
+  closeButton.className = 'boxclose';
+  //onClick we remove the car
   closeButton.setAttribute("onClick", "parentNode.remove()");
 
   i.appendChild(closeButton);
 
-  var content = document.createTextNode("This is a car for " + day + " car number " + count);
+  var content = document.createTextNode("This is car number " + count + " and it is for " + day);
   count++;
-  content.className = 'boxed';
+  //content.className = 'boxed';
   i.appendChild(content);
 
   //alert(day);
