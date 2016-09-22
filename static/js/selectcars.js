@@ -315,18 +315,28 @@ function submitCars() {
 
 count = 0;
 function makeCarBox(day) {
-var i = document.createElement('div');
-i.className = 'boxed';
+  var i = document.createElement('div');
+  i.className = 'boxed';
 
-var content = document.createTextNode("This is a car for " + day + " car number " + count);
-count++;
-content.className = 'boxed';
-i.appendChild(content);
+  var closeButton = document.createElement('button');
+  closeButton.type= 'button';
+  closeButton.setAttribute("onClick", "parentNode.remove()");
 
-//alert(day);
+  i.appendChild(closeButton);
 
-var d = document.getElementById( day );
-d.appendChild( i );
+  var content = document.createTextNode("This is a car for " + day + " car number " + count);
+  count++;
+  content.className = 'boxed';
+  i.appendChild(content);
+
+  //alert(day);
+
+  var d = document.getElementById( day );
+  d.appendChild( i );
+}
+
+function closeCarBox() {
+  this.parentNode.parentNode.removeChild(this.parentNode);
 }
 
 //This is a helper function which parses a time into a viuallly apealling
