@@ -314,6 +314,8 @@ function submitCars() {
 }
 
 count = 0;
+//author: edorsey
+//makes a car box
 function makeCarBox(day) {
   var i = document.createElement('div');
   i.className = 'boxed';
@@ -336,9 +338,6 @@ function makeCarBox(day) {
   d.appendChild( i );
 }
 
-function closeCarBox() {
-  this.parentNode.parentNode.removeChild(this.parentNode);
-}
 
 //This is a helper function which parses a time into a viuallly apealling
 //and uniform way
