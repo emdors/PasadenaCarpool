@@ -6,34 +6,35 @@ body {
     white-space: pre-line;    
 }
 
+.boxclose{
+    height: 20px;
+    width: 20px;
+    float: right;
+    /*cursor:pointer;*/
+    color: #fff;
+    border: 1px solid #AEAEAE;
+    border-radius: 50px;
+    background: #605F61;
+    font-size: 12px;
+    vertical-align: text-bottom;
+    /*display: inline-block;*/
+    /*line-height: 0px;*/
+    /*padding: 11px 3px;*/
+}
+
 .boxed {
-  height: 100px;
-  width: 100px;
+  height: 150px;
+  width: 150px;
   float:left;
   margin: 10px;
   border: 1px solid black ;
   padding: 5px;
 }
 
-a.boxclose{
-    float:right;
-    margin-top:-30px;
-    margin-right:-30px;
-    cursor:pointer;
-    color: #fff;
-    border: 1px solid #AEAEAE;
-    border-radius: 30px;
-    background: #605F61;
-    font-size: 31px;
-    font-weight: bold;
-    display: inline-block;
-    line-height: 0px;
-    padding: 11px 3px;       
+.boxclose:before{
+  content: "X";
 }
 
-.boxclose:before {
-    content: "×";
-}
 
 table.timetable {
   border-collapse: separate;
