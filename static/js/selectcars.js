@@ -332,6 +332,17 @@ function makeCarBox(day) {
   //content.className = 'boxed';
   i.appendChild(content);
 
+  var amDiv = document.createElement('div');
+  var amText = document.createTextNode("AM text");
+  amDiv.appendChild(amText);
+  amDiv.className = "amContainer";
+  i.appendChild(amDiv);
+
+  var pmDiv = document.createElement('div');
+  var pmText = document.createTextNode("PM text");
+  pmDiv.appendChild(pmText);
+  pmDiv.className = "pmContainer";
+  i.appendChild(pmDiv);
   //alert(day);
 
   var d = document.getElementById( day );
