@@ -23,7 +23,7 @@ body {
 }
 
 .boxed {
-  height: 150px;
+  height: auto;
   width: 150px;
   float:left;
   margin: 10px;
@@ -35,6 +35,19 @@ body {
   content: "X";
 }
 
+.amContainer{
+    height: auto;
+    width: 140px;
+    border: 1px solid gray ;
+}
+
+.pmContainer{
+    height: auto;
+    width: 140px;
+    border: 1px solid gray ;
+    background: gray;
+    margin-top: 10px;
+}
 
 table.timetable {
   border-collapse: separate;
