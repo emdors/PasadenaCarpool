@@ -24,6 +24,7 @@ body {
 
 .boxed {
   height: auto;
+  min-height: 200px;
   width: 150px;
   float:left;
   margin: 10px;
@@ -37,11 +38,13 @@ body {
 
 .amContainer{
     height: auto;
+    min-height: 70px;
     width: 140px;
     border: 1px solid gray ;
 }
 
 .pmContainer{
+    min-height: 70px;
     height: auto;
     width: 140px;
     border: 1px solid gray ;
