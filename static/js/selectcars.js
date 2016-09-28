@@ -336,6 +336,10 @@ function makeCarBox(day) {
   var amText = document.createTextNode("AM text");
   amDiv.appendChild(amText);
   amDiv.className = "amContainer";
+  amDiv.setAttribute("drop", "alert('on drop')");
+  //amDiv.addEventListener("drop", "alert('on drop?')");
+  //amDiv.setAttribute("ondragover", "alert('on drag over')");
+  
   i.appendChild(amDiv);
 
   var pmDiv = document.createElement('div');
