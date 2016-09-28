@@ -315,7 +315,7 @@ function submitCars() {
 
 count = 0;
 //author: edorsey
-//makes a car box
+//Makes a car box
 function makeCarBox(day) {
   var i = document.createElement('div');
   i.className = 'boxed';

@@ -10,20 +10,17 @@ body {
     height: 20px;
     width: 20px;
     float: right;
-    /*cursor:pointer;*/
     color: #fff;
     border: 1px solid #AEAEAE;
     border-radius: 50px;
     background: #605F61;
     font-size: 12px;
     vertical-align: text-bottom;
-    /*display: inline-block;*/
-    /*line-height: 0px;*/
-    /*padding: 11px 3px;*/
 }
 
 .boxed {
   height: auto;
+  min-height: 200px;
   width: 150px;
   float:left;
   margin: 10px;
@@ -35,14 +32,20 @@ body {
   content: "X";
 }
 
+.amContainer:hover{
+  background-color: greenyellow;
+}
+
 .amContainer{
     height: auto;
+    min-height: 70px;
     width: 140px;
-    border: 1px solid gray ;
+    border: 1px solid gray;
 }
 
 .pmContainer{
     height: auto;
+    min-height: 70px;
     width: 140px;
     border: 1px solid gray ;
     background: gray;

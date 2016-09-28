@@ -112,9 +112,11 @@ html(lang='en')
                     td.halfhour(colspan='2') :30
                   td
                 each personData in AMPMData.people
-                  tr(class='timeview' name=personData.name email=personData.email data-toggle="popover" title=personData.name + ' Info' data-content= "Email: " + personData.prefEmail + "\n" + "Size of Car: " + personData.numPassengers + "\n" + "Phone Number: " + + personData.phoneNumber + "\n" + "Notes: " + personData.notes data-trigger="hover")
+                
+                  td.text= personData.name
 
-                    td.name= personData.name
+                  tr(class='timeview' name=personData.name email=personData.email data-toggle="popover" title=personData.name + ' Info' data-content= "Email: " + personData.prefEmail + "\n" + "Size of Car: " + personData.numPassengers + "\n" + "Phone Number: " + + personData.phoneNumber + "\n" + "Notes: " + personData.notes data-trigger="hover" draggable = "true")
+
                     each hr,hrIdx in possibleDriveHours[AMPM]
                       each min,minIdx in [0, 15, 30, 45]
 
