@@ -336,10 +336,15 @@ function makeCarBox(day) {
   var amText = document.createTextNode("AM text");
   amDiv.appendChild(amText);
   amDiv.className = "amContainer";
-  amDiv.setAttribute("drop", "alert('on drop')");
-  //amDiv.addEventListener("drop", "alert('on drop?')");
-  //amDiv.setAttribute("ondragover", "alert('on drag over')");
-  
+  amDiv.setAttribute("ondragover", "allowDrop(event)");
+  amDiv.ondrop = function(){
+    event.preventDefault();
+
+    alert('dropped');
+  };
+  amDiv.addEventListener("drop", "onDropFn(eventt)");
+ //amDiv.addEventListener("drop", "onDropFn(event)");
+
   i.appendChild(amDiv);
 
   var pmDiv = document.createElement('div');
@@ -353,6 +358,10 @@ function makeCarBox(day) {
   d.appendChild( i );
 }
 
+//author Emily Dorsey and Teal Stanard 
+function allowDrop(event) {
+    event.preventDefault();
+}
 
 //This is a helper function which parses a time into a viuallly apealling
 //and uniform way
