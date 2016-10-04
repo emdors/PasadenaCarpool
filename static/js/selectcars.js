@@ -333,24 +333,37 @@ function makeCarBox(day) {
   i.appendChild(content);
 
   var amDiv = document.createElement('div');
-  var amText = document.createTextNode("AM text");
+  var amText = document.createTextNode("Drag passengers here for the AM");
   amDiv.appendChild(amText);
   amDiv.className = "amContainer";
   amDiv.setAttribute("ondragover", "allowDrop(event)");
-  amDiv.ondrop = function(){
+  amDiv.ondrop = function(event){
     event.preventDefault();
-
-    alert('dropped');
+    var personName = event.dataTransfer.getData("Text");
+    var listEl = document.createElement('li');
+    var dropText = document.createTextNode("\n dropped");
+    listEl.appendChild(dropText);
+    amDiv.appendChild(listEl);
   };
-  amDiv.addEventListener("drop", "onDropFn(eventt)");
- //amDiv.addEventListener("drop", "onDropFn(event)");
+  amDiv.ondragend = function(event) {
+    amDiv.style.backgroundColor = 'pink';
+  };
 
   i.appendChild(amDiv);
 
   var pmDiv = document.createElement('div');
-  var pmText = document.createTextNode("PM text");
+  var pmText = document.createTextNode("Drag passengers here for the PM");
   pmDiv.appendChild(pmText);
   pmDiv.className = "pmContainer";
+  pmDiv.setAttribute("ondragover", "allowDrop(event)");
+  pmDiv.ondrop = function(event){
+    event.preventDefault();
+    var personName = event.dataTransfer.getData("Text");
+    var listEl = document.createElement('li');
+    var dropText = document.createTextNode("\n dropped");
+    listEl.appendChild(dropText);
+    pmDiv.appendChild(listEl);
+  };
   i.appendChild(pmDiv);
   //alert(day);
 
