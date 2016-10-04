@@ -29,6 +29,7 @@ var viewpath = __dirname + '/views/';
 var datapath = __dirname + '/data/'
 var schedulepath = datapath + '/schedules/'
 var userdatapath = datapath + '/users/';
+var histdatapath = datapath + '/statistics/'
 
 var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 var possibleDriveHours = {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]};
@@ -115,6 +116,22 @@ function userDataFileName(dateInput) {
 
   // Return it in right format
   return date.getFullYear() + '-' + ('0'+(date.getMonth()+1)).slice(-2) + '-' + ('0'+date.getDate()).slice(-2);
+}
+
+function parseHistoricalData(callback) {
+  fs.readFile(histdatapath + 'test.json', 'utf8', function(err, data) {
+    if (err || !data) {
+      // Build empty schedule, with an empty object for each day
+      var sch = {};
+      for (var weekdayIdx=0; weekdayIdx<weekdays.length; ++weekdayIdx) {
+        sch[weekdays[weekdayIdx]] = {};
+      }
+      callback(sch);
+    } else {
+      var data_full = JSON.parse(data)
+      callback(data_full);
+    }
+  });
 }
 
 //Pass in the date of data which we want to parse, undefined is nextweeks data
@@ -470,6 +487,14 @@ app.get('/howToCzar', ensureAuthenticated, function(req, res){
   res.render(viewpath+"howToCzar.jade", { user: req.user })
 
 });
+
+app.get('/statistics', ensureAuthenticated, function(req, res){
+  var fs = require("fs");
+  var jsoncontent = fs.readFileSync(".\\data\\statistics\\test2.json");
+  var dataForStatPage = JSON.parse(jsoncontent)
+  res.render(viewpath+"statistics.jade", dataForStatPage)
+});
+
 
 app.get('/external', ensureAuthenticated, function(req, res){
   res.render(viewpath+"external.jade", { user: req.user })
