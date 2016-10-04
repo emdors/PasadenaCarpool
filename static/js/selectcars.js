@@ -312,7 +312,10 @@ function submitCars() {
   changedPage = false;
   document.getElementById('allCars').value = JSON.stringify(cars);
 }
-
+passengerName = ""
+function dragStart(event,name){
+  passengerName = name;
+}
 count = 0;
 //author: edorsey
 //Makes a car box
@@ -340,15 +343,22 @@ function makeCarBox(day) {
   amDiv.ondrop = function(event){
     event.preventDefault();
     var personName = event.dataTransfer.getData("Text");
-    var listEl = document.createElement('li');
-    var dropText = document.createTextNode("\n dropped");
-    listEl.appendChild(dropText);
-    amDiv.appendChild(listEl);
-  };
-  amDiv.ondragend = function(event) {
-    amDiv.style.backgroundColor = 'pink';
-  };
+    var label = document.createElement('label');
+    label.className = "radioLabel";
+    var listEl = document.createElement('input');
+    listEl.setAttribute("type", "radio");
+    listEl.setAttribute("name", "name");
+    listEl.setAttribute("value", passengerName);
+    listEl.setAttribute("textContent", passengerName);
+    listEl.setAttribute("style", "margin: 0 3px 0 3px ");
+    
+    var dropText = document.createTextNode(passengerName);
+    label.appendChild(listEl);
+    label.appendChild(dropText);
 
+    amDiv.appendChild(label);
+  };
+ 
   i.appendChild(amDiv);
 
   var pmDiv = document.createElement('div');
@@ -360,7 +370,7 @@ function makeCarBox(day) {
     event.preventDefault();
     var personName = event.dataTransfer.getData("Text");
     var listEl = document.createElement('li');
-    var dropText = document.createTextNode("\n dropped");
+    var dropText = document.createTextNode(passengerName);
     listEl.appendChild(dropText);
     pmDiv.appendChild(listEl);
   };

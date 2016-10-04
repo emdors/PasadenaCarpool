@@ -20,8 +20,8 @@ body {
 
 .boxed {
   height: auto;
-  min-height: 200px;
-  width: 150px;
+  min-height: 310px;
+  width: 200px;
   float:left;
   margin: 10px;
   border: 1px solid black ;
@@ -34,21 +34,31 @@ body {
 
 .amContainer{
     height: auto;
-    min-height: 70px;
-    width: 140px;
+    min-height: 125px;
+    width: 190px;
     border: 1px solid gray;
 }
-
+.radioLabel{
+    display: block;
+    max-width: 100%;
+    font-weight: 400;
+    margin-bottom: 0;
+}
 .pmContainer{
-    min-height: 70px;
+    min-height: 125px;
     height: auto;
-    width: 140px;
+    width: 190px;
     border: 1px solid gray ;
     margin-top: 10px;
 }
 
 table.timetable {
   border-collapse: separate;
+  float: left;
+}
+.buttons{
+  float: left;
+  width: 100%;
 }
 
 table.timetable tr.timeview td.name {
