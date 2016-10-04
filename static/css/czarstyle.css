@@ -16,6 +16,7 @@ body {
     background: #605F61;
     font-size: 12px;
     vertical-align: text-bottom;
+    line-height: 4px; 
 }
 
 .boxed {
