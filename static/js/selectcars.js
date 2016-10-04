@@ -333,7 +333,7 @@ function makeCarBox(day) {
   i.appendChild(content);
 
   var amDiv = document.createElement('div');
-  var amText = document.createTextNode("Drag passengers here for the AM");
+  var amText = document.createTextNode("Drop AM passengers here");
   amDiv.appendChild(amText);
   amDiv.className = "amContainer";
   amDiv.setAttribute("ondragover", "allowDrop(event)");
@@ -352,7 +352,7 @@ function makeCarBox(day) {
   i.appendChild(amDiv);
 
   var pmDiv = document.createElement('div');
-  var pmText = document.createTextNode("Drag passengers here for the PM");
+  var pmText = document.createTextNode("Drop PM passengers here");
   pmDiv.appendChild(pmText);
   pmDiv.className = "pmContainer";
   pmDiv.setAttribute("ondragover", "allowDrop(event)");
