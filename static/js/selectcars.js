@@ -48,16 +48,18 @@ window.onload = function() {
         //This function deals with being able to pick drivers and
         //Pasengers
         td.onclick = function() {
+          //Commented out the code that used to select drivers/passengers
+          //keeping here in case we want to reference how to select people 
           //Make sure that we can only change the car status of selected tiles.
-          if(this.getAttribute('selected') == 'true'){
-            if (this.getAttribute('carstatus') == 'passenger'){
-              this.setAttribute('carstatus', 'driver');
-            } else if (this.getAttribute('carstatus') == 'driver'){
-              this.setAttribute('carstatus', 'unassigned');
-            } else{
-              this.setAttribute('carstatus', 'passenger');
-            }
-          }
+          // if(this.getAttribute('selected') == 'true'){
+          //   if (this.getAttribute('carstatus') == 'passenger'){
+          //     this.setAttribute('carstatus', 'driver');
+          //   } else if (this.getAttribute('carstatus') == 'driver'){
+          //     this.setAttribute('carstatus', 'unassigned');
+          //   } else{
+          //     this.setAttribute('carstatus', 'passenger');
+          //   }
+          // }
         }
       }
     }
@@ -314,13 +316,15 @@ function submitCars() {
 }
 
 passengerName = ""
+ampm = ""
 /*
 * Drag start is called when you start dragging the table row
 * Sets the global var passengerName to the name of the person 
 *   being dragged
 */
-function dragStart(event,name){
+function dragStart(event,name, ampmstring){
   passengerName = name;
+  ampm = ampmstring;
 }
 
 count = 0;
@@ -357,27 +361,31 @@ function makeCarBox(day) {
   
   // on drop we make a list of radio elements and add passengerName to amDiv
   amDiv.ondrop = function(event) {
-    event.preventDefault();
-    var personName = event.dataTransfer.getData("Text");
-    
-    // personName and radio buttons go under label element
-    var label = document.createElement('label');
-    label.className = "radioLabel";
-    var listEl = document.createElement('input');
-    listEl.setAttribute("type", "radio");
-    var amID = amDiv.id;
-    listEl.setAttribute("name", amID);
-    listEl.setAttribute("value", passengerName);
-    listEl.setAttribute("textContent", passengerName);
-    listEl.setAttribute("style", "margin: 0 3px 0 3px ");
+    if(ampm == "PM"){
+      alert("You tried to add a PM passenger to an AM spot.");}
+    else{
+      event.preventDefault();
+      var personName = event.dataTransfer.getData("Text");
+      
+      // personName and radio buttons go under label element
+      var label = document.createElement('label');
+      label.className = "radioLabel";
+      var listEl = document.createElement('input');
+      listEl.setAttribute("type", "radio");
+      var amID = amDiv.id;
+      listEl.setAttribute("name", amID);
+      listEl.setAttribute("value", passengerName);
+      listEl.setAttribute("textContent", passengerName);
+      listEl.setAttribute("style", "margin: 0 3px 0 3px ");
 
-    // append radio button and passengerName text
-    var dropText = document.createTextNode(passengerName);
-    label.appendChild(listEl);
-    label.appendChild(dropText);
+      // append radio button and passengerName text
+      var dropText = document.createTextNode(passengerName);
+      label.appendChild(listEl);
+      label.appendChild(dropText);
 
-    // append the list element to the amDiv
-    amDiv.appendChild(label);
+      // append the list element to the amDiv
+      amDiv.appendChild(label);
+    }
   };
  
   // add amDiv to the car box
@@ -393,31 +401,41 @@ function makeCarBox(day) {
 
   // on drop, we make a label and add passengerName text and radio button
   pmDiv.ondrop = function(event) {
-    event.preventDefault();
-    var personName = event.dataTransfer.getData("Text");
-    
-    // personName and radio buttons go under label element
-    var label = document.createElement('label');
-    label.className = "radioLabel";
-    var listEl = document.createElement('input');
-    listEl.setAttribute("type", "radio");
-    var pmID = pmDiv.id;
-    listEl.setAttribute("name", pmID);
-    listEl.setAttribute("value", passengerName);
-    listEl.setAttribute("textContent", passengerName);
-    listEl.setAttribute("style", "margin: 0 3px 0 3px ");
+     if(ampm == "AM"){
+      alert("You tried to add an AM passenger to a PM spot.");}
+    else{
+      event.preventDefault();
+      var personName = event.dataTransfer.getData("Text");
+      
+      // personName and radio buttons go under label element
+      var label = document.createElement('label');
+      label.className = "radioLabel";
+      var listEl = document.createElement('input');
+      listEl.setAttribute("type", "radio");
+      var pmID = pmDiv.id;
+      listEl.setAttribute("name", pmID);
+      listEl.setAttribute("value", passengerName);
+      listEl.setAttribute("textContent", passengerName);
+      listEl.setAttribute("style", "margin: 0 3px 0 3px ");
 
-    // append radio button and passengerName text
-    var dropText = document.createTextNode(passengerName);
-    label.appendChild(listEl);
-    label.appendChild(dropText);
+      // append radio button and passengerName text
+      var dropText = document.createTextNode(passengerName);
+      label.appendChild(listEl);
+      label.appendChild(dropText);
 
-    // append the list element to the amDiv
-    pmDiv.appendChild(label);
+      // append the list element to the amDiv
+      pmDiv.appendChild(label);
+    }
   };
 
   // add the pmDiv to the car box
   i.appendChild(pmDiv);
+
+  var finishCarButton = document.createElement('button');
+  finishCarButton.className = 'finishCarButton';
+  //need function here to finish the car 
+  //finishCarButton.setAttribute("onClick", "parentNode.remove()");
+  i.appendChild(finishCarButton);
 
   // add the car box to its day div
   var d = document.getElementById( day );
