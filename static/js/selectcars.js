@@ -312,60 +312,86 @@ function submitCars() {
   changedPage = false;
   document.getElementById('allCars').value = JSON.stringify(cars);
 }
+
 passengerName = ""
+/*
+* Drag start is called when you start dragging the table row
+* Sets the global var passengerName to the name of the person 
+*   being dragged
+*/
 function dragStart(event,name){
   passengerName = name;
 }
+
 count = 0;
-//author: edorsey
-//Makes a car box
+// author: edorsey, tstannard
+// Makes a car box
 function makeCarBox(day) {
+  // create the car box div
   var i = document.createElement('div');
   i.className = 'boxed';
+  i.id = count.toString() + day;
 
+  // create close button for each car
   var closeButton = document.createElement('button');
   closeButton.className = 'boxclose';
+
   //onClick we remove the car
   closeButton.setAttribute("onClick", "parentNode.remove()");
 
   i.appendChild(closeButton);
 
+  // car text
   var content = document.createTextNode("This is car number " + count + " and it is for " + day);
   count++;
   //content.className = 'boxed';
   i.appendChild(content);
 
+  // am box
   var amDiv = document.createElement('div');
   var amText = document.createTextNode("Drop AM passengers here");
   amDiv.appendChild(amText);
   amDiv.className = "amContainer";
   amDiv.setAttribute("ondragover", "allowDrop(event)");
+  amDiv.id = count.toString() + day + "AM";
+  
+  // on drop we make a list of radio elements and add passengerName to amDiv
   amDiv.ondrop = function(event){
     event.preventDefault();
     var personName = event.dataTransfer.getData("Text");
+    
+    // personName and radio buttons go under label element
     var label = document.createElement('label');
     label.className = "radioLabel";
     var listEl = document.createElement('input');
     listEl.setAttribute("type", "radio");
-    listEl.setAttribute("name", "name");
+    var amID = amDiv.id;
+    listEl.setAttribute("name", amID);
     listEl.setAttribute("value", passengerName);
     listEl.setAttribute("textContent", passengerName);
     listEl.setAttribute("style", "margin: 0 3px 0 3px ");
-    
+
+    // append radio button and passengerName text
     var dropText = document.createTextNode(passengerName);
     label.appendChild(listEl);
     label.appendChild(dropText);
 
+    // append the list element to the amDiv
     amDiv.appendChild(label);
   };
  
+  // add amDiv to the car box
   i.appendChild(amDiv);
 
+  // repeat above with pm box
   var pmDiv = document.createElement('div');
   var pmText = document.createTextNode("Drop PM passengers here");
   pmDiv.appendChild(pmText);
   pmDiv.className = "pmContainer";
   pmDiv.setAttribute("ondragover", "allowDrop(event)");
+  pmDiv.id = count.toString() + day + "PM";
+
+  // on drop, we make a label and add passengerName text and radio button
   pmDiv.ondrop = function(event){
     event.preventDefault();
     var personName = event.dataTransfer.getData("Text");
@@ -374,14 +400,17 @@ function makeCarBox(day) {
     listEl.appendChild(dropText);
     pmDiv.appendChild(listEl);
   };
-  i.appendChild(pmDiv);
-  //alert(day);
 
+  // add the pmDiv to the car box
+  i.appendChild(pmDiv);
+
+  // add the car box to its day div
   var d = document.getElementById( day );
   d.appendChild( i );
 }
 
-//author Emily Dorsey and Teal Stanard 
+//author: edorsey,tstannard
+// this needs to be here
 function allowDrop(event) {
     event.preventDefault();
 }
