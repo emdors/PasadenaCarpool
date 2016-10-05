@@ -401,8 +401,8 @@ function makeCarBox(day) {
     label.className = "radioLabel";
     var listEl = document.createElement('input');
     listEl.setAttribute("type", "radio");
-    var amID = amDiv.id;
-    listEl.setAttribute("name", amID);
+    var pmID = pmDiv.id;
+    listEl.setAttribute("name", pmID);
     listEl.setAttribute("value", passengerName);
     listEl.setAttribute("textContent", passengerName);
     listEl.setAttribute("style", "margin: 0 3px 0 3px ");
