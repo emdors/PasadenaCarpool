@@ -428,6 +428,12 @@ function makeCarBox(day) {
       var dropText = document.createTextNode(passengerName);
       label.appendChild(listEl);
       label.appendChild(dropText);
+      
+      //append removePersonButton to label
+      var removePersonButton = document.createElement('button');
+      removePersonButton.className = 'removePersonButton';
+      removePersonButton.setAttribute("onClick", "parentNode.remove()");
+      label.appendChild(removePersonButton);
 
       // append the list element to the amDiv
       pmDiv.appendChild(label);
