@@ -376,12 +376,18 @@ function makeCarBox(day) {
       listEl.setAttribute("name", amID);
       listEl.setAttribute("value", passengerName);
       listEl.setAttribute("textContent", passengerName);
-      listEl.setAttribute("style", "margin: 0 3px 0 3px ");
+      listEl.setAttribute("style", "margin: 0 3px 0 3px");
 
       // append radio button and passengerName text
       var dropText = document.createTextNode(passengerName);
       label.appendChild(listEl);
       label.appendChild(dropText);
+
+      //append removePersonButton to label
+      var removePersonButton = document.createElement('button');
+      removePersonButton.className = 'removePersonButton';
+      removePersonButton.setAttribute("onClick", "parentNode.remove()");
+      label.appendChild(removePersonButton);
 
       // append the list element to the amDiv
       amDiv.appendChild(label);

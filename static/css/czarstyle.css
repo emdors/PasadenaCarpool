@@ -5,6 +5,23 @@ body {
 .popover {
   white-space: pre-line;    
 }
+.removePersonButton{
+  color: #777;
+  border: white;
+  font: 12px/100% arial, sans-serif;
+  background-color: white;
+  box-sizing: border-box;
+  padding: 0px;
+  border-width: 0px;
+  border-style: outset;
+  border-color: white;
+  border-image: initial;
+  padding-left: 3px;
+}
+
+.removePersonButton:before{
+  content: "X"
+}
 
 .boxclose{
   height: 20px;
