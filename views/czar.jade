@@ -114,7 +114,7 @@ html(lang='en')
                 each personData in AMPMData.people
                 
 
-                  tr(class='timeview' name=personData.name email=personData.email data-toggle="popover" title=personData.name + ' Info' data-content= "Email: " + personData.prefEmail + "\n" + "Size of Car: " + personData.numPassengers + "\n" + "Phone Number: " + + personData.phoneNumber + "\n" + "Notes: " + personData.notes data-trigger="hover" draggable = "true" ondragstart ='dragStart(event,"#{personData.name}");')
+                  tr(class='timeview' name=personData.name email=personData.email data-toggle="popover" title=personData.name + ' Info' data-content= "Email: " + personData.prefEmail + "\n" + "Size of Car: " + personData.numPassengers + "\n" + "Phone Number: " + + personData.phoneNumber + "\n" + "Notes: " + personData.notes data-trigger="hover" draggable = "true" ondragstart ='dragStart(event,"#{personData.name}", "#{AMPM}");')
                     td.name= personData.name
                     each hr,hrIdx in possibleDriveHours[AMPM]
                       each min,minIdx in [0, 15, 30, 45]
