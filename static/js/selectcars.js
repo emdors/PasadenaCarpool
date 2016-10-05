@@ -356,7 +356,7 @@ function makeCarBox(day) {
   amDiv.id = count.toString() + day + "AM";
   
   // on drop we make a list of radio elements and add passengerName to amDiv
-  amDiv.ondrop = function(event){
+  amDiv.ondrop = function(event) {
     event.preventDefault();
     var personName = event.dataTransfer.getData("Text");
     
@@ -392,13 +392,28 @@ function makeCarBox(day) {
   pmDiv.id = count.toString() + day + "PM";
 
   // on drop, we make a label and add passengerName text and radio button
-  pmDiv.ondrop = function(event){
+  pmDiv.ondrop = function(event) {
     event.preventDefault();
     var personName = event.dataTransfer.getData("Text");
-    var listEl = document.createElement('li');
+    
+    // personName and radio buttons go under label element
+    var label = document.createElement('label');
+    label.className = "radioLabel";
+    var listEl = document.createElement('input');
+    listEl.setAttribute("type", "radio");
+    var amID = amDiv.id;
+    listEl.setAttribute("name", amID);
+    listEl.setAttribute("value", passengerName);
+    listEl.setAttribute("textContent", passengerName);
+    listEl.setAttribute("style", "margin: 0 3px 0 3px ");
+
+    // append radio button and passengerName text
     var dropText = document.createTextNode(passengerName);
-    listEl.appendChild(dropText);
-    pmDiv.appendChild(listEl);
+    label.appendChild(listEl);
+    label.appendChild(dropText);
+
+    // append the list element to the amDiv
+    pmDiv.appendChild(label);
   };
 
   // add the pmDiv to the car box
@@ -414,6 +429,7 @@ function makeCarBox(day) {
 function allowDrop(event) {
     event.preventDefault();
 }
+
 
 //This is a helper function which parses a time into a viuallly apealling
 //and uniform way
