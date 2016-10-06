@@ -143,7 +143,7 @@ app.get("/czarThisWeek", ensureAuthenticated, function(req, res) {
       peoplesTimes: parsed,
       isNextWeek: false
     };
-    
+
     res.render(viewpath + "czar.jade", dataForCzarPage);
   });
 });
@@ -163,23 +163,9 @@ app.get("/dynamic/currentUser.js", ensureAuthenticated, function(req, res) {
 });
 app.get("/dynamic/allPreferences.js", ensureAuthenticated, function(req, res) {
   //res.set('Content-Type', 'application/javascript');
-  
-  fs.readdir(userdatapath, function(err, files) {
-    if (err) {
-      console.log('Failed reading the user data directory');
-      process.exit(1);
-    }
-    async.map(files, function(userEmail, callback) {
-      dbComm.getPreferences(userEmail, function(preferences){
-        callback(undefined, preferences);
-      });
-    }, function(err, allPreferences) {
-      var allPreferencesObj = {};
-      for (var i=0; i<allPreferences.length; ++i) {
-        allPreferencesObj[allPreferences[i].email] = allPreferences[i];
-      }
-      res.send("var allPreferences = " + JSON.stringify(allPreferencesObj));
-    });
+  dbComm.getAllPreferences(function(allPreferences) {
+    var allPreferences = allPreferences;
+    res.send("var allPreferences = " + JSON.stringify(allPreferences));
   });
 });
 

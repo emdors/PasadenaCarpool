@@ -12,6 +12,25 @@ var possibleDriveHours = {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]};
 
 
 var self = module.exports = {
+  getAllPreferences : function getAllPreferences(callback){
+    fs.readdir(userdatapath, function(err, files) {
+      if (err) {
+        console.log('Failed reading the user data directory');
+        process.exit(1);
+      }
+      async.map(files, function(userEmail, callback) {
+        self.getPreferences(userEmail, function(preferences){
+          callback(undefined, preferences);
+        });
+      }, function(err, allPreferences) {
+        var allPreferencesObj = {};
+        for (var i=0; i<allPreferences.length; ++i) {
+          allPreferencesObj[allPreferences[i].email] = allPreferences[i];
+        }
+        callback(allPreferencesObj);
+      });
+    });
+  },
   getSchedule :function getSchedule(day, callback) {
     fs.readFile(schedulepath + self.userDataFileName(day), 'utf8', function(err, data) {
       if (err || !data) {
