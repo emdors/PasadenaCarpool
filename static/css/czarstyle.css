@@ -5,8 +5,10 @@ body {
 .popover {
   white-space: pre-line;    
 }
+
 .removePersonButton{
-  color: #777;
+  display: inline;
+  color: #999;
   border: white;
   font: 12px/100% arial, sans-serif;
   background-color: white;
@@ -50,6 +52,11 @@ body {
   content: "X";
 }
 
+.titleTable {
+    float: left;
+    margin-bottom: 15px;
+}
+
 .amContainer {
   height: auto;
   min-height: 120px;
@@ -60,12 +67,7 @@ body {
   background: white;
   margin-top: 10px;
 }
-.radioLabel{
-  display: block;
-  max-width: 100%;
-  font-weight: 400;
-  margin-bottom: 0;
-}
+
 .pmContainer{
   min-height: 120px;
   height: auto;
@@ -76,14 +78,24 @@ body {
   padding: 3px;
   background: white;
 }
+
+.radioLabel{
+  display: block;
+  max-width: 100%;
+  font-weight: 400;
+  margin-bottom: 0;
+}
+
 .finishCarButton{
   height:30px;
   width: 190px;
   margin-top: 6px;
 }
+
 .finishCarButton:before{
   content: "finish car"
 }
+
 table.timetable {
   border-collapse: separate;
   float: left;
@@ -91,14 +103,17 @@ table.timetable {
   overflow: visible;
   overflow-x: hidden;
 }
+
 .buttons{
   float: left;
   width: 100%;
 }
+
 .tableHolder{
   height: 300px;
   overflow: visible;
 }
+
 table.timetable tr.timeview td.name {
   height: 1.5em;
   width: 1.2em;
@@ -161,7 +176,6 @@ table.timetable tr.timeview td[selected="true"][carstatus="passenger"] {
   border-width: 3px;
 }
 
-
 table.timetable tr.timetext td.hour {
   font-size: 130%;
 }
@@ -182,7 +196,6 @@ table.carTable[selected="true"] tr td{
 }
 table.carTable {
   float: left;
-
 }
 
 table + table{

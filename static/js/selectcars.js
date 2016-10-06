@@ -340,7 +340,7 @@ function makeCarBox(day) {
   var closeButton = document.createElement('button');
   closeButton.className = 'boxclose';
 
-  //onClick we remove the car
+  // onClick we remove the car
   closeButton.setAttribute("onClick", "parentNode.remove()");
 
   i.appendChild(closeButton);

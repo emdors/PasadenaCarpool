@@ -98,31 +98,34 @@ html(lang='en')
 
 
         #timeResults
+        
           each dayData in peoplesTimes
+          
             h3= dayData.day
-
-            each AMPMData in dayData.times
-              - AMPM = AMPMData.halfday
-              h4= AMPM
-              table.timetable(day=dayData.day, halfday=AMPM)
-                tr.timetext
-                  td
-                  each hr in possibleDriveHours[AMPM]
-                    td.hour(colspan='2')= hr
-                    td.halfhour(colspan='2') :30
-                  td
-                each personData in AMPMData.people
-                
-
-                  tr(class='timeview' name=personData.name email=personData.email data-toggle="popover" title=personData.name + ' Info' data-content= "Email: " + personData.prefEmail + "\n" + "Size of Car: " + personData.numPassengers + "\n" + "Phone Number: " + + personData.phoneNumber + "\n" + "Notes: " + personData.notes data-trigger="hover" draggable = "true" ondragstart ='dragStart(event,"#{personData.name}", "#{AMPM}");')
-                    td.name= personData.name
-                    each hr,hrIdx in possibleDriveHours[AMPM]
-                      each min,minIdx in [0, 15, 30, 45]
-
-                        td(time=hr*100 + min, selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0), mousedover='false')
-                    unless personData.driveStatus == 'can'
-                      td.driveStatus= personData.driveStatus + ' drive'
             
+            each AMPMData in dayData.times
+              div(class="titleTable")
+                - AMPM = AMPMData.halfday
+                h4= AMPM
+                table.timetable(day=dayData.day, halfday=AMPM)
+                  tr.timetext
+                    td
+                    each hr in possibleDriveHours[AMPM]
+                      td.hour(colspan='2')= hr
+                      td.halfhour(colspan='2') :30
+                    td
+                  each personData in AMPMData.people
+                  
+
+                    tr(class='timeview' name=personData.name email=personData.email data-toggle="popover" title=personData.name + ' Info' data-content= "Email: " + personData.prefEmail + "\n" + "Size of Car: " + personData.numPassengers + "\n" + "Phone Number: " + + personData.phoneNumber + "\n" + "Notes: " + personData.notes data-trigger="hover" draggable = "true" ondragstart ='dragStart(event,"#{personData.name}", "#{AMPM}");')
+                      td.name= personData.name
+                      each hr,hrIdx in possibleDriveHours[AMPM]
+                        each min,minIdx in [0, 15, 30, 45]
+
+                          td(time=hr*100 + min, selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0), mousedover='false')
+                      unless personData.driveStatus == 'can'
+                        td.driveStatus= personData.driveStatus + ' drive'
+              
             //If the finished car is hit then we save what day we are using and call the make car function.
             // CURRENT COMMENTING OUT FINISH CAR BUTTON XXX
             //button(class="btn btn-primary",value='ADD', type='button' ,onClick='return makeCar("#{dayData.day}");') Finish Car
