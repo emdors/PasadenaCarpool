@@ -42,7 +42,7 @@ html(lang='en')
           li Individual constraints come first. Once in a while if you really really want to violate a constraint, email/call the person to check if that is ok.
           li Minimize number of cars required.
           li Individual preferences come next (e.g. preferences to leave a certain time or to drive or not to drive).
-          li Balance cumulative driving statistics so that everyone has roughly the same driving percentage. (Refer to the statistics sheet for the semester.)
+          li Balance cumulative driving statistics so that everyone has roughly the same driving percentage. (Refer to the statistics page for the semester.)
           li Avoid someone driving home alone from 3:30-6:30pm because of heavy traffic in the late afternoon/evening to Pasadena. That allows the person to use carpool lane.
           li Avoid someone driving too many times in one week if possible.
           li Group people who are from the same campus for convenience of drop off in AM/pick up in PM.
@@ -54,60 +54,21 @@ html(lang='en')
         p This tutorial is designed to give you a visual guide of how to use the tools properly to help create cars easily and efficently. The first step in this tutorial is to open the example czar page in a new tab. To do this #[a(href='/exampleCzar') Right click here ] and select "open in new tab". We will manipulate the results in this page so that we can learn the tools.
 
         
-        p The first step in this tutorial is to get familiar with the Czar page enviroment. Notice that there are two tables with gray and blue boxes, The top table corresponds to cars leaving Pasedena in the morning and the bottom table corresponds to cars leaving Claremont in the afternoon. In these tables the blue boxes represent times where a user has indicated they are willing to leave at while the gray boxes represent times in which the user does not want to leave. We also have a Monday Cars area at the bottom of the page which is empty. On the real Czar Page you will have multiple days of information which you will have to manage, but for this example we are only going to worry about one day.
+        p The first step in this tutorial is to get familiar with the Czar page enviroment. Notice that there are two tables with gray and blue boxes. The left table corresponds to individual's AM time preferences and the right table corresponds to individual's PM time preferences.. In these tables the blue boxes represent times where a user has indicated they are willing to leave at while the gray boxes represent times in which the user does not want to leave. 
 
-        p Lets make our first car. lets say we want to make a car leaving Pasedena at 7:15 where Caroline is driving and Estrid and Katie are passengers. To do this We can start by finding the column at the time 7:15 and go down and click on the blue box in the rows with names Caroline, Estrid and Kaite. Notice that you can see which box you are about to click by looking for the black borders around the blue box. When you click the three boxes your screen should look as follows:
-
-        img(src= "/images/tut1.png" width = "50%" height = "50%")
-
-        p If your screen does not look like this because a box has red borders instead of yellow or you accidentally clicked the wrong box do not worry, you can deselect a box by clicking it until the boarders become black again. The yellow boardering around the boxes you clicked represents that these people will be passengers leaving in a car at this time. We want Caroline to be driver, so click the yellow box on caroline's row again, which will turn it red, meaning that she is the driver. Your screen should look like this:
-
-        img(src= "/images/tut2.png" width = "50%" height = "50%")
-
-        p Now press the Finish Car button! a lot just changed, lets break it down into three parts. First lets take a look at the am table:
-
-        img(src= "/images/tut3.png" width = "50%" height = "50%")
-
-        p We see that all the blocks in the row of people who we just added to a car have changed to green blocks. These green blocks signfy that the user already has a ride leaving pasadena in the morning. In order to stop you from accidently putting someone in two cars you are not able to select green blocks. Now lets look at the PM table
-
-        img(src= "/images/tut4.png" width = "50%" height = "50%")
-
-        p We see that along with the normal blue boxes there are now purple boxes and brownish gold boxes. The purple boxes signify that the person is a driver of a car going in the other direction, so therefore we know that this person must be a driver of a car going in this direction. Simmilarly the gold boxes represent that the preson is a passenger going in the other direction so they must also be a passenger in this direction. Now lets look at the last part of the screen which is the "monday cars" table.
-
-        img(src= "/images/tut5.png" width = "20%" height = "20%")
-
-        p We now see the car we have just made, notice that it includes the name of the driver, the time it is leaving in the morning and the names of the people in the car on the left. The column on the right is empty, which represents that there is not a plan for the way back.  Also notice that there are two x's. The x next to the driver allows us to delete the whole car (both am and pm) and the one on the left will only delete the car going in the morning direction. In this case hitting either x will completely delete the car since we do not have a PM plan for this car. try deleting this car.
-
-        p Another important part of the Czar tools is the error checking which stops you from doing invalid things like trying to make two cars at once, or making someone who cannot drive drive and so forth. Lets try to make the error checking go off. To do this try to make car leaving claremont at 4:30pm with Guthrie as a driver and Doren as a passenger. Your pm timetable should look like the following before you press finish car:
-
-        img(src= "/images/tut6.png" width = "50%" height = "50%")
-
-        p Now when you press finish car you will get the following pop-up:
-
-        img(src= "/images/tut7.png" width = "50%" height = "50%")
-
-        p This error came up because as you can see on the right side of the table there is a note saying Guthrie cannot drive. This is a preference which he indicated on his fourm page. simmilar preferneces such as must drive will be indicated there as well so make sure to read thoes notes before adding people. There are many other errors which can happen but hopefully after reading the error message you will be able to figure out what you did wrong. 
-
-        p There may be cases where you want to overide error checking. For example you decide that you want Bob Nick, Guthrie and Aardvark to all go in a car together at 10:00. However you see that Aardvark did not check off that he could go at 10:00, but you call him and ask if he is willing to leave at 10:00 and he says that would be alright. To make this car you can do so by clicking the "directly enter car" button. After clicking on this you simply add the time you wish to go in the morning and the name of the drivers and passengers, Leave the pm side for blank now. Your screen should look like this:
-
-        img(src= "/images/tut8.png" width = "50%" height = "50%")
-
-        p Now click the "add car" button and the following car will appear:
-
-        img(src= "/images/tut9.png" width = "20%" height = "20%")
-
-        p However if you look carfully this also added bob going alone in his car going the other direction. To fix this simply press the x on the right column and we will get the desired car which looks like this:
-
-        img(src= "/images/tut10.png" width = "20%" height = "20%")
+        p To make a new car, click on the 'Make New Car' button underneath each day's AM time box.  This will create a visual of a car, with spaces for both AM and PM passengers.  If you want to delete a car, click the 'X' at the top right to remove it (Note: this will also remove any passengers you may have added).
+        
+        p Click anywhere on a passengers row, and drag onto the desired space in the car.  Note that if you drag the AM row of a person, you cannot drop it in the PM section of the car.  Once you have added someone to the car, the button to the left of their name will make them the car's driver and the 'X' to the right will remove them from the car.
 
         p This tool is really usefull for adding cars and allows you to make a complete car if you also decide to fill in the right column. An important thing to note is that this tool can only be used to make new cars and not to add on to existing ones. If you want to add onto existing ones you will have to delete the existing one, use the tool and then re add the other side. When you are done using this tool press the "close" button to make it go away.
 
-
-        p This complete your Czar tools tutorial, for practice you may want to find a complete set of cars for this day. You will know you succeed when all of the boxes are green. Also try to aviod having cars with only one person in it. On the actual Czar page their is a "save schuedule" button on the bottom of the page. Use this button often to make sure that you dont lose your progress.
+        p To finish and submit a car to the final schedule, click the 'Finish Car' button at the bottom of the car you want to finish.  It can be reopened using the 'Edit Car' button if you want to go back and change an already submitted car.
 
         h1 Czar Tool Tips
 
         p Even after going through the czar tools tutorial it stay not be clear what is the best way to go about how to make use of these tools, especially if you already have experience Czaring by hand. My advise to you is to just start by selecting a random group of people in the morning to add to a car and then look at the table in the pm and see if that selection leads to a group of people that would go well in a car together in the evening. These tools where designed not to help with a methodical approch, but rather to make the work of guesssing and checking very easy so that you can try many different combinations quickly. 
+
+        p Many people prefer to start with the most restrictive times and work forward from that.  It is important to pay attention to the drivers, as the same person needs to be the driver for both AM and PM.
 
 
 
