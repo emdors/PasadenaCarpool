@@ -317,14 +317,17 @@ function submitCars() {
 
 passengerName = ""
 ampm = ""
+driverStatusStr = ""
 /*
 * Drag start is called when you start dragging the table row
 * Sets the global var passengerName to the name of the person 
 *   being dragged
 */
-function dragStart(event,name, ampmstring){
+function dragStart(event,name, ampmstring, driverStatus){
   passengerName = name;
   ampm = ampmstring;
+  driverStatusStr = driverStatus
+  //alert(driverStatus);
 }
 
 count = 0;
@@ -391,6 +394,17 @@ function makeCarBox(day) {
 
       // append the list element to the amDiv
       amDiv.appendChild(label);
+
+      //alert(driverStatusStr);
+
+      // if(this.getAttribute('selected') == 'true'){
+      //       if (this.getAttribute('carstatus') == 'passenger'){
+      //         this.setAttribute('carstatus', 'driver');
+      //       } else if (this.getAttribute('carstatus') == 'driver'){
+      //         this.setAttribute('carstatus', 'unassigned');
+      //       } else{
+      //         this.setAttribute('carstatus', 'passenger');
+      //       }
     }
   };
  
