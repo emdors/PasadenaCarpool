@@ -4,16 +4,84 @@ var async = require('async');
 var viewpath = __dirname + '/views/';
 var datapath = __dirname + '/data/'
 var schedulepath = datapath + '/schedules/'
-var userdatapath = datapath + '/users/';
+var userdatapath = datapath + '/users/'
+var statisticspath = datapath + '/statistics/';
+var statFileName = 'test_file.json'
 
 
 var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 var possibleDriveHours = {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]};
 
+function createStatistics(){
+  json = {"weeks":[], "poolDays":0, "users":[]};
+  fs.writeFile(statisticspath + statFileName,  json);
+}
 
 var self = module.exports = {
+  updateStatistics : function updateStatistics(unp_data, callback){
+    // check for existing stats file
+    fs.stat(statisticspath+statFileName, function(err, stat) {
+      if(err != null){
+        if(err.code == 'ENOENT') {
+          // file does not exist
+          createStatistics();
+      }
+    }
+    });
+
+    // load the stats file to modify data and then write over
+    var stat = fs.readFileSync(statisticspath + 'hist_stats.json','utf8');
+    var parsed = JSON.parse(stat);
+
+    // parse week's schedule to update data with
+    var data = JSON.parse(unp_data);
+    json = {}
+
+    // add this week's schedule date to the list of weeks
+    var date = self.userDataFileName(new Date())
+    parsed.weeks.push(date);
+
+    carpoolers = {};
+
+    // for each day of the pool, increment the number of pool days and keep track of carpoolers
+    for (var weekdayIdx=0; weekdayIdx<weekdays.length; ++weekdayIdx) {
+      var day = weekdays[weekdayIdx];
+      var pool_day = data[day];
+      if (Object.keys(pool_day).length != 0) {
+        parsed.poolDays++;
+        console.log(pool_day);
+        for (var driver in Object.keys(pool_day)) {
+          console.log(driver);
+          if (!(driver in carpoolers)) {
+            new_pooler = {"driver_count":1, "rider_count":0};
+            carpoolers[driver] = new_pooler;
+          }
+          else {
+            carpoolers.driver.driver_count++;
+          }
+          // var new_user = {};
+          // new_user["username"] = key;
+          // new_user["total_driver"] = 0;
+          // new_user["total_rider"] = 0;
+          // var counts = {}
+          // counts["driver_count"] = 0;
+          // counts["rider_count"] = 0;
+          // new_user[date] = counts;
+          // parsed.users.push(new_user);
+        }
+      }
+    }
+    console.log(carpoolers);
+    for (var user in Object.keys(carpoolers)) {
+      console.log("this is what it says the user is:" + user);
+      var new_driver = {user: carpoolers[user]};
+      parsed.users.push(new_driver);
+    }
+    //pass data to file to write out to stats file
+    fs.writeFile(statisticspath + statFileName,  JSON.stringify(parsed));
+  },
   getStatistics : function getStatistics(callback){
-    var jsoncontent = fs.readFileSync(".\\data\\statistics\\hist_stats.json");
+    var jsoncontent = fs.readFileSync(statisticspath + "hist_stats.json");
     var dataForStatPage = JSON.parse(jsoncontent)
     callback(dataForStatPage)
   },
