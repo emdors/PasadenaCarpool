@@ -166,7 +166,6 @@ app.get("/dynamic/currentUser.js", ensureAuthenticated, function(req, res) {
 app.get("/dynamic/allPreferences.js", ensureAuthenticated, function(req, res) {
   //res.set('Content-Type', 'application/javascript');
   dbComm.getAllPreferences(function(allPreferences) {
-    var allPreferences = allPreferences;
     res.send("var allPreferences = " + JSON.stringify(allPreferences));
   });
 });
@@ -242,10 +241,9 @@ app.get('/howToCzar', ensureAuthenticated, function(req, res){
 });
 
 app.get('/statistics', ensureAuthenticated, function(req, res){
-  var fs = require("fs");
-  var jsoncontent = fs.readFileSync(".\\data\\statistics\\hist_stats.json");
-  var dataForStatPage = JSON.parse(jsoncontent)
-  res.render(viewpath+"statistics.jade", dataForStatPage)
+  dbComm.getStatistics(function(dataForStatPage) {
+    res.render(viewpath+"statistics.jade", dataForStatPage);
+  });
 });
 
 
