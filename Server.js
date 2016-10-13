@@ -463,7 +463,7 @@ app.get('/howToCzar', ensureAuthenticated, function(req, res){
 
 app.get('/statistics', ensureAuthenticated, function(req, res){
   var fs = require("fs");
-  var jsoncontent = fs.readFileSync(".\\data\\statistics\\test2.json");
+  var jsoncontent = fs.readFileSync(".\\data\\statistics\\hist_stats.json");
   var dataForStatPage = JSON.parse(jsoncontent)
   res.render(viewpath+"statistics.jade", dataForStatPage)
 });
