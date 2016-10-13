@@ -407,7 +407,7 @@ function makeCarBox(day) {
       //       }
     }
   };
- 
+
   // add amDiv to the car box
   i.appendChild(amDiv);
 
@@ -432,6 +432,7 @@ function makeCarBox(day) {
       label.className = "radioLabel";
       var listEl = document.createElement('input');
       listEl.setAttribute("type", "radio");
+      listEl.setAttribute("onChange", "handleChange(this)")
       var pmID = pmDiv.id;
       listEl.setAttribute("name", pmID);
       listEl.setAttribute("value", passengerName);
@@ -468,6 +469,12 @@ function makeCarBox(day) {
   d.appendChild( i );
 }
 
+function handleChange(myRadio){
+
+  content = 'The driver is: ' + myRadio.value;
+  alert(content);
+
+}
 //author: edorsey,tstannard
 // this needs to be here
 function allowDrop(event) {
