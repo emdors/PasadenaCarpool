@@ -98,7 +98,6 @@ passport.use(new GoogleStrategy({
 app.use( passport.initialize());
 app.use( passport.session());
 
-
 app.get("/", ensureAuthenticated ,function(req,res){
   
   dbComm.parseData(undefined, function(parsed) {
@@ -167,6 +166,7 @@ app.get("/dynamic/currentUser.js", ensureAuthenticated, function(req, res) {
 app.get("/dynamic/allPreferences.js", ensureAuthenticated, function(req, res) {
   //res.set('Content-Type', 'application/javascript');
   dbComm.getAllPreferences(function(allPreferences) {
+    var allPreferences = allPreferences;
     res.send("var allPreferences = " + JSON.stringify(allPreferences));
   });
 });

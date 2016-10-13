@@ -4,10 +4,10 @@ var async = require('async');
 var viewpath = __dirname + '/views/';
 var datapath = __dirname + '/data/'
 var schedulepath = datapath + '/schedules/'
+
 var userdatapath = datapath + '/users/'
 var statisticspath = datapath + '/statistics/';
 var statFileName = 'hist_stats.json'
-
 
 var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 var possibleDriveHours = {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]};
