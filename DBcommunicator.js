@@ -18,6 +18,7 @@ function createStatistics(){
 }
 
 var self = module.exports = {
+
   updateStatistics : function updateStatistics(unp_data, callback){
     console.log("Inside updateStatistics");
     try {
@@ -164,8 +165,8 @@ var self = module.exports = {
   },
   getStatistics : function getStatistics(callback){
     var jsoncontent = fs.readFileSync(statisticspath + "hist_stats.json");
-    var dataForStatPage = JSON.parse(jsoncontent)
-    callback(dataForStatPage)
+    var dataForStatPage = JSON.parse(jsoncontent);
+    callback(dataForStatPage);
   },
   getAllPreferences : function getAllPreferences(callback){
     fs.readdir(userdatapath, function(err, files) {
