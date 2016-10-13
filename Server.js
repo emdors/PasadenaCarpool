@@ -14,6 +14,8 @@ var passport = require( 'passport' )
 var GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
 var session = require( 'express-session' )
 
+//Things needed to access data in database
+var dbComm = require('./DBcommunicator');
 
 // API Access link for creating client ID and secret:
 // https://code.google.com/apis/console/
@@ -96,228 +98,9 @@ passport.use(new GoogleStrategy({
 app.use( passport.initialize());
 app.use( passport.session());
 
-// Get the filename for the user data for the given week. If there's no
-// argument, use *next* week. Returns string like 2016-03-21, the date of the
-// Monday starting that week.
-function userDataFileName(dateInput) {
-  var date;
-
-  if (typeof dateInput === 'string' && dateInput.length) {
-    date = new Date(dateInput);
-  } else if (dateInput instanceof Date) {
-    date = dateInput;
-  } else {
-    date = new Date();
-    date.setDate(date.getDate() + 7);
-  }
-
-  // Magic to set the day to the previous Monday...
-  date.setDate(date.getDate() - date.getDay() + 1);
-
-  // Return it in right format
-  return date.getFullYear() + '-' + ('0'+(date.getMonth()+1)).slice(-2) + '-' + ('0'+date.getDate()).slice(-2);
-}
-
-function parseHistoricalData(callback) {
-  fs.readFile(histdatapath + 'test.json', 'utf8', function(err, data) {
-    if (err || !data) {
-      // Build empty schedule, with an empty object for each day
-      var sch = {};
-      for (var weekdayIdx=0; weekdayIdx<weekdays.length; ++weekdayIdx) {
-        sch[weekdays[weekdayIdx]] = {};
-      }
-      callback(sch);
-    } else {
-      var data_full = JSON.parse(data)
-      callback(data_full);
-    }
-  });
-}
-
-//Pass in the date of data which we want to parse, undefined is nextweeks data
-function parseData(dateToParse, parseDataCallback) {
-  fs.readdir(userdatapath, function(err, files) {
-    if (err) {
-      console.log('Failed reading the user data directory');
-      process.exit(1);
-    }
-    //If the data we want to pull up is
-    var thisWeeksScheduleFilename = userDataFileName(dateToParse);
-    //console.log(thisWeeksScheduleFilename);
-
-    async.map(files, function(userEmail, callback) {
-      var fullFilename = userdatapath + userEmail + '/schedules/'
-                         + thisWeeksScheduleFilename;
-      fs.readFile(fullFilename, 'utf8', function(err, data) {
-        if (err) {
-          console.log('Got error (' + fullFilename + ')');
-          callback(null, undefined);
-        } else {
-          //get the preferenence data
-          getPreferences(userEmail, function(preferences){
-            var dataForCallback = {
-              email: preferences.email,
-              prefEmail: preferences.prefEmail,
-              name: preferences.name,
-              numPassengers: preferences.numPassengers,
-              phoneNumber: preferences.phoneNumber
-            };
-            
-            var scheduleData = JSON.parse(data)
-            for(var key in scheduleData) dataForCallback[key] = scheduleData[key];
-
-            var newScheduleData = {}
-            for(var key in scheduleData) {
-              if (key != 'name' && key != 'email' && key != 'numPassengers') {
-                newScheduleData[key] = scheduleData[key];
-              }
-            }
-            fs.writeFile(fullFilename, JSON.stringify(newScheduleData));
-
-            callback(err, dataForCallback);
-          });
-        }
-      });
-    }, function(err, allResultsUnfiltered) {
-      //console.log(allResultsUnfiltered);
-      var allResults = allResultsUnfiltered.filter(function(r) { return r !== undefined; });
-      var parsedResults = [];
-      for (var dayIdx=0; dayIdx<weekdays.length; ++dayIdx) {
-        parsedResults.push({"day":weekdays[dayIdx], "times":[{"halfday": "AM", "people" : []}, {"halfday":"PM", "people":[]}]});
-      }
-
-      for (var resultIdx=0; resultIdx < allResults.length; ++resultIdx) {
-        var result = allResults[resultIdx];
-
-        for (var dayIdx=0; dayIdx<weekdays.length; dayIdx++) {
-          var day = weekdays[dayIdx];
-          for (var ampm in possibleDriveHours) {
-            var thisPersonsTimes = result[day+ampm+'Times'];
-            var canGos = [];
-
-            for (var hrIdx = 0; hrIdx<possibleDriveHours[ampm].length; hrIdx++) {
-              var hr = possibleDriveHours[ampm][hrIdx];
-              for (var min=0; min<60; min += 15) {
-                var hrMin = hr*100 + min;
-                var canGo = thisPersonsTimes.indexOf(hrMin) != -1;
-                canGos.push({time:hrMin, canGo: canGo});
-              }
-            }
-            // Using filter instead of find because node on Knuth does not have find
-            // Also why I'm using the function(x) {return y;} syntax rather than x=>y
-            parsedResults.filter(
-                //d => d.day == day
-                function(d) { return d.day == day; }
-              )[0].times.filter(
-                //hd => hd.halfday == ampm
-                function (hd) { return hd.halfday == ampm; }
-              )[0].people.push({
-                name: result.name,
-                notes: result[day + 'notes'],
-                driveStatus: result[day + 'DriveStatus'],
-                canGos: canGos,
-                numPassengers: result.numPassengers,
-                email: result.email,
-                prefEmail: result.prefEmail,
-                phoneNumber: result.phoneNumber
-              });
-          }
-        }
-
-        for (var dayIdx=0; dayIdx<parsedResults.length; dayIdx++) {
-          var dayData = parsedResults[dayIdx];
-          for (var ampmIdx=0; ampmIdx<dayData.times.length; ampmIdx++) {
-            var ampmdata = dayData.times[ampmIdx];
-            // Sort the people by their earliest/latest 'selected' entry (earliest if
-            // PM, latest if AM)
-            ampmdata.people.sort(function(p1, p2) {
-              for (var canGoIdx=0; canGoIdx<p1.canGos.length; canGoIdx++) {
-                var realIdx = ampmdata.halfday == 'AM'?
-                  p1.canGos.length-canGoIdx-1 : canGoIdx;
-                if (p1.canGos[realIdx].canGo) return -1;
-                if (p2.canGos[realIdx].canGo) return 1;
-              }
-              return 0;
-            });
-          }
-        }
-      }
-
-      parseDataCallback(parsedResults);
-    });
-  });
-}
-
-function getPreferences(userEmail, preferencesCallback){
-  var fullFilename = userdatapath + userEmail + "/preferences"
-  fs.readFile(fullFilename, 'utf8', function(err, data) {
-    if (err) {
-      console.log('Got error (' + fullFilename + ')');
-      preferencesCallback(undefined);
-    } else {
-        var myData;
-        try{
-          myData = JSON.parse(data)
-          if(myData.prefEmail == undefined){
-            myData.prefEmail = userEmail
-          }
-          myData.email = userEmail
-        }
-        catch(e){
-          myData = {
-            name: "",
-            phoneNumber: "",
-            numPassengers: "",
-            email: userEmail,
-            prefEmail: userEmail
-          }
-        }
-      //console.log(myData)
-      preferencesCallback(myData);
-    }
-  });
-}
-
-
-function getContactData(contactDataCallback){
-  fs.readdir(userdatapath, function(err, files) {
-    if (err) {
-      console.log('Failed reading the user data directory');
-      process.exit(1);
-    }
-
-    async.map(files, function(userEmail, callback) {
-      if(userEmail !== undefined){
-        getPreferences(userEmail, function(preferences){
-          if(preferences == undefined){
-            callback(null, undefined)
-
-          }else{
-            var dataForCallback = {
-              prefEmail: preferences.prefEmail,
-              name: preferences.name,
-              numPassengers: preferences.numPassengers,
-              phoneNumber: preferences.phoneNumber
-            };
-            callback(err, dataForCallback);
-          }
-        });
-      }else{
-        callback(null, undefined );
-      }
-
-    }, function(err, allResultsUnfiltered) {
-      //console.log(allResultsUnfiltered);
-      var filteredResults = allResultsUnfiltered.filter(function(r) { return r !== undefined; })
-      contactDataCallback(filteredResults);
-    });
-  });
-
-}
-
 app.get("/", ensureAuthenticated ,function(req,res){
   
-  parseData(undefined, function(parsed) {
+  dbComm.parseData(undefined, function(parsed) {
     var dataForIndexPage = {
       user: req.user,
       weekdays: weekdays,
@@ -326,7 +109,7 @@ app.get("/", ensureAuthenticated ,function(req,res){
     };
     //check to see if the preferences are empty and if
     //they are redurect them to the preferences page
-    getPreferences(req.user, function(preferences){
+    dbComm.getPreferences(req.user, function(preferences){
       if (preferences.name == ""){
         res.redirect("/preferences");
       }else{
@@ -339,7 +122,7 @@ app.get("/", ensureAuthenticated ,function(req,res){
 
 app.get("/czar", ensureAuthenticated, function(req, res) {
 
-  parseData(undefined, function(parsed) {
+  dbComm.parseData(undefined, function(parsed) {
     var dataForCzarPage = {
       user: req.user,
       weekdays: weekdays,
@@ -353,7 +136,7 @@ app.get("/czar", ensureAuthenticated, function(req, res) {
 });
 
 app.get("/czarThisWeek", ensureAuthenticated, function(req, res) {
-  parseData(new Date, function(parsed) {
+  dbComm.parseData(new Date, function(parsed) {
     var dataForCzarPage = {
       user: req.user,
       weekdays: weekdays,
@@ -362,34 +145,17 @@ app.get("/czarThisWeek", ensureAuthenticated, function(req, res) {
       isNextWeek: false
     };
 
-    console.log(JSON.stringify(parsed))
-
     res.render(viewpath + "czar.jade", dataForCzarPage);
   });
 });
 
-function getSchedule(day, callback) {
-  fs.readFile(schedulepath + userDataFileName(day), 'utf8', function(err, data) {
-    if (err || !data) {
-      // Build empty schedule, with an empty object for each day
-      var sch = {};
-      for (var weekdayIdx=0; weekdayIdx<weekdays.length; ++weekdayIdx) {
-        sch[weekdays[weekdayIdx]] = {};
-      }
-      callback(sch);
-    } else {
-      callback(JSON.parse(data));
-    }
-  });
-}
-
 app.get("/dynamic/nextweekSchedule.js", ensureAuthenticated, function(req, res) {
-  getSchedule(undefined, function(sch) {
+  dbComm.getSchedule(undefined, function(sch) {
     res.send("var cars = " + JSON.stringify(sch));
   });
 });
 app.get("/dynamic/thisweekSchedule.js", ensureAuthenticated, function(req, res) {
-  getSchedule(new Date(), function(sch) {
+  dbComm.getSchedule(new Date(), function(sch) {
     res.send("var cars = " + JSON.stringify(sch) + ';');
   });
 });
@@ -398,23 +164,9 @@ app.get("/dynamic/currentUser.js", ensureAuthenticated, function(req, res) {
 });
 app.get("/dynamic/allPreferences.js", ensureAuthenticated, function(req, res) {
   //res.set('Content-Type', 'application/javascript');
-  
-  fs.readdir(userdatapath, function(err, files) {
-    if (err) {
-      console.log('Failed reading the user data directory');
-      process.exit(1);
-    }
-    async.map(files, function(userEmail, callback) {
-      getPreferences(userEmail, function(preferences){
-        callback(undefined, preferences);
-      });
-    }, function(err, allPreferences) {
-      var allPreferencesObj = {};
-      for (var i=0; i<allPreferences.length; ++i) {
-        allPreferencesObj[allPreferences[i].email] = allPreferences[i];
-      }
-      res.send("var allPreferences = " + JSON.stringify(allPreferencesObj));
-    });
+  dbComm.getAllPreferences(function(allPreferences) {
+    var allPreferences = allPreferences;
+    res.send("var allPreferences = " + JSON.stringify(allPreferences));
   });
 });
 
@@ -428,7 +180,7 @@ app.get("/dynamic/exampleCars.js", ensureAuthenticated, function(req, res){
 
 app.post("/times", ensureAuthenticated, function(req,res){
 
-  var thisWeeksScheduleFilename = userDataFileName();
+  var thisWeeksScheduleFilename = dbComm.userDataFileName();
 
   fs.writeFile(userdatapath+req.user+'/schedules/'+thisWeeksScheduleFilename,
       JSON.stringify(req.body), function(err) {
@@ -500,9 +252,13 @@ app.get('/external', ensureAuthenticated, function(req, res){
   res.render(viewpath+"external.jade", { user: req.user })
 
 });
+app.get('/emergency', ensureAuthenticated, function(req, res){
+  res.render(viewpath+"emergency.jade", { user: req.user })
+
+});
 app.get("/contact", ensureAuthenticated, function(req, res) {
 
-  getContactData(function(parsed) {
+  dbComm.getContactData(function(parsed) {
     var contactInfo = {
       user: req.user,
       peoplesInfo: parsed
@@ -513,7 +269,7 @@ app.get("/contact", ensureAuthenticated, function(req, res) {
 });
 
 app.get('/preferences', ensureAuthenticated, function(req, res){
-  getPreferences(req.user, function(preferences){
+  dbComm.getPreferences(req.user, function(preferences){
     var dataForPref = {
       user: req.user,
       name: preferences.name,
@@ -554,12 +310,12 @@ app.post('/example', ensureAuthenticated, function(req,res){
 
 app.post('/czarData', ensureAuthenticated, function(req,res){
   //console.log(JSON.stringify(req.body));
-  fs.writeFile(schedulepath + userDataFileName(), req.body.allCars);
+  fs.writeFile(schedulepath + dbComm.userDataFileName(), req.body.allCars);
   res.redirect('/czar')
 });
 app.post('/czarDataCurrent', ensureAuthenticated, function(req,res){
   //console.log(JSON.stringify(req.body));
-  fs.writeFile(schedulepath + userDataFileName(new Date()), req.body.allCars);
+  fs.writeFile(schedulepath + dbComm.userDataFileName(new Date()), req.body.allCars);
   res.redirect('/czar')
 });
 
