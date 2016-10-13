@@ -12,6 +12,11 @@ var possibleDriveHours = {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]};
 
 
 var self = module.exports = {
+  getStatistics : function getStatistics(callback){
+    var jsoncontent = fs.readFileSync(".\\data\\statistics\\hist_stats.json");
+    var dataForStatPage = JSON.parse(jsoncontent)
+    callback(dataForStatPage)
+  },
   getAllPreferences : function getAllPreferences(callback){
     fs.readdir(userdatapath, function(err, files) {
       if (err) {
