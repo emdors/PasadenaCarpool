@@ -246,7 +246,6 @@ app.get('/statistics', ensureAuthenticated, function(req, res){
   });
 });
 
-
 app.get('/external', ensureAuthenticated, function(req, res){
   res.render(viewpath+"external.jade", { user: req.user })
 
@@ -312,7 +311,7 @@ app.post('/czarData', ensureAuthenticated, function(req,res){
   fs.writeFile(schedulepath + dbComm.userDataFileName(), req.body.allCars);
   dbComm.updateStatistics(req.body.allCars, function(callback){
     console.log('Inside this function thing');
-  })
+    })
   res.redirect('/czar')
 });
 app.post('/czarDataCurrent', ensureAuthenticated, function(req,res){
