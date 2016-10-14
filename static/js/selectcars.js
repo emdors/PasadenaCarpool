@@ -349,11 +349,23 @@ function makeCarBox(day) {
   i.appendChild(closeButton);
 
   // car text
+  var carText = document.createElement('div');
+  var carTextID =  count.toString() + day + "text";
+  carText.id =  carTextID;
   var content = document.createTextNode("This is car number " + count + " and it is for " + day);
-  count++;
-  //content.className = 'boxed';
-  i.appendChild(content);
 
+  //content.className = 'boxed';
+  carText.appendChild(content);
+  i.appendChild(carText);
+
+  var driverText = document.createElement('div');
+  var carDriverID = count.toString() + day + "driver";
+  driverText.id = carDriverID;
+  var content = document.createTextNode("Driver: please select a driver");
+  driverText.appendChild(content);
+
+  i.appendChild(driverText);
+  count++;
   // am box
   var amDiv = document.createElement('div');
   var amText = document.createTextNode("Drop AM passengers here");
@@ -421,6 +433,7 @@ function makeCarBox(day) {
 
   // on drop, we make a label and add passengerName text and radio button
   pmDiv.ondrop = function(event) {
+    elID = carDriverID;
      if(ampm == "AM"){
       alert("You tried to add an AM passenger to a PM spot.");}
     else{
@@ -432,7 +445,7 @@ function makeCarBox(day) {
       label.className = "radioLabel";
       var listEl = document.createElement('input');
       listEl.setAttribute("type", "radio");
-      listEl.setAttribute("onChange", "handleChange(this)")
+      listEl.setAttribute("onChange", "handleChange(this, elID)")
       var pmID = pmDiv.id;
       listEl.setAttribute("name", pmID);
       listEl.setAttribute("value", passengerName);
@@ -469,10 +482,9 @@ function makeCarBox(day) {
   d.appendChild( i );
 }
 
-function handleChange(myRadio){
-
+function handleChange(myRadio, elID){
   content = 'The driver is: ' + myRadio.value;
-  alert(content);
+  document.getElementById(elID).innerHTML = content;
 
 }
 //author: edorsey,tstannard
