@@ -330,7 +330,8 @@ function dragStart(event,name, ampmstring, driverStatus){
   //alert(driverStatus);
 }
 
-count = 0;
+var count = 0;
+var carsArray = new Array();
 // author: edorsey, tstannard
 // Makes a car box
 function makeCarBox(day) {
@@ -365,7 +366,7 @@ function makeCarBox(day) {
   driverText.appendChild(content);
 
   i.appendChild(driverText);
-  count++;
+
   // am box
   var amDiv = document.createElement('div');
   var amText = document.createTextNode("Drop AM passengers here");
@@ -473,19 +474,26 @@ function makeCarBox(day) {
 
   var finishCarButton = document.createElement('button');
   finishCarButton.className = 'finishCarButton';
-  //need function here to finish the car 
-  //finishCarButton.setAttribute("onClick", "parentNode.remove()");
+  finishCarButton.setAttribute("onClick", "finishCar(carsArray)");
   i.appendChild(finishCarButton);
 
   // add the car box to its day div
   var d = document.getElementById( day );
   d.appendChild( i );
+
+  carsArray[count].push('hello');
+
+  count++;
 }
 
 function handleChange(myRadio, elID){
   content = 'The driver is: ' + myRadio.value;
   document.getElementById(elID).innerHTML = content;
 
+}
+
+function finishCar(message){
+  alert(message);
 }
 //author: edorsey,tstannard
 // this needs to be here
