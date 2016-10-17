@@ -1,0 +1,52 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    title Pasadena Carpool Signups
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.3.3/angular.min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.3/angular-route.min.js')
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
+    link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css')
+    script(src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js')
+    script(src='js/highlight.js')
+    link(rel='stylesheet', href='css/formstyle.css')
+  body
+    div
+      div
+        nav.navbar.navbar-inverse(role='navigation', style='padding-left:130px;')
+          ul.nav.navbar-nav
+            li
+              a(href='/') Home
+            li
+              a(href='/schedule') Schedule
+            li
+              a(href='/czar') Czar
+            li
+              a(href='/newUser') Add New User
+            li
+              a(href='/preferences') Preferences
+            li
+              a(href='/contact') Contact Info
+            li
+              a(href='external') External Links
+            li.active
+              a(href='/emergency') Emergency
+            li
+              a(href='/logout') Logout
+      br
+      .container.theme-showcase(role='main')
+        h1
+          | In case of an Emergency: 
+        p In the event of a substantial earthquake or catastrophic disruption on campus, please follow these emergency procedures for drivers and passengers:
+
+        p If your cell phone is operational, phone or text all the others in your car, regardless of whether your were the driver or a passenger, and determine their status. Once contact has been made, proceed to the carpool drop off/pick up location at the agreed upon time in the Harvey Mudd Parking Lot on Foothill and Dartmouth. Try not to leave a carpooler behind, unless you have made contact with them and have been instructed by them to do so.
+
+        p If cell phone communication is interrupted, do not wait for the scheduled departure time, proceed to the Harvey Mudd Parking Lot on Foothill and Dartmouth. Try not to leave a carpooler behind, unless you have made contact with them and have been instructed by them to do so.
+
+        img(src="https://maps.googleapis.com/maps/api/staticmap?Harvey+Mudd+College&zoom=15&size=400x300&markers=34.106795,%20-117.712362&sensor=false")
+       
+        p If there are multiple cars available for departure to Pasadena, first departure preference will be given to those who have primary care responsibility for a family member.
+        
+        p In the event of  a communication outage, please leave message and check for messages on the bulletin board outside of Colleen’s office. Colleen’s office is in Olin, the green building just south of the carpool drop/off pick up parking lot. Her office is just inside the north east entrance, which is from the courtyard that the carpool spot drops off on. The office number is 1280. 
+        
+        img(src= "/images/emergencyMeetingSpot.png" width = "40%" height = "40%")
