@@ -330,15 +330,18 @@ function dragStart(event,name, ampmstring, driverStatus){
   //alert(driverStatus);
 }
 
+// global variables for keeping track of cars 
 var count = 0;
 var carsArray = new Array();
+
+
 // author: edorsey, tstannard
 // Makes a car box
 function makeCarBox(day) {
   // create the car box div
-  var i = document.createElement('div');
-  i.className = 'boxed';
-  i.id = count.toString() + day;
+  var carBox = document.createElement('div');
+  carBox.className = 'boxed';
+  carBox.id = count.toString() + day;
 
   // create close button for each car
   var closeButton = document.createElement('button');
@@ -347,7 +350,7 @@ function makeCarBox(day) {
   // onClick we remove the car
   closeButton.setAttribute("onClick", "parentNode.remove()");
 
-  i.appendChild(closeButton);
+  carBox.appendChild(closeButton);
 
   // car text
   var carText = document.createElement('div');
@@ -357,7 +360,7 @@ function makeCarBox(day) {
 
   //content.className = 'boxed';
   carText.appendChild(content);
-  i.appendChild(carText);
+  carBox.appendChild(carText);
 
   var driverText = document.createElement('div');
   var carDriverID = count.toString() + day + "driver";
@@ -365,7 +368,7 @@ function makeCarBox(day) {
   var content = document.createTextNode("Driver: please select a driver");
   driverText.appendChild(content);
 
-  i.appendChild(driverText);
+  carBox.appendChild(driverText);
 
   // am box
   var amDiv = document.createElement('div');
@@ -422,7 +425,7 @@ function makeCarBox(day) {
   };
 
   // add amDiv to the car box
-  i.appendChild(amDiv);
+  carBox.appendChild(amDiv);
 
   // repeat above with pm box
   var pmDiv = document.createElement('div');
@@ -470,18 +473,19 @@ function makeCarBox(day) {
   };
 
   // add the pmDiv to the car box
-  i.appendChild(pmDiv);
+  carBox.appendChild(pmDiv);
 
   var finishCarButton = document.createElement('button');
   finishCarButton.className = 'finishCarButton';
   finishCarButton.setAttribute("onClick", "finishCar(carsArray)");
-  i.appendChild(finishCarButton);
+  carBox.appendChild(finishCarButton);
 
   // add the car box to its day div
   var d = document.getElementById( day );
-  d.appendChild( i );
+  d.appendChild( carBox );
 
-  carsArray[count].push('hello');
+  //update the table 
+  carsArray[count] = count;
 
   count++;
 }
@@ -492,10 +496,11 @@ function handleChange(myRadio, elID){
 
 }
 
-function finishCar(message){
-  alert(message);
+function finishCar(carsArray){
+  //curretnly will allert the TOTAL number of cars minus 1
+  alert(carsArray[carsArray.length - 1]);
 }
-//author: edorsey,tstannard
+// author: edorsey,tstannard
 // this needs to be here
 function allowDrop(event) {
     event.preventDefault();
