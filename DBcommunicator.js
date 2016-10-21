@@ -164,6 +164,8 @@ var self = module.exports = {
               for(var key in scheduleData) {
                 if (key != 'name' && key != 'email' && key != 'numPassengers') {
                   newScheduleData[key] = scheduleData[key];
+                  console.log(scheduleData[key]);
+                  console.log(key);
                 }
               }
               fs.writeFile(fullFilename, JSON.stringify(newScheduleData));

@@ -56,6 +56,18 @@ html(lang='en')
                 label.radio-inline
                   input(type='radio', name=dayData.day + 'DriveStatus', value='cannot')
                   | Not In Carpool
+                br
+                label.checkbox-inline
+                  input(type='checkbox', name=dayData.day + 'TravelStatus', value='AMonly')
+                  | Only traveling in the AM
+                label.checkbox-inline
+                  input(type='checkbox', name=dayData.day + 'TravelStatus', value='PMonly')
+                  | Only traveling in the PM
+                br
+                label.checkbox-inline
+                  input(type='checkbox', name=dayData.day + 'Count', value='addOne')
+                  | Plus one
+                
                 each AMPMData in dayData.times
                   - AMPM = AMPMData.halfday
                   h4= AMPM
