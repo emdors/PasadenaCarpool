@@ -338,6 +338,21 @@ var carsArray = new Array();
 // author: edorsey, tstannard
 // Makes a car box
 function makeCarBox(day) {
+  //put car in the backend 
+  var car_json = {};
+  car_json["driver"] = "";
+  var am_car = {};
+  am_car["time"] = 0;
+  am_car["passengers"] = [];
+  var pm_car = {};
+  pm_car["time"] = 0;
+  pm_car["passengers"] = [];
+  
+  car_json["AM"] = am_car;
+  car_json["PM"] = pm_car;
+
+  console.log(car_json);
+
   // create the car box div
   var carBox = document.createElement('div');
   carBox.className = 'boxed';
@@ -477,15 +492,12 @@ function makeCarBox(day) {
 
   var finishCarButton = document.createElement('button');
   finishCarButton.className = 'finishCarButton';
-  finishCarButton.setAttribute("onClick", "finishCar(carsArray)");
+  //finishCarButton.setAttribute("onClick", "finishCar(carsArray)");
   carBox.appendChild(finishCarButton);
 
   // add the car box to its day div
   var d = document.getElementById( day );
   d.appendChild( carBox );
-
-  //update the table 
-  carsArray[count] = count;
 
   count++;
 }
