@@ -59,13 +59,28 @@ var self = module.exports = {
           var driver = drivers[driver_Idx];
           console.log(driver);
           if (!(driver in carpoolers)) {
-            new_pooler = {"driver_count":1, "rider_count":0};
+            var this_week = {"driver_count":1, "rider_count":0};
+            var new_pooler = {"total_driver":1, "total_rider":0, "week":this_week};//, "new_in_stats":False};
+            if (!(driver in parsed.userList)) {
+              //new_pooler[new_in_stats] = True;
+              new_pooler["userIdx"] = -1;
+            }
+            else {
+              var user_Stats_Idx = parsed.userList.indexOf(driver);
+              if (stats.username != driver) {
+                console.log("Error, user list is not in same order as users");
+              }
+              new_pooler["userIdx"] = user_Stats_Idx;
+            }
             carpoolers[driver] = new_pooler;
           }
           else {
+            // The driver is already in the carpoolers list
+                       
             console.log("Trying to update driver count");
             console.log(carpoolers[driver]);
             carpoolers[driver].driver_count++;
+            carpoolers[driver].total_driver++;
           }
           var passengers = [];
           console.log(pool_day.driver);
@@ -110,9 +125,29 @@ var self = module.exports = {
     for (var user_Idx=0; user_Idx<users.length; ++user_Idx ) {
       var user = users[user_Idx];
       console.log("this is what it says the user is:" + user);
-      var new_driver = {};
-      new_driver[user] = carpoolers[user];
-      parsed.users.push(new_driver);
+      console.log(carpoolers[user]);
+      console.log(carpoolers[user].userIdx);
+      if (carpoolers[user].userIdx == -1) {
+        var new_driver = {};
+        new_driver["username"] = user;
+        console.log("This is what it says the users week is" + carpoolers[user.week])
+        new_driver[date] = carpoolers[user].week;
+        new_driver["total_driver"] = carpoolers[user].total_driver;
+        new_driver["total_rider"] = carpoolers[user].total_rider;
+        parsed.users.push(new_driver);
+        parsed.userList.push(user);
+      }
+      else {
+        var index = user.userIdx;
+        console.log(index);
+        console.log(parsed.users[index]);
+        parsed.users[index][date] = carpoolers[user].week;
+        parsed.users[index]["total_driver"] += carpoolers[user].total_driver;
+        parsed.users[index]["total_rider"] += carpoolers[user].total_rider;
+      }
+      
+      //new_driver[user] = carpoolers[user];
+      
     }
     //pass data to file to write out to stats file
     fs.writeFile(statisticspath + statFileName,  JSON.stringify(parsed));
