@@ -18,14 +18,15 @@ var weekdays = [];
 var userData = {};
 var changedPage = false;
 
-window.onload = function() {
+window.onload = function(peopleDataInput) {
+  var peopleData = peopleDataInput;
   var timeResults = document.getElementById("timeResults");
 
   var h3s = timeResults.getElementsByTagName("h3");
   for (var h3idx=0; h3idx<h3s.length; h3idx +=2) {
     var day = h3s[h3idx].textContent;
     weekdays.push(day);
-    //cars[day] = {};
+    cars[day] = {};
   }
 
   //Checks if the time tables are clicked and responds accordingly
@@ -313,6 +314,8 @@ function makeCar(day){
 function submitCars() {
   changedPage = false;
   document.getElementById('allCars').value = JSON.stringify(cars);
+  //new cars 
+
 }
 
 passengerName = ""
@@ -352,6 +355,8 @@ function makeCarBox(day) {
   car_json["PM"] = pm_car;
 
   console.log(car_json);
+  cars[day][count] = car_json;
+  console.log(cars);
 
   // create the car box div
   var carBox = document.createElement('div');
