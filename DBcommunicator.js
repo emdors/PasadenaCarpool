@@ -28,6 +28,7 @@ var self = module.exports = {
       }
     }
     });
+    createStatistics();
 
     // load the stats file to modify data and then write over
     var stat = fs.readFileSync(statisticspath + 'hist_stats.json','utf8');
@@ -45,20 +46,53 @@ var self = module.exports = {
 
     // for each day of the pool, increment the number of pool days and keep track of carpoolers
     for (var weekdayIdx=0; weekdayIdx<weekdays.length; ++weekdayIdx) {
+      console.log("Weekday processing: ", weekdays[weekdayIdx]);
       var day = weekdays[weekdayIdx];
       var pool_day = data[day];
+
       if (Object.keys(pool_day).length != 0) {
         parsed.poolDays++;
         console.log(pool_day);
-        for (var driver in Object.keys(pool_day)) {
+        drivers = Object.keys(pool_day);
+        console.log(drivers);
+        for (var driver_Idx=0; driver_Idx<drivers.length; ++driver_Idx) {
+          var driver = drivers[driver_Idx];
           console.log(driver);
           if (!(driver in carpoolers)) {
             new_pooler = {"driver_count":1, "rider_count":0};
             carpoolers[driver] = new_pooler;
           }
           else {
-            carpoolers.driver.driver_count++;
+            console.log("Trying to update driver count");
+            console.log(carpoolers[driver]);
+            carpoolers[driver].driver_count++;
           }
+          var passengers = [];
+          console.log(pool_day.driver);
+          // if (pool_day[driver].AM) {
+          //   console.log("We have an AM")
+          //   console.log(pool_day[driver])
+          //   console.log(pool_day[driver].AM)
+          //   for (var passenger in pool_day[driver].AM.passengers) {
+          //     passengers.push(passenger);
+          //   }
+          // }
+          // if (pool_day[driver].PM) {
+          //   console.log("We have an PM")
+          //   for (var passenger in pool_day[driver].PM.passengers) {
+          //     passengers.push(passenger);
+          //   }
+          // }
+         
+          // for (var passenger in passengers) {
+          //   if (!(passenger in carpoolers)) {
+          //     new_pooler = {"driver_count":0, "rider_count":1};
+          //     carpoolers[passenger] = new_pooler;
+          //   }
+          //   else {
+          //     carpoolers.passenger.rider_count++;
+          //   }
+          // }
           // var new_user = {};
           // new_user["username"] = key;
           // new_user["total_driver"] = 0;
@@ -72,9 +106,12 @@ var self = module.exports = {
       }
     }
     console.log(carpoolers);
-    for (var user in Object.keys(carpoolers)) {
+    var users = Object.keys(carpoolers)
+    for (var user_Idx=0; user_Idx<users.length; ++user_Idx ) {
+      var user = users[user_Idx];
       console.log("this is what it says the user is:" + user);
-      var new_driver = {user: carpoolers[user]};
+      var new_driver = {};
+      new_driver[user] = carpoolers[user];
       parsed.users.push(new_driver);
     }
     //pass data to file to write out to stats file
