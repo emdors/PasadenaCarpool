@@ -153,6 +153,7 @@ app.get("/dynamic/nextweekSchedule.js", ensureAuthenticated, function(req, res) 
     res.send("var cars = " + JSON.stringify(sch));
   });
 });
+
 app.get("/dynamic/thisweekSchedule.js", ensureAuthenticated, function(req, res) {
   dbComm.getSchedule(new Date(), function(sch) {
     res.send("var cars = " + JSON.stringify(sch) + ';');
