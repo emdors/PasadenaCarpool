@@ -19,18 +19,17 @@ function createStatistics(){
 
 var self = module.exports = {
   updateStatistics : function updateStatistics(unp_data, callback){
-    // check for existing stats file
-    fs.stat(statisticspath+statFileName, function(err, stat) {
-      if(err != null){
-        if(err.code == 'ENOENT') {
-          // file does not exist
-          createStatistics();
-      }
+    console.log("Inside updateStatistics");
+    try {
+      fs.statSync(statisticspath+statFileName);
     }
-    });
+    catch(err) {
+      console.log("Thinks file doesn't exist.");
+      createStatistics();
+    }
 
     // load the stats file to modify data and then write over
-    var stat = fs.readFileSync(statisticspath + 'hist_stats.json','utf8');
+    var stat = fs.readFileSync(statisticspath + statFileName,'utf8');
     var parsed = JSON.parse(stat);
 
     // parse week's schedule to update data with
@@ -40,6 +39,7 @@ var self = module.exports = {
     // add this week's schedule date to the list of weeks
     var date = self.userDataFileName(new Date())
     parsed.weeks.push(date);
+    console.log("Date list is:" + parsed.weeks);
 
     carpoolers = {};
 
@@ -158,34 +158,6 @@ var self = module.exports = {
       
       //new_driver[user] = carpoolers[user];
       
-      if (Object.keys(pool_day).length != 0) {
-        parsed.poolDays++;
-        console.log(pool_day);
-        for (var driver in Object.keys(pool_day)) {
-          console.log(driver);
-          if (!(driver in carpoolers)) {
-            new_pooler = {"driver_count":1, "rider_count":0};
-            carpoolers[driver] = new_pooler;
-          }
-          else {
-            carpoolers.driver.driver_count++;
-          }
-          // var new_user = {};
-          // new_user["username"] = key;
-          // new_user["total_driver"] = 0;
-          // new_user["total_rider"] = 0;
-          // var counts = {}
-          // counts["driver_count"] = 0;
-          // counts["rider_count"] = 0;
-          // new_user[date] = counts;
-          // parsed.users.push(new_user);
-        }
-      }
-    }
-    console.log(carpoolers);
-    for (var user in Object.keys(carpoolers)) {
-      var new_driver = {user: carpoolers[user]};
-      parsed.users.push(new_driver);
     }
     //pass data to file to write out to stats file
     fs.writeFile(statisticspath + statFileName,  JSON.stringify(parsed));
