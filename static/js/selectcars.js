@@ -361,7 +361,7 @@ function makeCarBox(day) {
   // create the car box div
   var carBox = document.createElement('div');
   carBox.className = 'boxed';
-  carBox.id = count.toString() + day;
+  carBox.id = count.toString();
 
   // create close button for each car
   var closeButton = document.createElement('button');
@@ -400,12 +400,17 @@ function makeCarBox(day) {
   
   // on drop we make a list of radio elements and add passengerName to amDiv
   amDiv.ondrop = function(event) {
+    //alert(JSON.stringify(cars[day][carBox.id].AM));
     if(ampm == "PM"){
       alert("You tried to add a PM passenger to an AM spot.");}
     else{
       event.preventDefault();
-      var personName = event.dataTransfer.getData("Text");
-      
+
+      //add person in backend - update to email soon 
+      cars[day][carBox.id].AM.passengers.push(passengerName);
+      countID = carBox.id;
+      dayVar = day;
+
       // personName and radio buttons go under label element
       var label = document.createElement('label');
       label.className = "radioLabel";
@@ -416,6 +421,18 @@ function makeCarBox(day) {
       listEl.setAttribute("value", passengerName);
       listEl.setAttribute("textContent", passengerName);
       listEl.setAttribute("style", "margin: 0 3px 0 3px");
+
+       // personName and radio buttons go under label element
+      var label = document.createElement('label');
+      label.className = "radioLabel";
+      var listEl = document.createElement('input');
+      listEl.setAttribute("type", "radio");
+      listEl.setAttribute("onChange", "handleChange(this, elID, countID, dayVar)")
+      var amID = amDiv.id;
+      listEl.setAttribute("name", amID);
+      listEl.setAttribute("value", passengerName);
+      listEl.setAttribute("textContent", passengerName);
+      listEl.setAttribute("style", "margin: 0 3px 0 3px ");
 
       // append radio button and passengerName text
       var dropText = document.createTextNode(passengerName);
@@ -462,14 +479,18 @@ function makeCarBox(day) {
       alert("You tried to add an AM passenger to a PM spot.");}
     else{
       event.preventDefault();
-      var personName = event.dataTransfer.getData("Text");
+
+      //add person in backend - update to email soon 
+      cars[day][carBox.id].PM.passengers.push(passengerName);
+      countID = carBox.id;
+      dayVar = day;
       
       // personName and radio buttons go under label element
       var label = document.createElement('label');
       label.className = "radioLabel";
       var listEl = document.createElement('input');
       listEl.setAttribute("type", "radio");
-      listEl.setAttribute("onChange", "handleChange(this, elID)")
+      listEl.setAttribute("onChange", "handleChange(this, elID, countID, dayVar)")
       var pmID = pmDiv.id;
       listEl.setAttribute("name", pmID);
       listEl.setAttribute("value", passengerName);
@@ -507,10 +528,13 @@ function makeCarBox(day) {
   count++;
 }
 
-function handleChange(myRadio, elID){
+function handleChange(myRadio, elID, boxID, day){
   content = 'The driver is: ' + myRadio.value;
   document.getElementById(elID).innerHTML = content;
 
+  alert(day);
+
+  cars[day][boxID].driver = myRadio.value;
 }
 
 function finishCar(carsArray){
