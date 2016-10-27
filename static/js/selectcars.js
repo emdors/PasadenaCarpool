@@ -427,7 +427,7 @@ function makeCarBox(day) {
       label.className = "radioLabel";
       var listEl = document.createElement('input');
       listEl.setAttribute("type", "radio");
-      listEl.setAttribute("onChange", "handleChange(this, elID, countID, dayVar)")
+      listEl.setAttribute("onChange", "handleChange(this)")
       var amID = amDiv.id;
       listEl.setAttribute("name", amID);
       listEl.setAttribute("value", passengerName);
@@ -490,7 +490,7 @@ function makeCarBox(day) {
       label.className = "radioLabel";
       var listEl = document.createElement('input');
       listEl.setAttribute("type", "radio");
-      listEl.setAttribute("onChange", "handleChange(this, elID, countID, dayVar)")
+      listEl.setAttribute("onChange", "handleChange(this)")
       var pmID = pmDiv.id;
       listEl.setAttribute("name", pmID);
       listEl.setAttribute("value", passengerName);
@@ -528,13 +528,16 @@ function makeCarBox(day) {
   count++;
 }
 
-function handleChange(myRadio, elID, boxID, day){
+function handleChange(myRadio){
   content = 'The driver is: ' + myRadio.value;
-  document.getElementById(elID).innerHTML = content;
+  countNum = myRadio.parentElement.parentElement.parentElement.id;
+  day1 = myRadio.parentElement.parentElement.parentElement.parentElement.id;
 
-  alert(day);
+  driverID = countNum.toString() + day1 + "driver";
 
-  cars[day][boxID].driver = myRadio.value;
+  document.getElementById(driverID).innerHTML = content;
+
+  cars[day1][countNum].driver = myRadio.value;
 }
 
 function finishCar(carsArray){
