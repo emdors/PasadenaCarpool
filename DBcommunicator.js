@@ -59,9 +59,10 @@ var self = module.exports = {
         for (var driver_Idx=0; driver_Idx<drivers.length; ++driver_Idx) {
           var driver = drivers[driver_Idx];
           console.log(driver);
-          if (!(driver in carpoolers)) {
-            var new_pooler = {"total_driver":1, "total_rider":0, "week":this_week};//, "new_in_stats":False};
-            var this_week = {"driver_count":1, "rider_count":0};
+          if (!(carpoolers.hasOwnProperty(driver))) {
+            //var this_week = {"driver_count":1, "rider_count":0};
+            var new_pooler = {"total_driver":1, "total_rider":0};//, "new_in_stats":False};
+            new_pooler["week"] = {"driver_count":1, "rider_count":0};
             if (parsed.userList.indexOf(driver) <0) {
               console.log("This driver is not in the userList:" + driver);
               console.log("This is what should be the address:" + parsed.userList[0]);
@@ -87,7 +88,7 @@ var self = module.exports = {
           }
           var passengers = [];
           console.log(pool_day.driver);
-          if (pool_day[driver].AM) {
+          if (pool_day[driver].hasOwnProperty("AM")) {
             console.log("We have an AM")
             console.log(pool_day[driver])
             console.log(pool_day[driver].AM)
@@ -95,8 +96,8 @@ var self = module.exports = {
             for (var pass_Idx=0; pass_Idx<passengers.length; ++pass_Idx) {
               var passenger = passengers[pass_Idx];
               if (!(passenger in carpoolers)) {
-                var new_pooler = {"total_driver":0, "total_rider":1, "week":this_week};//, "new_in_stats":False};
-                var this_week = {"driver_count":0, "rider_count":1};
+                var new_pooler = {"total_driver":0, "total_rider":1};//, "new_in_stats":False};
+                new_pooler["week"] = {"driver_count":0, "rider_count":1};
                 if (parsed.userList.indexOf(passenger) <0) {
                   console.log("This driver is not in the userList:" + passenger);
                   console.log("This is what should be the address:" + parsed.userList[0]);
@@ -122,29 +123,47 @@ var self = module.exports = {
               }
             }
           }
-          // if (pool_day[driver].PM) {
-          //   console.log("We have an PM")
-          //   for (var passenger in pool_day[driver].PM.passengers) {
-          //     passengers.push(passenger);
-          //   }
-          // }
-         
-          // for (var passenger in passengers) {
-          //   if (!(passenger in carpoolers)) {
-          //     new_pooler = {"driver_count":0, "rider_count":1};
-          //     carpoolers[passenger] = new_pooler;
-          //   }
-          //   else {
-          //     carpoolers.passenger.rider_count++;
-          //   }
-          // }
-          
+          if (pool_day[driver].hasOwnProperty("PM")) {
+            console.log("We have an PM")
+            console.log(pool_day[driver])
+            console.log(pool_day[driver].PM)
+            var passengers = pool_day[driver].PM.passengers;
+            for (var pass_Idx=0; pass_Idx<passengers.length; ++pass_Idx) {
+              var passenger = passengers[pass_Idx];
+              if (!(passenger in carpoolers)) {
+                var new_pooler = {"total_driver":0, "total_rider":1};//, "new_in_stats":False};
+                new_pooler["week"] = {"driver_count":0, "rider_count":1};
+                if (parsed.userList.indexOf(passenger) <0) {
+                  console.log("This driver is not in the userList:" + passenger);
+                  console.log("This is what should be the address:" + parsed.userList[0]);
+                  //new_pooler[new_in_stats] = True;
+                  new_pooler["userIdx"] = -1;
+                }
+                else {
+                  var user_Stats_Idx = parsed.userList.indexOf(passenger);
+                  if (parsed.users[user_Stats_Idx].username != passenger) {
+                    console.log("Error, user list is not in same order as users");
+                  }
+                  new_pooler["userIdx"] = user_Stats_Idx;
+                }
+                carpoolers[passenger] = new_pooler;
+              }
+              else {
+                // The driver is already in the carpoolers list
+                           
+                console.log("Trying to update driver count");
+                console.log(carpoolers[passenger]);
+                carpoolers[passenger].rider_count++;
+                carpoolers[passenger].total_rider++;
+              }
+            }
+          }          
         }
       }
     }
     console.log(carpoolers);
     var users = Object.keys(carpoolers)
-    console.log("The first email in the user list is:", parsed.userList[0]);
+    console.log("The users list for this week is:", parsed.userList[0]);
     for (var user_Idx=0; user_Idx<users.length; ++user_Idx ) {
       var user = users[user_Idx];
       console.log("this is what it says the user is:" + user);
