@@ -55,19 +55,22 @@ var self = module.exports = {
         console.log(pool_day);
         drivers = Object.keys(pool_day);
         console.log(drivers);
+
         for (var driver_Idx=0; driver_Idx<drivers.length; ++driver_Idx) {
           var driver = drivers[driver_Idx];
           console.log(driver);
           if (!(driver in carpoolers)) {
-            var this_week = {"driver_count":1, "rider_count":0};
             var new_pooler = {"total_driver":1, "total_rider":0, "week":this_week};//, "new_in_stats":False};
-            if (!(driver in parsed.userList)) {
+            var this_week = {"driver_count":1, "rider_count":0};
+            if (parsed.userList.indexOf(driver) <0) {
+              console.log("This driver is not in the userList:" + driver);
+              console.log("This is what should be the address:" + parsed.userList[0]);
               //new_pooler[new_in_stats] = True;
               new_pooler["userIdx"] = -1;
             }
             else {
               var user_Stats_Idx = parsed.userList.indexOf(driver);
-              if (stats.username != driver) {
+              if (parsed.users[user_Stats_Idx].username != driver) {
                 console.log("Error, user list is not in same order as users");
               }
               new_pooler["userIdx"] = user_Stats_Idx;
@@ -122,6 +125,7 @@ var self = module.exports = {
     }
     console.log(carpoolers);
     var users = Object.keys(carpoolers)
+    console.log("The first email in the user list is:", parsed.userList[0]);
     for (var user_Idx=0; user_Idx<users.length; ++user_Idx ) {
       var user = users[user_Idx];
       console.log("this is what it says the user is:" + user);
@@ -138,8 +142,11 @@ var self = module.exports = {
         parsed.userList.push(user);
       }
       else {
-        var index = user.userIdx;
+        console.log(user);
+        var index = carpoolers[user].userIdx;
+        console.log("We are in the else statement starting on 145");
         console.log(index);
+        console.log(parsed.users);
         console.log(parsed.users[index]);
         parsed.users[index][date] = carpoolers[user].week;
         parsed.users[index]["total_driver"] += carpoolers[user].total_driver;
