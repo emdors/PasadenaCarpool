@@ -410,7 +410,7 @@ function makeCarBox(day) {
       event.preventDefault();
 
       //add person in backend - update to email soon 
-      cars[day][carBox.id].AM.passengers.push(passengerName);
+      cars[day][carBox.id].AM.passengers.push(passengerEmail);
       countID = carBox.id;
       dayVar = day;
 
@@ -484,7 +484,7 @@ function makeCarBox(day) {
       event.preventDefault();
 
       //add person in backend - update to email soon 
-      cars[day][carBox.id].PM.passengers.push(passengerName);
+      cars[day][carBox.id].PM.passengers.push(passengerEmail);
       countID = carBox.id;
       dayVar = day;
       
