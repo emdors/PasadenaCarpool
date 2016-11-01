@@ -116,7 +116,6 @@ function deleteWholeCar(day, driver) {
   updateHighlightingAndTables(day);
 }
 
-//TEAL LOOK HERE
 function deleteCar(day, driver, halfday) {
   delete cars[day][driver][halfday];
   var tableNowEmpty = true;
@@ -334,24 +333,6 @@ function dragStart(event, name, ampmstring, email, day){
   ampm = ampmstring;
   passengerEmail = email;
   passengerDay = day; 
-
-  //use day, ampm, and email to get persons data 
-  var daysArray = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-  var dayIndex = 2*daysArray.indexOf(day);
-
-  if (ampm == "PM"){
-    dayIndex += 1; 
-  }
-
-  var ampmTable = document.getElementsByClassName("titleTable")[dayIndex];
-  var tableRows = ampmTable.getElementsByTagName('tr');
-  var row = tableRows[0];
-  // for(var index = 0; index < tableRows.length; ++index){
-  //   if(tableRows[i].get
-  // }
-  
-  //console.log(tableRows[1]).getAttribute(email);
-  
 }
 
 // global variables for keeping track of cars 
@@ -626,7 +607,6 @@ function saveDirectCarModifyChanges() {
   updateHighlightingAndTables();
 }
 
-//TEAL LOOK HERE
 // Converts a gmail, name, or preferred email to their gmail
 // Uses allPreferences
 function aliasToEmail(alias) {
