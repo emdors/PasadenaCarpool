@@ -18,14 +18,15 @@ var weekdays = [];
 var userData = {};
 var changedPage = false;
 
-window.onload = function() {
+window.onload = function(peopleDataInput) {
+  var peopleData = peopleDataInput;
   var timeResults = document.getElementById("timeResults");
 
   var h3s = timeResults.getElementsByTagName("h3");
   for (var h3idx=0; h3idx<h3s.length; h3idx +=2) {
     var day = h3s[h3idx].textContent;
     weekdays.push(day);
-    //cars[day] = {};
+    cars[day] = {};
   }
 
   //Checks if the time tables are clicked and responds accordingly
@@ -48,16 +49,18 @@ window.onload = function() {
         //This function deals with being able to pick drivers and
         //Pasengers
         td.onclick = function() {
+          //Commented out the code that used to select drivers/passengers
+          //keeping here in case we want to reference how to select people 
           //Make sure that we can only change the car status of selected tiles.
-          if(this.getAttribute('selected') == 'true'){
-            if (this.getAttribute('carstatus') == 'passenger'){
-              this.setAttribute('carstatus', 'driver');
-            } else if (this.getAttribute('carstatus') == 'driver'){
-              this.setAttribute('carstatus', 'unassigned');
-            } else{
-              this.setAttribute('carstatus', 'passenger');
-            }
-          }
+          // if(this.getAttribute('selected') == 'true'){
+          //   if (this.getAttribute('carstatus') == 'passenger'){
+          //     this.setAttribute('carstatus', 'driver');
+          //   } else if (this.getAttribute('carstatus') == 'driver'){
+          //     this.setAttribute('carstatus', 'unassigned');
+          //   } else{
+          //     this.setAttribute('carstatus', 'passenger');
+          //   }
+          // }
         }
       }
     }
@@ -113,6 +116,7 @@ function deleteWholeCar(day, driver) {
   updateHighlightingAndTables(day);
 }
 
+//TEAL LOOK HERE
 function deleteCar(day, driver, halfday) {
   delete cars[day][driver][halfday];
   var tableNowEmpty = true;
@@ -311,6 +315,266 @@ function makeCar(day){
 function submitCars() {
   changedPage = false;
   document.getElementById('allCars').value = JSON.stringify(cars);
+  //new cars 
+
+}
+
+passengerName = ""
+ampm = ""
+passengerEmail = ""
+passengerDay = "" 
+//object of person data which is reference to where i want to go 
+/*
+* Drag start is called when you start dragging the table row
+* Sets the global var passengerName to the name of the person 
+*   being dragged
+*/
+function dragStart(event, name, ampmstring, email, day){
+  passengerName = name;
+  ampm = ampmstring;
+  passengerEmail = email;
+  passengerDay = day; 
+
+  //use day, ampm, and email to get persons data 
+  var daysArray = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+  var dayIndex = 2*daysArray.indexOf(day);
+
+  if (ampm == "PM"){
+    dayIndex += 1; 
+  }
+
+  var ampmTable = document.getElementsByClassName("titleTable")[dayIndex];
+  var tableRows = ampmTable.getElementsByTagName('tr');
+  var row = tableRows[0];
+  // for(var index = 0; index < tableRows.length; ++index){
+  //   if(tableRows[i].get
+  // }
+  
+  //console.log(tableRows[1]).getAttribute(email);
+  
+}
+
+// global variables for keeping track of cars 
+var count = 0;
+var carsArray = new Array();
+
+
+// author: edorsey, tstannard
+// Makes a car box
+function makeCarBox(day) {
+  //put car in the backend 
+  var car_json = {};
+  car_json["driver"] = "";
+  var am_car = {};
+  am_car["time"] = 0;
+  am_car["passengers"] = [];
+  var pm_car = {};
+  pm_car["time"] = 0;
+  pm_car["passengers"] = [];
+  
+  car_json["AM"] = am_car;
+  car_json["PM"] = pm_car;
+
+  console.log(car_json);
+  cars[day][count] = car_json;
+  console.log(cars);
+
+  // create the car box div
+  var carBox = document.createElement('div');
+  carBox.className = 'boxed';
+  var carBoxID = count.toString();
+  carBox.id = carBoxID;
+
+  // create close button for each car
+  var closeButton = document.createElement('button');
+  closeButton.className = 'boxclose';
+
+  // onClick we remove the car
+  closeButton.setAttribute("onClick", "deleteCarOnX(" + carBoxID +")");
+
+  carBox.appendChild(closeButton);
+
+  // car text
+  var carText = document.createElement('div');
+  var carTextID =  count.toString() + day + "text";
+  carText.id =  carTextID;
+  var content = document.createTextNode("This is car number " + count + " and it is for " + day);
+
+  //content.className = 'boxed';
+  carText.appendChild(content);
+  carBox.appendChild(carText);
+
+  var driverText = document.createElement('div');
+  var carDriverID = count.toString() + day + "driver";
+  driverText.id = carDriverID;
+  var content = document.createTextNode("Driver: please select a driver");
+  driverText.appendChild(content);
+
+  carBox.appendChild(driverText);
+
+  // am box
+  var amDiv = document.createElement('div');
+  var amText = document.createTextNode("Drop AM passengers here");
+  amDiv.appendChild(amText);
+  amDiv.className = "amContainer";
+  amDiv.setAttribute("ondragover", "allowDrop(event)");
+  amDiv.id = count.toString() + day + "AM";
+  
+  // on drop we make a list of radio elements and add passengerName to amDiv
+  amDiv.ondrop = function(event) {
+    //alert(JSON.stringify(cars[day][carBox.id].AM));
+    if(ampm == "PM"){
+      alert("You tried to add a PM passenger to an AM spot.");}
+    else{
+      event.preventDefault();
+
+      //add person in backend - update to email soon 
+      cars[day][carBox.id].AM.passengers.push(passengerName);
+      countID = carBox.id;
+      dayVar = day;
+
+      // personName and radio buttons go under label element
+      var label = document.createElement('label');
+      label.className = "radioLabel";
+      var listEl = document.createElement('input');
+      listEl.setAttribute("type", "radio");
+      var amID = amDiv.id;
+      listEl.setAttribute("name", amID);
+      listEl.setAttribute("value", passengerName);
+      listEl.setAttribute("textContent", passengerName);
+      listEl.setAttribute("style", "margin: 0 3px 0 3px");
+
+       // personName and radio buttons go under label element
+      var label = document.createElement('label');
+      label.className = "radioLabel";
+      var listEl = document.createElement('input');
+      listEl.setAttribute("type", "radio");
+      listEl.setAttribute("onChange", "handleChange(this)")
+      var amID = amDiv.id;
+      listEl.setAttribute("name", amID);
+      listEl.setAttribute("value", passengerName);
+      listEl.setAttribute("textContent", passengerName);
+      listEl.setAttribute("style", "margin: 0 3px 0 3px ");
+
+      // append radio button and passengerName text
+      var dropText = document.createTextNode(passengerName);
+      label.appendChild(listEl);
+      label.appendChild(dropText);
+
+      //append removePersonButton to label
+      var removePersonButton = document.createElement('button');
+      removePersonButton.className = 'removePersonButton';
+      removePersonButton.setAttribute("onClick", "parentNode.remove()");
+      label.appendChild(removePersonButton);
+
+      // append the list element to the amDiv
+      amDiv.appendChild(label);
+
+      //alert(driverStatusStr);
+
+      // if(this.getAttribute('selected') == 'true'){
+      //       if (this.getAttribute('carstatus') == 'passenger'){
+      //         this.setAttribute('carstatus', 'driver');
+      //       } else if (this.getAttribute('carstatus') == 'driver'){
+      //         this.setAttribute('carstatus', 'unassigned');
+      //       } else{
+      //         this.setAttribute('carstatus', 'passenger');
+      //       }
+    }
+  };
+
+  // add amDiv to the car box
+  carBox.appendChild(amDiv);
+
+  // repeat above with pm box
+  var pmDiv = document.createElement('div');
+  var pmText = document.createTextNode("Drop PM passengers here");
+  pmDiv.appendChild(pmText);
+  pmDiv.className = "pmContainer";
+  pmDiv.setAttribute("ondragover", "allowDrop(event)");
+  pmDiv.id = count.toString() + day + "PM";
+
+  // on drop, we make a label and add passengerName text and radio button
+  pmDiv.ondrop = function(event) {
+    elID = carDriverID;
+     if(ampm == "AM"){
+      alert("You tried to add an AM passenger to a PM spot.");}
+    else{
+      event.preventDefault();
+
+      //add person in backend - update to email soon 
+      cars[day][carBox.id].PM.passengers.push(passengerName);
+      countID = carBox.id;
+      dayVar = day;
+      
+      // personName and radio buttons go under label element
+      var label = document.createElement('label');
+      label.className = "radioLabel";
+      var listEl = document.createElement('input');
+      listEl.setAttribute("type", "radio");
+      listEl.setAttribute("onChange", "handleChange(this)")
+      var pmID = pmDiv.id;
+      listEl.setAttribute("name", pmID);
+      listEl.setAttribute("value", passengerName);
+      listEl.setAttribute("textContent", passengerName);
+      listEl.setAttribute("style", "margin: 0 3px 0 3px ");
+
+      // append radio button and passengerName text
+      var dropText = document.createTextNode(passengerName);
+      label.appendChild(listEl);
+      label.appendChild(dropText);
+      
+      //append removePersonButton to label
+      var removePersonButton = document.createElement('button');
+      removePersonButton.className = 'removePersonButton';
+      removePersonButton.setAttribute("onClick", "parentNode.remove()");
+      label.appendChild(removePersonButton);
+
+      // append the list element to the amDiv
+      pmDiv.appendChild(label);
+    }
+  };
+
+  // add the pmDiv to the car box
+  carBox.appendChild(pmDiv);
+
+  var finishCarButton = document.createElement('button');
+  finishCarButton.className = 'finishCarButton';
+  //finishCarButton.setAttribute("onClick", "finishCar(carsArray)");
+  carBox.appendChild(finishCarButton);
+
+  // add the car box to its day div
+  var d = document.getElementById( day );
+  d.appendChild( carBox );
+
+  count++;
+}
+
+function handleChange(myRadio){
+  content = 'The driver is: ' + myRadio.value;
+  countNum = myRadio.parentElement.parentElement.parentElement.id;
+  day1 = myRadio.parentElement.parentElement.parentElement.parentElement.id;
+
+  driverID = countNum.toString() + day1 + "driver";
+
+  document.getElementById(driverID).innerHTML = content;
+
+  cars[day1][countNum].driver = myRadio.value;
+}
+
+function finishCar(carsArray){
+  //curretnly will allert the TOTAL number of cars minus 1
+  alert(carsArray[carsArray.length - 1]);
+}
+// author: edorsey,tstannard
+// this needs to be here
+function allowDrop(event) {
+    event.preventDefault();
+}
+
+function deleteCarOnX(carID) {
+  document.getElementById(carID).remove();
+  delete cars[day][count];
 }
 
 //This is a helper function which parses a time into a viuallly apealling
@@ -362,6 +626,7 @@ function saveDirectCarModifyChanges() {
   updateHighlightingAndTables();
 }
 
+//TEAL LOOK HERE
 // Converts a gmail, name, or preferred email to their gmail
 // Uses allPreferences
 function aliasToEmail(alias) {
@@ -437,3 +702,4 @@ window.addEventListener("beforeunload", function (e) {
     return confirmationMessage;              // Gecko, WebKit, Chrome <34
   }
 });
+
