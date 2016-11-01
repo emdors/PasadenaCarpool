@@ -49,9 +49,9 @@ html(lang='en')
               each user in users
                 tr
                   td #{user.username}
-                  td #{user.total_driver + user.total_rider}
-                  td #{user.total_driver}
-                  td #{user.total_driver/poolDays}
+                  td(id = 'centerJustify') #{user.total_driver + user.total_rider}
+                  td(id = 'centerJustify') #{user.total_driver}
+                  td(id = 'centerJustify') #{user.total_driver/poolDays}
 
 
 
@@ -69,7 +69,8 @@ html(lang='en')
                 td user.username
                 each week in weekList
                   if week in user
-                    td(bgcolor=(user[week].driver_count/(user[week].driver_count+user[week].rider_count) >=.3) ? 'green':'red') #{(week in user)}
+                    td(id='tableWeekEntry', bgcolor='rgb(10, 100, 255)') #{user[week].driver_count + user[week].rider_count}
+                    //- *(user[week].driver_count/(user[week].driver_count+user[week].rider_count)))
 
 
                 

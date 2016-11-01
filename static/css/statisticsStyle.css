@@ -5,3 +5,11 @@
 .weekbyweekstats{
     margin: 20px;
 }
+
+td#centerJustify{
+	text-align: center;
+}
+
+td#tableWeekEntry{
+	text-align: center;
+}
