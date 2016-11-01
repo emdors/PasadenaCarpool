@@ -104,7 +104,7 @@ html(lang='en')
             h3= dayData.day
             
             each AMPMData in dayData.times
-              div(class="titleTable")
+              div(class="titleTable", id ="titleTable")
                 - AMPM = AMPMData.halfday
                 h4= AMPM
                 table.timetable(day=dayData.day, halfday=AMPM)
@@ -117,7 +117,7 @@ html(lang='en')
                   each personData in AMPMData.people
                   
 
-                    tr(class='timeview' name=personData.name email=personData.email data-toggle="popover" title=personData.name + ' Info' data-content= "Email: " + personData.prefEmail + "\n" + "Size of Car: " + personData.numPassengers + "\n" + "Phone Number: " + + personData.phoneNumber + "\n" + "Notes: " + personData.notes data-trigger="hover" draggable = "true" ondragstart ='dragStart(event,"#{personData.name}", "#{AMPM}", "#{personData.driveStatus}");')
+                    tr(class='timeview' name=personData.name email=personData.email data-toggle="popover" title=personData.name + ' Info' data-content= "Email: " + personData.prefEmail + "\n" + "Size of Car: " + personData.numPassengers + "\n" + "Phone Number: " + + personData.phoneNumber + "\n" + "Notes: " + personData.notes data-trigger="hover" draggable = "true" ondragstart ='dragStart(event,"#{personData.name}", "#{AMPM}", "#{personData.email}", "#{dayData.day}");')
                       td.name= personData.name
                       each hr,hrIdx in possibleDriveHours[AMPM]
                         each min,minIdx in [0, 15, 30, 45]

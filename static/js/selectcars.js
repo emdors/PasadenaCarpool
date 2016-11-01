@@ -116,6 +116,7 @@ function deleteWholeCar(day, driver) {
   updateHighlightingAndTables(day);
 }
 
+//TEAL LOOK HERE
 function deleteCar(day, driver, halfday) {
   delete cars[day][driver][halfday];
   var tableNowEmpty = true;
@@ -320,17 +321,37 @@ function submitCars() {
 
 passengerName = ""
 ampm = ""
-driverStatusStr = ""
+passengerEmail = ""
+passengerDay = "" 
+//object of person data which is reference to where i want to go 
 /*
 * Drag start is called when you start dragging the table row
 * Sets the global var passengerName to the name of the person 
 *   being dragged
 */
-function dragStart(event,name, ampmstring, driverStatus){
+function dragStart(event, name, ampmstring, email, day){
   passengerName = name;
   ampm = ampmstring;
-  driverStatusStr = driverStatus
-  //alert(driverStatus);
+  passengerEmail = email;
+  passengerDay = day; 
+
+  //use day, ampm, and email to get persons data 
+  var daysArray = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+  var dayIndex = 2*daysArray.indexOf(day);
+
+  if (ampm == "PM"){
+    dayIndex += 1; 
+  }
+
+  var ampmTable = document.getElementsByClassName("titleTable")[dayIndex];
+  var tableRows = ampmTable.getElementsByTagName('tr');
+  var row = tableRows[0];
+  // for(var index = 0; index < tableRows.length; ++index){
+  //   if(tableRows[i].get
+  // }
+  
+  //console.log(tableRows[1]).getAttribute(email);
+  
 }
 
 // global variables for keeping track of cars 
@@ -361,14 +382,15 @@ function makeCarBox(day) {
   // create the car box div
   var carBox = document.createElement('div');
   carBox.className = 'boxed';
-  carBox.id = count.toString();
+  var carBoxID = count.toString();
+  carBox.id = carBoxID;
 
   // create close button for each car
   var closeButton = document.createElement('button');
   closeButton.className = 'boxclose';
 
   // onClick we remove the car
-  closeButton.setAttribute("onClick", "parentNode.remove()");
+  closeButton.setAttribute("onClick", "deleteCarOnX(" + carBoxID +")");
 
   carBox.appendChild(closeButton);
 
@@ -550,6 +572,10 @@ function allowDrop(event) {
     event.preventDefault();
 }
 
+function deleteCarOnX(carID) {
+  document.getElementById(carID).remove();
+  delete cars[day][count];
+}
 
 //This is a helper function which parses a time into a viuallly apealling
 //and uniform way
@@ -600,6 +626,7 @@ function saveDirectCarModifyChanges() {
   updateHighlightingAndTables();
 }
 
+//TEAL LOOK HERE
 // Converts a gmail, name, or preferred email to their gmail
 // Uses allPreferences
 function aliasToEmail(alias) {
