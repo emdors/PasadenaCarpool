@@ -151,7 +151,7 @@ table.timetable tr.timeview[carstatus="driver"] td[selected="true"]{
 }
 
 table.timetable tr.timeview[carstatus="passenger"] td[selected="true"]{
-  background-color: #b38600
+  background-color: #999999
 }
 
 table.timetable tr.timeview[inCar = 'true'] td[selected="true"] {

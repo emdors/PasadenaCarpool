@@ -323,6 +323,7 @@ passengerName = ""
 ampm = ""
 passengerEmail = ""
 passengerDay = "" 
+var daysArray = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 //object of person data which is reference to where i want to go 
 /*
 * Drag start is called when you start dragging the table row
@@ -334,24 +335,6 @@ function dragStart(event, name, ampmstring, email, day){
   ampm = ampmstring;
   passengerEmail = email;
   passengerDay = day; 
-
-  //use day, ampm, and email to get persons data 
-  var daysArray = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-  var dayIndex = 2*daysArray.indexOf(day);
-
-  if (ampm == "PM"){
-    dayIndex += 1; 
-  }
-
-  var ampmTable = document.getElementsByClassName("titleTable")[dayIndex];
-  var tableRows = ampmTable.getElementsByTagName('tr');
-  var row = tableRows[0];
-  // for(var index = 0; index < tableRows.length; ++index){
-  //   if(tableRows[i].get
-  // }
-  
-  //console.log(tableRows[1]).getAttribute(email);
-  
 }
 
 // global variables for keeping track of cars 
@@ -375,9 +358,7 @@ function makeCarBox(day) {
   car_json["AM"] = am_car;
   car_json["PM"] = pm_car;
 
-  console.log(car_json);
   cars[day][count] = car_json;
-  console.log(cars);
 
   // create the car box div
   var carBox = document.createElement('div');
@@ -420,9 +401,7 @@ function makeCarBox(day) {
   amDiv.setAttribute("ondragover", "allowDrop(event)");
   amDiv.id = count.toString() + day + "AM";
   
-  // on drop we make a list of radio elements and add passengerName to amDiv
   amDiv.ondrop = function(event) {
-    //alert(JSON.stringify(cars[day][carBox.id].AM));
     if(ampm == "PM"){
       alert("You tried to add a PM passenger to an AM spot.");}
     else{
@@ -470,6 +449,17 @@ function makeCarBox(day) {
       // append the list element to the amDiv
       amDiv.appendChild(label);
 
+      //use day, ampm, and email to get persons data 
+      var dayIndex = 2*daysArray.indexOf(day);
+      var ampmTable = document.getElementsByClassName("titleTable")[dayIndex];
+      var tableRows = ampmTable.getElementsByTagName('tr');
+      var row = tableRows[0];
+      for(var index = 0; index < tableRows.length; ++index){
+        if(tableRows[index].getAttribute('email') == passengerEmail){
+          row = tableRows[index];
+        }
+      }
+      row.setAttribute('carstatus', 'passenger');
       //alert(driverStatusStr);
 
       // if(this.getAttribute('selected') == 'true'){
@@ -502,10 +492,29 @@ function makeCarBox(day) {
     else{
       event.preventDefault();
 
-      //add person in backend - update to email soon 
-      cars[day][carBox.id].PM.passengers.push(passengerName);
+      //add person in backend 
+      cars[day][carBox.id].PM.passengers.push(passengerEmail);
       countID = carBox.id;
       dayVar = day;
+
+      // use day, ampm, and email to get persons data 
+      var dayIndex = 2*daysArray.indexOf(day) +1;
+
+      var dayIndexString = dayIndex.toString();
+
+      var ampmTable = document.getElementsByClassName("titleTable")[dayIndex];
+      var tableRows = ampmTable.getElementsByTagName('tr');
+      var row = tableRows[0];
+      var tableRowIndex = 0;
+      // find the table row of the passenger 
+      for(var index = 0; index < tableRows.length; ++index){
+        if(tableRows[index].getAttribute('email') == passengerEmail){
+          row = tableRows[index];
+          tableRowIndex = index;
+        }
+      }
+
+      row.setAttribute('carstatus', 'passenger');
       
       // personName and radio buttons go under label element
       var label = document.createElement('label');
@@ -527,11 +536,13 @@ function makeCarBox(day) {
       //append removePersonButton to label
       var removePersonButton = document.createElement('button');
       removePersonButton.className = 'removePersonButton';
-      removePersonButton.setAttribute("onClick", "parentNode.remove()");
+      removePersonButton.setAttribute("onClick", "deletePersonOnX(" + passengerEmail +  ")");
+      //", " +dayIndex + ", " + tableRowIndex +
       label.appendChild(removePersonButton);
 
       // append the list element to the amDiv
       pmDiv.appendChild(label);
+
     }
   };
 
@@ -575,6 +586,16 @@ function allowDrop(event) {
 function deleteCarOnX(carID) {
   document.getElementById(carID).remove();
   delete cars[day][count];
+}
+
+function deletePersonOnX(email, dayIndex, rowIndex) {
+  console.log("here");
+  //use day, ampm, and email to get persons data 
+  // var ampmTable = document.getElementsByClassName("titleTable")[dayIndex];
+  // var tableRows = ampmTable.getElementsByTagName('tr');
+  // var row = tableRows[rowIndex];
+  // row.setAttribute('carstatus', 'passenger');
+  //document.getElementById(listEl).remove();
 }
 
 //This is a helper function which parses a time into a viuallly apealling
