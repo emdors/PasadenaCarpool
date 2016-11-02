@@ -309,13 +309,16 @@ app.post('/czarData', ensureAuthenticated, function(req,res){
   //console.log(JSON.stringify(req.body));
   fs.writeFile(schedulepath + dbComm.userDataFileName(), req.body.allCars);
   dbComm.updateStatistics(req.body.allCars, function(callback){
-    console.log('Inside this function thing')
+    console.log('Inside this function thing');
   })
   res.redirect('/czar')
 });
 app.post('/czarDataCurrent', ensureAuthenticated, function(req,res){
   //console.log(JSON.stringify(req.body));
   fs.writeFile(schedulepath + dbComm.userDataFileName(new Date()), req.body.allCars);
+  dbComm.updateStatistics(req.body.allCars, function(callback){
+    console.log('Inside this function thing');
+  })
   res.redirect('/czar')
 });
 
