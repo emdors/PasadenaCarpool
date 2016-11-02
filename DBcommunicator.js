@@ -164,8 +164,13 @@ var self = module.exports = {
   },
   getStatistics : function getStatistics(callback){
     var jsoncontent = fs.readFileSync(statisticspath + "hist_stats.json");
+<<<<<<< HEAD
     var dataForStatPage = JSON.parse(jsoncontent);
     callback(dataForStatPage);
+=======
+    var dataForStatPage = JSON.parse(jsoncontent)
+    callback(dataForStatPage)
+>>>>>>> 73cbf4e562dfe669c6330dd16bb3f00396200fd8
   },
   getAllPreferences : function getAllPreferences(callback){
     fs.readdir(userdatapath, function(err, files) {

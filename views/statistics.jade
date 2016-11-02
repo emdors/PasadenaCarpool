@@ -52,9 +52,6 @@ html(lang='en')
                   td(id = 'centerJustify') #{user.total_driver + user.total_rider}
                   td(id = 'centerJustify') #{user.total_driver}
                   td(id = 'centerJustify') #{user.total_driver/poolDays}
-                  td #{user.total_driver + user.total_rider}
-                  td #{user.total_driver}
-                  td #{user.total_driver/poolDays}
 
         div(class="weekbyweekstats")
           table#weekbyweekstats
@@ -71,4 +68,3 @@ html(lang='en')
                 each week in weekList
                   if week in user
                     td(id='tableWeekEntry', bgcolor='rgb(10, 100, 255)') #{user[week].driver_count + user[week].rider_count}
-                    //- *(user[week].driver_count/(user[week].driver_count+user[week].rider_count)))
