@@ -6,32 +6,30 @@ var datapath = __dirname + '/data/'
 var schedulepath = datapath + '/schedules/'
 var userdatapath = datapath + '/users/'
 var statisticspath = datapath + '/statistics/';
-var statFileName = 'test_file.json'
+var statFileName = 'hist_stats.json'
 
 
 var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 var possibleDriveHours = {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]};
 
 function createStatistics(){
-  json = {"weeks":[], "poolDays":0, "users":[]};
-  fs.writeFile(statisticspath + statFileName,  json);
+  json = {"weeks":[], "poolDays":0, "users":[], "userList":[]};
+  fs.writeFileSync(statisticspath + statFileName,  JSON.stringify(json));
 }
 
 var self = module.exports = {
   updateStatistics : function updateStatistics(unp_data, callback){
-    // check for existing stats file
-    fs.stat(statisticspath+statFileName, function(err, stat) {
-      if(err != null){
-        if(err.code == 'ENOENT') {
-          // file does not exist
-          createStatistics();
-      }
+    console.log("Inside updateStatistics");
+    try {
+      fs.statSync(statisticspath+statFileName);
     }
-    });
-    createStatistics();
+    catch(err) {
+      console.log("Thinks file doesn't exist.");
+      createStatistics();
+    }
 
     // load the stats file to modify data and then write over
-    var stat = fs.readFileSync(statisticspath + 'hist_stats.json','utf8');
+    var stat = fs.readFileSync(statisticspath + statFileName,'utf8');
     var parsed = JSON.parse(stat);
 
     // parse week's schedule to update data with
@@ -41,31 +39,27 @@ var self = module.exports = {
     // add this week's schedule date to the list of weeks
     var date = self.userDataFileName(new Date())
     parsed.weeks.push(date);
+    console.log("Date list is:" + parsed.weeks);
 
     carpoolers = {};
 
     // for each day of the pool, increment the number of pool days and keep track of carpoolers
     for (var weekdayIdx=0; weekdayIdx<weekdays.length; ++weekdayIdx) {
-      console.log("Weekday processing: ", weekdays[weekdayIdx]);
       var day = weekdays[weekdayIdx];
       var pool_day = data[day];
 
       if (Object.keys(pool_day).length != 0) {
         parsed.poolDays++;
-        console.log(pool_day);
         drivers = Object.keys(pool_day);
-        console.log(drivers);
 
         for (var driver_Idx=0; driver_Idx<drivers.length; ++driver_Idx) {
           var driver = drivers[driver_Idx];
-          console.log(driver);
           if (!(carpoolers.hasOwnProperty(driver))) {
             //var this_week = {"driver_count":1, "rider_count":0};
             var new_pooler = {"total_driver":1, "total_rider":0};//, "new_in_stats":False};
             new_pooler["week"] = {"driver_count":1, "rider_count":0};
+            console.log("The parsed stuff is:" + JSON.stringify(parsed));
             if (parsed.userList.indexOf(driver) <0) {
-              console.log("This driver is not in the userList:" + driver);
-              console.log("This is what should be the address:" + parsed.userList[0]);
               //new_pooler[new_in_stats] = True;
               new_pooler["userIdx"] = -1;
             }
@@ -80,18 +74,11 @@ var self = module.exports = {
           }
           else {
             // The driver is already in the carpoolers list
-                       
-            console.log("Trying to update driver count");
-            console.log(carpoolers[driver]);
-            carpoolers[driver].driver_count++;
+            carpoolers[driver].week.driver_count++;
             carpoolers[driver].total_driver++;
           }
           var passengers = [];
-          console.log(pool_day.driver);
           if (pool_day[driver].hasOwnProperty("AM")) {
-            console.log("We have an AM")
-            console.log(pool_day[driver])
-            console.log(pool_day[driver].AM)
             var passengers = pool_day[driver].AM.passengers;
             for (var pass_Idx=0; pass_Idx<passengers.length; ++pass_Idx) {
               var passenger = passengers[pass_Idx];
@@ -99,8 +86,6 @@ var self = module.exports = {
                 var new_pooler = {"total_driver":0, "total_rider":1};//, "new_in_stats":False};
                 new_pooler["week"] = {"driver_count":0, "rider_count":1};
                 if (parsed.userList.indexOf(passenger) <0) {
-                  console.log("This driver is not in the userList:" + passenger);
-                  console.log("This is what should be the address:" + parsed.userList[0]);
                   //new_pooler[new_in_stats] = True;
                   new_pooler["userIdx"] = -1;
                 }
@@ -115,18 +100,12 @@ var self = module.exports = {
               }
               else {
                 // The driver is already in the carpoolers list
-                           
-                console.log("Trying to update driver count");
-                console.log(carpoolers[passenger]);
-                carpoolers[passenger].rider_count++;
+                carpoolers[passenger].week.rider_count++;
                 carpoolers[passenger].total_rider++;
               }
             }
           }
           if (pool_day[driver].hasOwnProperty("PM")) {
-            console.log("We have an PM")
-            console.log(pool_day[driver])
-            console.log(pool_day[driver].PM)
             var passengers = pool_day[driver].PM.passengers;
             for (var pass_Idx=0; pass_Idx<passengers.length; ++pass_Idx) {
               var passenger = passengers[pass_Idx];
@@ -134,8 +113,6 @@ var self = module.exports = {
                 var new_pooler = {"total_driver":0, "total_rider":1};//, "new_in_stats":False};
                 new_pooler["week"] = {"driver_count":0, "rider_count":1};
                 if (parsed.userList.indexOf(passenger) <0) {
-                  console.log("This driver is not in the userList:" + passenger);
-                  console.log("This is what should be the address:" + parsed.userList[0]);
                   //new_pooler[new_in_stats] = True;
                   new_pooler["userIdx"] = -1;
                 }
@@ -150,10 +127,7 @@ var self = module.exports = {
               }
               else {
                 // The driver is already in the carpoolers list
-                           
-                console.log("Trying to update driver count");
-                console.log(carpoolers[passenger]);
-                carpoolers[passenger].rider_count++;
+                carpoolers[passenger].week.rider_count++;
                 carpoolers[passenger].total_rider++;
               }
             }
@@ -161,18 +135,14 @@ var self = module.exports = {
         }
       }
     }
-    console.log(carpoolers);
+    
     var users = Object.keys(carpoolers)
-    console.log("The users list for this week is:", parsed.userList[0]);
+    
     for (var user_Idx=0; user_Idx<users.length; ++user_Idx ) {
       var user = users[user_Idx];
-      console.log("this is what it says the user is:" + user);
-      console.log(carpoolers[user]);
-      console.log(carpoolers[user].userIdx);
       if (carpoolers[user].userIdx == -1) {
         var new_driver = {};
         new_driver["username"] = user;
-        console.log("This is what it says the users week is" + carpoolers[user.week])
         new_driver[date] = carpoolers[user].week;
         new_driver["total_driver"] = carpoolers[user].total_driver;
         new_driver["total_rider"] = carpoolers[user].total_rider;
@@ -180,12 +150,7 @@ var self = module.exports = {
         parsed.userList.push(user);
       }
       else {
-        console.log(user);
         var index = carpoolers[user].userIdx;
-        console.log("We are in the else statement starting on 145");
-        console.log(index);
-        console.log(parsed.users);
-        console.log(parsed.users[index]);
         parsed.users[index][date] = carpoolers[user].week;
         parsed.users[index]["total_driver"] += carpoolers[user].total_driver;
         parsed.users[index]["total_rider"] += carpoolers[user].total_rider;
