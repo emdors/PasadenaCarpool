@@ -1,5 +1,7 @@
-function makeCarTable(allPreferences, cars, day, driver, showDays, haveDeleteButtons, userToHighlight) {
+function makeCarTable(allPreferences, car, day, showDays, haveDeleteButtons, userToHighlight) {
+  // driver = cars[day][car_Idx].driver
   // Create a new table
+  console.log("Inside makeCarTable");
   var carTable = document.createElement('table');
   var carTableBody = document.createElement('tbody');
   carTable.className = 'table fullcartable table-bordered';
@@ -21,10 +23,31 @@ function makeCarTable(allPreferences, cars, day, driver, showDays, haveDeleteBut
   var driverCell = document.createElement('td');
   // The name itself goes in a <span>, and the text " (driver)" goes after it.
   // This is so we can find the driver's name easily
+  var driver = car["driver"];
   var driverNameSpan = document.createElement('span');
-  driverNameSpan.appendChild(document.createTextNode(allPreferences[driver].name));
+  // Converts a gmail, name, or preferred email to their gmail
+  // Uses allPreferences
+  function aliasToEmail(alias) {
+    if (alias in allPreferences) {
+      return alias;
+    } else {
+      // They must have given a name or a "preferred email" instead of their
+      // gmail
+      for (var person in allPreferences) {
+        var theirPreferences = allPreferences[person];
+        if (theirPreferences.prefEmail == alias
+            || theirPreferences.name.toLowerCase() == alias.toLowerCase()) {
+          return person;
+        }
+      }
+    }
+  }
+  var driverEmail = aliasToEmail(driver);
+  console.log(driverEmail);
+  driverNameSpan.appendChild(document.createTextNode(allPreferences[driverEmail].name));
   driverNameSpan.className = 'drivername';
-  if (userToHighlight == driver) {
+  console.log("userToHiglight" + userToHighlight);
+  if (userToHighlight == driverEmail) {
     var strong = document.createElement('strong');
     strong.appendChild(driverNameSpan);
     driverCell.appendChild(strong);
@@ -62,8 +85,9 @@ function makeCarTable(allPreferences, cars, day, driver, showDays, haveDeleteBut
   for (var halfdayIdx=0; halfdayIdx<2; ++halfdayIdx) {
     var halfday = ['AM', 'PM'][halfdayIdx];
     var timeCell = document.createElement('td');
-    if (cars[day][driver][halfday]) {
-      var timeString = parseTime(day+halfday+cars[day][driver][halfday].time);
+    console.log("HALFDAY HERE" + JSON.stringify(car[halfday]));
+    if (car[halfday]) {
+      var timeString = parseTime(day+halfday+car[halfday].time);
       timeCell.appendChild(document.createTextNode(timeString));
 
       if (haveDeleteButtons) {
@@ -91,8 +115,8 @@ function makeCarTable(allPreferences, cars, day, driver, showDays, haveDeleteBut
 
   // Put passengers in
   for (var passengerIdx=0;
-           (cars[day][driver].AM && passengerIdx < cars[day][driver].AM.passengers.length)
-        || (cars[day][driver].PM && passengerIdx < cars[day][driver].PM.passengers.length);
+           (car.AM && passengerIdx < car.AM.passengers.length)
+        || (car.PM && passengerIdx < car.PM.passengers.length);
         ++passengerIdx) {
     // Keep putting a pair of passengers in the table until there's no more
     // in both AM and PM
@@ -101,14 +125,18 @@ function makeCarTable(allPreferences, cars, day, driver, showDays, haveDeleteBut
     for (var halfdayIdx=0; halfdayIdx<2; ++halfdayIdx) {
       var halfday = ['AM', 'PM'][halfdayIdx];
       var cell = document.createElement('td');
-      if (cars[day][driver][halfday] && cars[day][driver][halfday].passengers.length > passengerIdx) {
-        var passenger = cars[day][driver][halfday].passengers[passengerIdx];
-        if (userToHighlight == passenger) {
+      if (car[halfday] && car[halfday].passengers.length > passengerIdx) {
+        var passenger = car[halfday].passengers[passengerIdx];
+        var passengerEmail = aliasToEmail(car[halfday].passengers[passengerIdx]);
+        console.log("passenger" + passenger);
+        console.log("userToHighlight" + userToHighlight);
+        // console.log("allPreferences passenger name" + allPreferences[passenger].email);
+        if (userToHighlight == passengerEmail) {
           var strong = document.createElement('strong');
-          strong.appendChild(document.createTextNode(allPreferences[passenger].name));
+          strong.appendChild(document.createTextNode(passenger));
           cell.appendChild(strong);
         } else {
-          cell.appendChild(document.createTextNode(allPreferences[passenger].name));
+          cell.appendChild(document.createTextNode(passenger));
         }
 
 
