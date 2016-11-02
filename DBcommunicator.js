@@ -7,7 +7,7 @@ var schedulepath = datapath + '/schedules/'
 
 var userdatapath = datapath + '/users/'
 var statisticspath = datapath + '/statistics/';
-var statFileName = 'test_file.json'
+var statFileName = 'hist_stats.json'
 
 var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 var possibleDriveHours = {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]};
@@ -164,13 +164,8 @@ var self = module.exports = {
   },
   getStatistics : function getStatistics(callback){
     var jsoncontent = fs.readFileSync(statisticspath + "hist_stats.json");
-<<<<<<< HEAD
     var dataForStatPage = JSON.parse(jsoncontent);
     callback(dataForStatPage);
-=======
-    var dataForStatPage = JSON.parse(jsoncontent)
-    callback(dataForStatPage)
->>>>>>> 73cbf4e562dfe669c6330dd16bb3f00396200fd8
   },
   getAllPreferences : function getAllPreferences(callback){
     fs.readdir(userdatapath, function(err, files) {
