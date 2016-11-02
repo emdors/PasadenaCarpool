@@ -172,8 +172,9 @@ function updateHighlightingAndTablesForOneDay(day) {
 
 
   document.getElementById(day+'Cars').innerHTML = "";
+  var car = cars[day][car_Idx];
   for (var driver in cars[day]) {
-    document.getElementById(day+'Cars').appendChild(makeCarTable(allPreferences, cars, day, driver, false, true, null));
+    document.getElementById(day+'Cars').appendChild(makeCarTable(allPreferences, car, day, false, true, null));
   }
 }
 
@@ -600,23 +601,6 @@ function saveDirectCarModifyChanges() {
   updateHighlightingAndTables();
 }
 
-// Converts a gmail, name, or preferred email to their gmail
-// Uses allPreferences
-function aliasToEmail(alias) {
-  if (alias in allPreferences) {
-    return alias;
-  } else {
-    // They must have given a name or a "preferred email" instead of their
-    // gmail
-    for (var person in allPreferences) {
-      var theirPreferences = allPreferences[person];
-      if (theirPreferences.prefEmail == alias
-          || theirPreferences.name.toLowerCase() == alias.toLowerCase()) {
-        return person;
-      }
-    }
-  }
-}
 function directlyAddCar(day) {
   // Get the modal
   var theForm = document.getElementById('directAddCar'+day);
