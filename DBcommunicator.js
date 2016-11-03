@@ -34,10 +34,17 @@ var self = module.exports = {
 
     // parse week's schedule to update data with
     var data = JSON.parse(unp_data);
+    console.log(unp_data);
     json = {}
 
     // add this week's schedule date to the list of weeks
-    var date = self.userDataFileName(new Date())
+    var date = self.userDataFileName(new Date());
+    console.log("The date added:" + date);
+    console.log("the list of weeks" + JSON.stringify(parsed.weeks));
+    if (parsed.weeks.indexOf(date) > -1) {
+      console.log("There was a midweek edit.  Stats not yet updated.");
+      return;
+    }
     parsed.weeks.push(date);
     console.log("Date list is:" + parsed.weeks);
 
@@ -50,15 +57,15 @@ var self = module.exports = {
 
       if (Object.keys(pool_day).length != 0) {
         parsed.poolDays++;
-        drivers = Object.keys(pool_day);
+        cars = Object.keys(pool_day);
 
-        for (var driver_Idx=0; driver_Idx<drivers.length; ++driver_Idx) {
-          var driver = drivers[driver_Idx];
+        for (var car_Idx=0; car_Idx<cars.length; ++car_Idx) {
+          var car = pool_day[car_Idx];
+          var driver = car.driver;
           if (!(carpoolers.hasOwnProperty(driver))) {
             //var this_week = {"driver_count":1, "rider_count":0};
             var new_pooler = {"total_driver":1, "total_rider":0};//, "new_in_stats":False};
             new_pooler["week"] = {"driver_count":1, "rider_count":0};
-            console.log("The parsed stuff is:" + JSON.stringify(parsed));
             if (parsed.userList.indexOf(driver) <0) {
               //new_pooler[new_in_stats] = True;
               new_pooler["userIdx"] = -1;
@@ -78,10 +85,13 @@ var self = module.exports = {
             carpoolers[driver].total_driver++;
           }
           var passengers = [];
-          if (pool_day[driver].hasOwnProperty("AM")) {
-            var passengers = pool_day[driver].AM.passengers;
+          if (car.hasOwnProperty("AM")) {
+            var passengers = car.AM.passengers;
             for (var pass_Idx=0; pass_Idx<passengers.length; ++pass_Idx) {
               var passenger = passengers[pass_Idx];
+              if (passenger == driver) {
+                continue;
+              }
               if (!(passenger in carpoolers)) {
                 var new_pooler = {"total_driver":0, "total_rider":1};//, "new_in_stats":False};
                 new_pooler["week"] = {"driver_count":0, "rider_count":1};
@@ -105,10 +115,13 @@ var self = module.exports = {
               }
             }
           }
-          if (pool_day[driver].hasOwnProperty("PM")) {
-            var passengers = pool_day[driver].PM.passengers;
+          if (car.hasOwnProperty("PM")) {
+            var passengers = car.PM.passengers;
             for (var pass_Idx=0; pass_Idx<passengers.length; ++pass_Idx) {
               var passenger = passengers[pass_Idx];
+              if (passenger == driver) {
+                continue;
+              }
               if (!(passenger in carpoolers)) {
                 var new_pooler = {"total_driver":0, "total_rider":1};//, "new_in_stats":False};
                 new_pooler["week"] = {"driver_count":0, "rider_count":1};
