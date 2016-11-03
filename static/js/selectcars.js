@@ -402,9 +402,16 @@ function makeCarBox(day) {
   amDiv.id = count.toString() + day + "AM";
   
   amDiv.ondrop = function(event) {
-    if(ampm == "PM"){
-      alert("You tried to add a PM passenger to an AM spot.");}
-    else{
+     var tooMany;
+     tooMany = checkAlreadyAdded(amDiv, "AM", passengerEmail, day);
+
+     //alert(tooMany);
+
+     if(ampm == "PM"){
+      alert("You tried to add an PM passenger to a AM spot.");}
+    else if (tooMany == true) {
+      alert("This person already has a AM ride!");
+    } else {
       event.preventDefault();
 
       //add person in backend
@@ -490,9 +497,16 @@ function makeCarBox(day) {
 
   // on drop, we make a label and add passengerName text and radio button
   pmDiv.ondrop = function(event) {
+     var tooMany;
+     tooMany = checkAlreadyAdded(pmDiv, "PM", passengerEmail, day);
+
+     //alert(tooMany);
 
      if(ampm == "AM"){
       alert("You tried to add an AM passenger to a PM spot.");}
+    else if (tooMany == true) {
+      alert("This person already has a PM ride!");
+    }
     else{
       event.preventDefault();
 
@@ -566,6 +580,68 @@ function makeCarBox(day) {
   d.appendChild( carBox );
 
   count++;
+}
+
+var mondayAM = [];
+var mondayPM = [];
+var tuesdayAM = [];
+var tuesdayPM = [];
+var wednesdayAM = [];
+var wednesdayPM = [];
+var thursdayAM = [];
+var thursdayPM = [];
+var fridayAM = [];
+var fridayPM = [];
+
+function checkAlreadyAdded(pmDiv, amPM, passengerEmail, day) {
+
+  var currCount = pmDiv.parentNode.id;
+
+  var inList;
+
+  if (amPM == "AM") {
+    if (day == "Monday") {
+      inList = checkIfInList(mondayAM, passengerEmail);
+    } else if (day == "Tuesday") {
+      inList = checkIfInList(tuesdayAM, passengerEmail);
+    } else if (day == "Wednesday") {
+      inList = checkIfInList(wednesdayAM, passengerEmail);
+    } else if (day == "Thursday") { 
+      inList = checkIfInList(thursdayAM, passengerEmail);
+    } else {
+      inList = checkIfInList(fridayAM, passengerEmail);
+    }
+  } else {
+    if (day == "Monday") {
+      inList = checkIfInList(mondayPM, passengerEmail);
+    } else if (day == "Tuesday") {
+      inList = checkIfInList(tuesdayPM, passengerEmail);
+    } else if (day == "Wednesday") {
+      inList = checkIfInList(wednesdayPM, passengerEmail);
+    } else if (day == "Thursday") {
+      inList = checkIfInList(thursdayPM, passengerEmail);
+    } else {
+      inList = checkIfInList(fridayPM, passengerEmail);
+    }
+  }
+
+  return inList;
+
+}
+
+function checkIfInList(dayList, email) {
+    var listLength=dayList.length;
+
+    for(var i=0; i<listLength; i++)
+    {
+        // if its in the array, return true
+        if(dayList[i] == email){
+          return true;
+        }
+    }
+    // if not, then add to list and return false
+    dayList.push(email);
+    return false;
 }
 
 function handleChange(myRadio){
