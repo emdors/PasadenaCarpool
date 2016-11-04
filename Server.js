@@ -149,6 +149,25 @@ app.get("/czarThisWeek", ensureAuthenticated, function(req, res) {
   });
 });
 
+<<<<<<< HEAD
+=======
+function getSchedule(day, callback) {
+  fs.readFile(schedulepath + userDataFileName(day), 'utf8', function(err, data) {
+    if (err || !data) {
+      // Build empty schedule, with an empty object for each day
+      var sch = {};
+      for (var weekdayIdx=0; weekdayIdx<weekdays.length; ++weekdayIdx) {
+        sch[weekdays[weekdayIdx]] = {};
+      }
+      callback(sch);
+    } else {
+      callback(JSON.parse(data));
+    }
+  });
+}
+
+// undefined - day get set to current day in get schedule
+>>>>>>> makeNewCar
 app.get("/dynamic/nextweekSchedule.js", ensureAuthenticated, function(req, res) {
   dbComm.getSchedule(undefined, function(sch) {
     res.send("var cars = " + JSON.stringify(sch));
@@ -160,9 +179,11 @@ app.get("/dynamic/thisweekSchedule.js", ensureAuthenticated, function(req, res) 
     res.send("var cars = " + JSON.stringify(sch) + ';');
   });
 });
+
 app.get("/dynamic/currentUser.js", ensureAuthenticated, function(req, res) {
   res.send('var user = "' + req.user + '";');
 });
+
 app.get("/dynamic/allPreferences.js", ensureAuthenticated, function(req, res) {
   //res.set('Content-Type', 'application/javascript');
   dbComm.getAllPreferences(function(allPreferences) {
