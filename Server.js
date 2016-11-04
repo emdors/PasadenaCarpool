@@ -366,6 +366,7 @@ function getSchedule(day, callback) {
   });
 }
 
+// undefined - day get set to current day in get schedule
 app.get("/dynamic/nextweekSchedule.js", ensureAuthenticated, function(req, res) {
   getSchedule(undefined, function(sch) {
     res.send("var cars = " + JSON.stringify(sch));
@@ -377,9 +378,11 @@ app.get("/dynamic/thisweekSchedule.js", ensureAuthenticated, function(req, res) 
     res.send("var cars = " + JSON.stringify(sch) + ';');
   });
 });
+
 app.get("/dynamic/currentUser.js", ensureAuthenticated, function(req, res) {
   res.send('var user = "' + req.user + '";');
 });
+
 app.get("/dynamic/allPreferences.js", ensureAuthenticated, function(req, res) {
   //res.set('Content-Type', 'application/javascript');
   

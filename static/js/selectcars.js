@@ -455,8 +455,9 @@ function makeCarBox(day) {
       removePersonButton.className = 'removePersonButton';
       
       var currentEmail = passengerEmail;
-      removePersonButton.setAttribute("onClick", "deletePersonOnX(\'" + currentEmail + "\'" + ", " + 
-      dayIndex + ", " + tableRowIndex + ", \'" + labelID + "\')");
+      removePersonButton.setAttribute("onClick", "deletePersonOnX(\'" + currentEmail + "\'" + ", " +
+      dayIndex + ", \'" + day + "\'" + ", " + tableRowIndex + ", \'" + labelID + "\', \'" + 
+      carBox.id + "\')");
 
       label.appendChild(removePersonButton);
        
@@ -543,8 +544,10 @@ function makeCarBox(day) {
       removePersonButton.className = 'removePersonButton';
 
       var currentEmail = passengerEmail;
-      removePersonButton.setAttribute("onClick", "deletePersonOnX(\'" + currentEmail + "\'" + ", " + 
-      dayIndex + ", " + tableRowIndex + ", \'" + labelID + "\')");
+      removePersonButton.setAttribute("onClick", "deletePersonOnX(\'" + currentEmail + "\'" + ", " +
+      dayIndex + ", \'" + day + "\'" + ", " + tableRowIndex + ", \'" + labelID + "\', \'" + 
+      carBox.id + "\')");
+
       label.appendChild(removePersonButton);
 
       // append the list element to the amDiv
@@ -599,8 +602,8 @@ function deleteCarOnX(carID) {
   delete cars[day][carID];
 }
 
-function deletePersonOnX(email, dayIndex, rowIndex, listEl) {
-  // delete front end 
+function deletePersonOnX(email, dayIndex, day, rowIndex, listEl, currentID) {
+  // delete front end
   document.getElementById(listEl).remove();
 
   //use day, ampm, and email to get/changes persons car status  
@@ -609,9 +612,19 @@ function deletePersonOnX(email, dayIndex, rowIndex, listEl) {
   var row = tableRows[rowIndex];
   row.setAttribute('carstatus', 'false');
 
-  //TODO remove from backend
- 
-
+  // remove from backend
+  if(dayIndex%2 == 0)
+  {
+    var passengerIndex = cars[day][currentID].AM.passengers.indexOf(email);
+    cars[day][currentID].AM.passengers.splice(passengerIndex);
+  }
+  else
+  {
+    var passengerIndex = cars[day][currentID].PM.passengers.indexOf(email);
+    cars[day][currentID].PM.passengers.splice(passengerIndex);
+  }
+  
+  
 }
 
 //This is a helper function which parses a time into a viuallly apealling
