@@ -78,7 +78,11 @@ body {
   padding: 3px;
   background: white;
 }
-
+.timeInput
+{
+  display: block;
+  height: 20px;
+}
 .radioLabel{
   display: block;
   max-width: 100%;
