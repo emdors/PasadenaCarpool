@@ -618,22 +618,24 @@ function deleteCarOnX(carID) {
   var rowAM = tableRowsAM[0];
   for (var i=0; i<passengerAMList.length; ++i){
       // find the table row of the passenger 
+      var amEmail = passengerAMList[i];
       for(var index = 0; index < tableRowsAM.length; ++index){
-        if(tableRowsAM[index].getAttribute('email') == passengerEmail){
+        if(tableRowsAM[index].getAttribute('email') == amEmail){
           tableRowsAM[index].setAttribute('carstatus', 'false')
         }
       } 
    }
 
-     passengerPMList = cars[day][carID].AM.passengers; 
+    passengerPMList = cars[day][carID].AM.passengers; 
     var dayIndexPM = 2*daysArray.indexOf(day) +1 ;
     var ampmTablePM = document.getElementsByClassName("titleTable")[dayIndexPM];
     var tableRowsPM = ampmTablePM.getElementsByTagName('tr');
     var rowPM = tableRowsPM[0];
     for (var i=0; i<passengerPMList.length; ++i){
         // find the table row of the passenger 
+        var pmEmail = passengerPMList[i];
         for(var index = 0; index < tableRowsPM.length; ++index){
-          if(tableRowsPM[index].getAttribute('email') == passengerEmail){
+          if(tableRowsPM[index].getAttribute('email') == pmEmail){
             tableRowsPM[index].setAttribute('carstatus', 'false')
           }
         } 
