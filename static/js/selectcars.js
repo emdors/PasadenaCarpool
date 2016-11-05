@@ -580,15 +580,39 @@ function makeCarBox(day) {
 }
 
 function handleChange(myRadio){
-  content = 'The driver is: ' + myRadio.value;
-  countNum = myRadio.parentElement.parentElement.parentElement.id;
-  day1 = myRadio.parentElement.parentElement.parentElement.parentElement.id;
+  var radioID = myRadio.id;
+  var countNum = myRadio.parentElement.parentElement.parentElement.id;
+  var day1 = myRadio.parentElement.parentElement.parentElement.parentElement.id;
 
-  driverID = countNum.toString() + day1 + "driver";
+  //go through the am array to see if they car drive 
+  var dayIndex = 2*daysArray.indexOf(day1);
+  var ampmTable = document.getElementsByClassName("titleTable")[dayIndex];
+  var tableRows = ampmTable.getElementsByTagName('tr');
+  var row = tableRows[0];
+  var tableRowIndex = 0;
+  // find the table row of the passenger 
+  for(var index = 0; index < tableRows.length; ++index){
+    if(tableRows[index].getAttribute('email') == passengerEmail){
+      row = tableRows[index];
+      tableRowIndex = index;
+    }
+  }
 
-  document.getElementById(driverID).innerHTML = content;
+  var driveStatuses = row.getElementsByClassName('driveStatus');
 
-  cars[day1][countNum].driver = aliasToEmail(myRadio.value);
+  if(driveStatuses.length ==1 && driveStatuses[0].innerHTML == "cannot drive"){
+    alert("You tried to make someone a driver who can not drive. \n Please select a new driver.");
+    //document.getElementById(radioID).checked = false; doesnt work:( )
+  }
+  else
+  {
+    content = 'The driver is: ' + myRadio.value;
+    driverID = countNum.toString() + day1 + "driver";
+
+    document.getElementById(driverID).innerHTML = content;
+
+    cars[day1][countNum].driver = aliasToEmail(myRadio.value);
+  }
 }
 
 function finishCar(carID,day){
