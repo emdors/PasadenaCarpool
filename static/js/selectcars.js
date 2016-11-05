@@ -598,20 +598,48 @@ function handleChange(myRadio){
     }
   }
 
-  var driveStatuses = row.getElementsByClassName('driveStatus');
+  var driverEmail = aliasToEmail(myRadio.value);
 
-  if(driveStatuses.length ==1 && driveStatuses[0].innerHTML == "cannot drive"){
-    alert("You tried to make someone a driver who can not drive. \n Please select a new driver.");
-    //document.getElementById(radioID).checked = false; doesnt work:( )
-  }
-  else
+  var inAM = false;
+  passengerAMList = cars[day1][countNum].AM.passengers; 
+  for (var i=0; i<passengerAMList.length; ++i)
   {
-    content = 'The driver is: ' + myRadio.value;
-    driverID = countNum.toString() + day1 + "driver";
+    if(driverEmail == passengerAMList[i])
+    {
+        inAM = true;
+    }
+  } 
 
-    document.getElementById(driverID).innerHTML = content;
+  var inPM = false;
+  passengerPMList = cars[day1][countNum].PM.passengers;
+  for (var i=0; i<passengerPMList.length; ++i)
+  {
+    if(driverEmail == passengerPMList[i])
+    {
+        inPM = true;
+    }
+  } 
 
-    cars[day1][countNum].driver = aliasToEmail(myRadio.value);
+  if(inAM == false || inPM == false)
+  {
+    alert("Please add the driver to the AM and the PM of the car");
+  }
+  else{
+    var driveStatuses = row.getElementsByClassName('driveStatus');
+
+    if(driveStatuses.length ==1 && driveStatuses[0].innerHTML == "cannot drive"){
+      alert("You tried to make someone a driver who can not drive. \n Please select a new driver.");
+      //document.getElementById(radioID).checked = false; doesnt work:( )
+    }
+    else
+    {
+      content = 'The driver is: ' + myRadio.value;
+      driverID = countNum.toString() + day1 + "driver";
+
+      document.getElementById(driverID).innerHTML = content;
+
+      cars[day1][countNum].driver = aliasToEmail(myRadio.value);
+    }
   }
 }
 
