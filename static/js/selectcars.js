@@ -394,6 +394,13 @@ function makeCarBox(day) {
 
   // am box
   var amDiv = document.createElement('div');
+
+  var amTimeDiv = document.createElement('input');
+  amTimeDiv.setAttribute("type", "time");
+  amTimeDiv.id = count + "AMtime";
+  amTimeDiv.className = "timeInput";
+  amDiv.appendChild(amTimeDiv);
+
   var amText = document.createTextNode("Drop AM passengers here");
   amDiv.appendChild(amText);
   amDiv.className = "amContainer";
@@ -482,6 +489,11 @@ function makeCarBox(day) {
 
   // repeat above with pm box
   var pmDiv = document.createElement('div');
+  var pmTimeDiv = document.createElement('input');
+  pmTimeDiv.setAttribute("type", "time");
+  pmTimeDiv.id = count + "PMtime";
+  pmTimeDiv.className = "timeInput";
+  pmDiv.appendChild(pmTimeDiv);
   var pmText = document.createTextNode("Drop PM passengers here");
   pmDiv.appendChild(pmText);
   pmDiv.className = "pmContainer";
@@ -560,7 +572,7 @@ function makeCarBox(day) {
 
   var finishCarButton = document.createElement('button');
   finishCarButton.className = 'finishCarButton';
-  //finishCarButton.setAttribute("onClick", "finishCar(carsArray)");
+  finishCarButton.setAttribute("onClick", "finishCar(\'" + carBoxID + "\', \'" + day + "\')");
   carBox.appendChild(finishCarButton);
 
   // add the car box to its day div
@@ -582,9 +594,13 @@ function handleChange(myRadio){
   cars[day1][countNum].driver = myRadio.value;
 }
 
-function finishCar(carsArray){
-  //curretnly will allert the TOTAL number of cars minus 1
-  alert(carsArray[carsArray.length - 1]);
+function finishCar(carID,day){
+ var amTime = document.getElementById(carID+"AMtime").value
+ var pmTime = document.getElementById(carID+"PMtime").value
+
+ cars[day][carID].AM.time = amTime;
+ cars[day][carID].PM.time = pmTime;
+
 }
 // author: edorsey,tstannard
 // this needs to be here
