@@ -592,7 +592,7 @@ function handleChange(myRadio){
 
   document.getElementById(driverID).innerHTML = content;
 
-  cars[day1][countNum].driver = myRadio.value;
+  cars[day1][countNum].driver = aliasToEmail(myRadio.value);
 }
 
 function finishCar(carID,day){
