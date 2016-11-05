@@ -149,8 +149,6 @@ app.get("/czarThisWeek", ensureAuthenticated, function(req, res) {
   });
 });
 
-<<<<<<< HEAD
-=======
 function getSchedule(day, callback) {
   fs.readFile(schedulepath + userDataFileName(day), 'utf8', function(err, data) {
     if (err || !data) {
@@ -167,7 +165,6 @@ function getSchedule(day, callback) {
 }
 
 // undefined - day get set to current day in get schedule
->>>>>>> makeNewCar
 app.get("/dynamic/nextweekSchedule.js", ensureAuthenticated, function(req, res) {
   dbComm.getSchedule(undefined, function(sch) {
     res.send("var cars = " + JSON.stringify(sch));
