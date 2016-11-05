@@ -650,6 +650,11 @@ function finishCar(carID,day){
  cars[day][carID].AM.time = amTime;
  cars[day][carID].PM.time = pmTime;
 
+ if (cars[day][carID].driver == "")
+ {
+   alert("Plese select a driver before you finish the car.");
+ }
+
 }
 // author: edorsey,tstannard
 // this needs to be here
