@@ -42,8 +42,19 @@ var self = module.exports = {
     console.log("The date added:" + date);
     console.log("the list of weeks" + JSON.stringify(parsed.weeks));
     if (parsed.weeks.indexOf(date) > -1) {
-      console.log("There was a midweek edit.  Stats not yet updated.");
-      return;
+      console.log("There was a midweek edit.  Stats being reset.");
+      var index = parsed.weeks.indexOf(date);
+      parsed.weeks.splice(index, 1);
+      for (userIdx = 0; userIdx < parsed.users.length; userIdx++) {
+        user = parsed.users[userIdx];
+        if (user.hasOwnProperty(date)) {
+          var driver_dec = user[date].driver_count;
+          var rider_dec = user[date].rider_count;
+          delete parsed.users[userIdx][date];
+          parsed.users[userIdx].total_driver -= driver_dec;
+          parsed.users[userIdx].total_rider -= rider_dec;
+        }
+      }
     }
     parsed.weeks.push(date);
     console.log("Date list is:" + parsed.weeks);
@@ -60,7 +71,8 @@ var self = module.exports = {
         cars = Object.keys(pool_day);
 
         for (var car_Idx=0; car_Idx<cars.length; ++car_Idx) {
-          var car = pool_day[car_Idx];
+          var car_Id = cars[car_Idx];
+          var car = pool_day[car_Id];
           var driver = car.driver;
           if (!(carpoolers.hasOwnProperty(driver))) {
             //var this_week = {"driver_count":1, "rider_count":0};
@@ -176,7 +188,7 @@ var self = module.exports = {
     fs.writeFile(statisticspath + statFileName,  JSON.stringify(parsed));
   },
   getStatistics : function getStatistics(callback){
-    var jsoncontent = fs.readFileSync(statisticspath + "hist_stats.json");
+    var jsoncontent = fs.readFileSync(statisticspath + statFileName);
     var dataForStatPage = JSON.parse(jsoncontent);
     callback(dataForStatPage);
   },
