@@ -1,0 +1,74 @@
+
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    title How to Czar
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.3.3/angular.min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.3/angular-route.min.js')
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
+    link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css')
+    script(src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js')
+    link(rel='stylesheet', href='css/statisticsStyle.css')
+  body
+    div
+      div
+        nav.navbar.navbar-inverse(role='navigation', style='padding-left:130px;')
+          ul.nav.navbar-nav
+            li
+              a(href='/') Home
+            li
+              a(href='/schedule') Schedule
+            li
+              a(href='/czar') Czar
+            li
+              a(href='/newUser') Add New User
+            li
+              a(href='/preferences') Preferences
+            li
+              a(href='/contact') Contact Info
+            li
+              a(href='/statistics') Statistics
+            li
+              a(href='external') External Links
+            li
+              a(href='/logout') Logout
+
+      br
+      .container.theme-showcase(role='main')
+  
+        div(class="userStats")
+          table#userstats
+            thead
+              tr.head
+                th User
+                th Days In Carpool
+                th Days as Driver
+                th Percentage Driver Overall
+            tbody
+              each user in users
+                tr
+                  td #{user.username}
+                  td(id = 'centerJustify') #{user.total_driver + user.total_rider}
+                  td(id = 'centerJustify') #{user.total_driver}
+                  td(id = 'centerJustify') #{user.total_driver/poolDays}
+
+        div(class="weekbyweekstats")
+          table#weekbyweekstats
+            - weekList = []
+            thead
+              th User
+              each week in weeks
+                th #{week}
+                - weekList.push(week)
+            tbody
+              each user in users
+                tr
+                td #{user.username}
+                each week in weekList
+                  if week in user
+                    - var percentage = user[week].driver_count/(user[week].rider_count + user[week].driver_count)
+                    - console.log(percentage)
+                    td(id = 'tableWeekEntry', style='background-color:rgba(100, 250, 250, #{percentage})') #{user[week].driver_count + user[week].rider_count}
+                  else
+                    td

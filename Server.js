@@ -31,6 +31,7 @@ var viewpath = __dirname + '/views/';
 var datapath = __dirname + '/data/'
 var schedulepath = datapath + '/schedules/'
 var userdatapath = datapath + '/users/';
+var histdatapath = datapath + '/statistics/'
 
 var weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 var possibleDriveHours = {AM: [5,6,7,8,9,10], PM: [3,4,5,6,7,8]};
@@ -148,23 +149,41 @@ app.get("/czarThisWeek", ensureAuthenticated, function(req, res) {
   });
 });
 
+function getSchedule(day, callback) {
+  fs.readFile(schedulepath + userDataFileName(day), 'utf8', function(err, data) {
+    if (err || !data) {
+      // Build empty schedule, with an empty object for each day
+      var sch = {};
+      for (var weekdayIdx=0; weekdayIdx<weekdays.length; ++weekdayIdx) {
+        sch[weekdays[weekdayIdx]] = {};
+      }
+      callback(sch);
+    } else {
+      callback(JSON.parse(data));
+    }
+  });
+}
+
+// undefined - day get set to current day in get schedule
 app.get("/dynamic/nextweekSchedule.js", ensureAuthenticated, function(req, res) {
   dbComm.getSchedule(undefined, function(sch) {
     res.send("var cars = " + JSON.stringify(sch));
   });
 });
+
 app.get("/dynamic/thisweekSchedule.js", ensureAuthenticated, function(req, res) {
   dbComm.getSchedule(new Date(), function(sch) {
     res.send("var cars = " + JSON.stringify(sch) + ';');
   });
 });
+
 app.get("/dynamic/currentUser.js", ensureAuthenticated, function(req, res) {
   res.send('var user = "' + req.user + '";');
 });
+
 app.get("/dynamic/allPreferences.js", ensureAuthenticated, function(req, res) {
   //res.set('Content-Type', 'application/javascript');
   dbComm.getAllPreferences(function(allPreferences) {
-    var allPreferences = allPreferences;
     res.send("var allPreferences = " + JSON.stringify(allPreferences));
   });
 });
@@ -239,6 +258,12 @@ app.get('/howToCzar', ensureAuthenticated, function(req, res){
 
 });
 
+app.get('/statistics', ensureAuthenticated, function(req, res){
+  dbComm.getStatistics(function(dataForStatPage) {
+    res.render(viewpath+"statistics.jade", dataForStatPage);
+  });
+});
+
 app.get('/external', ensureAuthenticated, function(req, res){
   res.render(viewpath+"external.jade", { user: req.user })
 
@@ -302,11 +327,17 @@ app.post('/example', ensureAuthenticated, function(req,res){
 app.post('/czarData', ensureAuthenticated, function(req,res){
   //console.log(JSON.stringify(req.body));
   fs.writeFile(schedulepath + dbComm.userDataFileName(), req.body.allCars);
+  dbComm.updateStatistics(req.body.allCars, function(callback){
+    console.log('Inside this function thing');
+    })
   res.redirect('/czar')
 });
 app.post('/czarDataCurrent', ensureAuthenticated, function(req,res){
   //console.log(JSON.stringify(req.body));
   fs.writeFile(schedulepath + dbComm.userDataFileName(new Date()), req.body.allCars);
+  dbComm.updateStatistics(req.body.allCars, function(callback){
+    console.log('Inside this function thing');
+  })
   res.redirect('/czar')
 });
 

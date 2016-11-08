@@ -40,6 +40,8 @@ html(lang='en')
             li
               a(href='/contact') Contact Info
             li
+              a(href='/statistics') Statistics
+            li
               a(href='external') External Links
             li
               a(href='/emergency') Emergency
@@ -100,34 +102,49 @@ html(lang='en')
 
 
         #timeResults
+        
           each dayData in peoplesTimes
+          
             h3= dayData.day
-
+            
             each AMPMData in dayData.times
-              - AMPM = AMPMData.halfday
-              h4= AMPM
-              table.timetable(day=dayData.day, halfday=AMPM)
-                tr.timetext
-                  td
-                  each hr in possibleDriveHours[AMPM]
-                    td.hour(colspan='2')= hr
-                    td.halfhour(colspan='2') :30
-                  td
-                each personData in AMPMData.people
-                  tr(class='timeview' name=personData.name email=personData.email data-toggle="popover" title=personData.name + ' Info' data-content= "Email: " + personData.prefEmail + "\n" + "sherbert: " + dayData.ThursdayTravelStatus + "\n" + "Size of Car: " + personData.numPassengers + "\n" + "Phone Number: " + + personData.phoneNumber + "\n" + "Notes: " + personData.notes data-trigger="hover")
+              div(class="titleTable", id ="titleTable")
+                - AMPM = AMPMData.halfday
+                h4= AMPM
+                table.timetable(day=dayData.day, halfday=AMPM)
+                  tr.timetext
+                    td
+                    each hr in possibleDriveHours[AMPM]
+                      td.hour(colspan='2')= hr
+                      td.halfhour(colspan='2') :30
+                    td
+                  each personData in AMPMData.people
+                  
 
-                    td.name= personData.name
-                    each hr,hrIdx in possibleDriveHours[AMPM]
-                      each min,minIdx in [0, 15, 30, 45]
+                    tr(class='timeview' name=personData.name email=personData.email data-toggle="popover" title=personData.name + ' Info' data-content= "Email: " + personData.prefEmail + "\n" + "Size of Car: " + personData.numPassengers + "\n" + "Phone Number: " + + personData.phoneNumber + "\n" + "Notes: " + personData.notes data-trigger="hover" draggable = "true" ondragstart ='dragStart(event,"#{personData.name}", "#{AMPM}", "#{personData.email}", "#{dayData.day}");')
+                      td.name= personData.name
+                      each hr,hrIdx in possibleDriveHours[AMPM]
+                        each min,minIdx in [0, 15, 30, 45]
 
-                        td(time=hr*100 + min, selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0), mousedover='false')
-                    unless personData.driveStatus == 'can'
-                      td.driveStatus= personData.driveStatus + ' drive'
+                          td(time=hr*100 + min, selected=(personData.canGos[hrIdx*4+minIdx].canGo.toString()), leftLine=(hrIdx != 0 && min == 0), mousedover='false')
+                      unless personData.driveStatus == 'can'
+                        td.driveStatus= personData.driveStatus + ' drive'
+          
             //If the finished car is hit then we save what day we are using and call the make car function.
-            button(class="btn btn-primary",value='ADD', type='button' ,onClick='return makeCar("#{dayData.day}");') Finish Car
+            // CURRENT COMMENTING OUT FINISH CAR BUTTON XXX
+            //button(class="btn btn-primary",value='ADD', type='button' ,onClick='return makeCar("#{dayData.day}");') Finish Car
 
-            button.btn.btn-default.btn-sm(type='button', data-toggle='collapse', data-target='#directAddCar'+dayData.day, aria-expanded='false', aria-controls='directAddCar'+dayData.day)
-              | Directly Enter Car (Advanced)
+            div(class = "buttons")
+              // make a new car box
+              button(class = "btn btn-primary", type="button", onClick='makeCarBox("#{dayData.day}");') Make New Car
+
+              button.btn.btn-default.btn-sm(type='button', data-toggle='collapse', data-target='#directAddCar'+dayData.day, aria-expanded='false', aria-controls='directAddCar'+dayData.day)
+                | Directly Enter Car (Advanced)
+
+
+            div(id=dayData.day)
+            //  p The div is here! 
+
 
             //-button.btn.btn-primary(type='button', data-toggle='collapse', data-target='#collapseExample', aria-expanded='false', aria-controls='collapseExample')
             //-  | Button with data-target
