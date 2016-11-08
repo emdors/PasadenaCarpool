@@ -65,6 +65,7 @@ html(lang='en')
               each user in users
                 tr
                 td #{user.username}
+                - console.log(weekList)
                 each week in weekList
                   if week in user
                     - var percentage = user[week].driver_count/(user[week].rider_count + user[week].driver_count)
@@ -72,3 +73,4 @@ html(lang='en')
                     td(id = 'tableWeekEntry', style='background-color:rgba(100, 250, 250, #{percentage})') #{user[week].driver_count + user[week].rider_count}
                   else
                     td
+                    //- td(id = 'tableWeekEntry') 0

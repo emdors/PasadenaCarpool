@@ -78,7 +78,7 @@ var self = module.exports = {
             //var this_week = {"driver_count":1, "rider_count":0};
             var new_pooler = {"total_driver":1, "total_rider":0};//, "new_in_stats":False};
             new_pooler["week"] = {"driver_count":1, "rider_count":0};
-            if (parsed.userList.indexOf(driver) <0) {
+            if (parsed.userList.indexOf(driver) < 0) {
               //new_pooler[new_in_stats] = True;
               new_pooler["userIdx"] = -1;
             }
