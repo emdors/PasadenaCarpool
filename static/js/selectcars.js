@@ -623,13 +623,14 @@ function handleChange(myRadio){
   if(inAM == false || inPM == false)
   {
     alert("Please add the driver to the AM and the PM of the car");
+    myRadio.checked = false;
   }
   else{
     var driveStatuses = row.getElementsByClassName('driveStatus');
 
     if(driveStatuses.length ==1 && driveStatuses[0].innerHTML == "cannot drive"){
       alert("You tried to make someone a driver who can not drive. \n Please select a new driver.");
-      //document.getElementById(radioID).checked = false; doesnt work:( )
+      myRadio.checked = false;
     }
     else
     {
@@ -683,9 +684,9 @@ function deleteCarOnX(carID) {
       } 
    }
 
-    passengerPMList = cars[day][carID].AM.passengers; 
-    var dayIndexPM = 2*daysArray.indexOf(day) +1 ;
-    var ampmTablePM = document.getElementsByClassName("titleTable")[dayIndexPM];
+    passengerPMList = cars[day][carID].PM.passengers; 
+    dayIndexPM = 2*daysArray.indexOf(day) +1 ;
+    ampmTablePM = document.getElementsByClassName("titleTable")[dayIndexPM];
     var tableRowsPM = ampmTablePM.getElementsByTagName('tr');
     var rowPM = tableRowsPM[0];
     for (var i=0; i<passengerPMList.length; ++i){
