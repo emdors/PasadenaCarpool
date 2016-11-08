@@ -48,7 +48,7 @@ html(lang='en')
             tbody
               each user in users
                 tr
-                  td #{user.username}
+                  td(id = 'leftJustify') #{user.username}
                   td(id = 'centerJustify') #{user.total_driver + user.total_rider}
                   td(id = 'centerJustify') #{user.total_driver}
                   td(id = 'centerJustify') #{user.total_driver/poolDays}
@@ -64,13 +64,13 @@ html(lang='en')
             tbody
               each user in users
                 tr
-                td #{user.username}
+                td(id = 'leftJustify') #{user.username}
                 - console.log(weekList)
                 each week in weekList
                   if week in user
                     - var percentage = user[week].driver_count/(user[week].rider_count + user[week].driver_count)
                     - console.log(percentage)
-                    td(id = 'tableWeekEntry', style='background-color:rgba(100, 250, 250, #{percentage})') #{user[week].driver_count + user[week].rider_count}
+                    td(id = 'centerJustify', style='background-color:rgba(100, 250, 250, #{percentage})') #{user[week].driver_count + user[week].rider_count}
                   else
-                    td
-                    //- td(id = 'tableWeekEntry') 0
+                    //- td 
+                    td(id = 'centerJustify') 0
