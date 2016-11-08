@@ -663,7 +663,6 @@ function allowDrop(event) {
 }
 
 // remove the car from the front end and the back end 
-//TODO need to change status of passengers when car gets deleted 
 function deleteCarOnX(carID) {
   var day = document.getElementById(carID).parentElement.id;
 
@@ -676,26 +675,31 @@ function deleteCarOnX(carID) {
   for (var i=0; i<passengerAMList.length; ++i){
       // find the table row of the passenger 
       var amEmail = passengerAMList[i];
-      for(var index = 0; index < tableRowsAM.length; ++index){
-        if(tableRowsAM[index].getAttribute('email') == amEmail){
+      for(var index = 0; index < tableRowsAM.length; ++index)
+      {
+        if(tableRowsAM[index].getAttribute('email') == amEmail)
+        {
           tableRowsAM[index].setAttribute('carstatus', 'false')
         }
       } 
    }
 
-    passengerPMList = cars[day][carID].AM.passengers; 
-    var dayIndexPM = 2*daysArray.indexOf(day) +1 ;
-    var ampmTablePM = document.getElementsByClassName("titleTable")[dayIndexPM];
-    var tableRowsPM = ampmTablePM.getElementsByTagName('tr');
-    var rowPM = tableRowsPM[0];
-    for (var i=0; i<passengerPMList.length; ++i){
-        // find the table row of the passenger 
-        var pmEmail = passengerPMList[i];
-        for(var index = 0; index < tableRowsPM.length; ++index){
-          if(tableRowsPM[index].getAttribute('email') == pmEmail){
-            tableRowsPM[index].setAttribute('carstatus', 'false')
-          }
-        } 
+  passengerPMList = cars[day][carID].PM.passengers; 
+  dayIndexPM = 2*daysArray.indexOf(day) +1 ;
+  ampmTablePM = document.getElementsByClassName("titleTable")[dayIndexPM];
+  tableRowsPM = ampmTablePM.getElementsByTagName('tr');
+  var rowPM = tableRowsPM[0];
+  for (var i=0; i<passengerPMList.length; ++i)
+  {
+      // find the table row of the passenger 
+      var pmEmail = passengerPMList[i];
+      for(var index = 0; index < tableRowsPM.length; ++index)
+      {
+        if(tableRowsPM[index].getAttribute('email') == pmEmail)
+        {
+          tableRowsPM[index].setAttribute('carstatus', 'false')
+        }
+      } 
     }
 
   document.getElementById(carID).remove();
