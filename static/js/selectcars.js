@@ -684,9 +684,9 @@ function deleteCarOnX(carID) {
       } 
    }
 
-    passengerPMList = cars[day][carID].AM.passengers; 
-    var dayIndexPM = 2*daysArray.indexOf(day) +1 ;
-    var ampmTablePM = document.getElementsByClassName("titleTable")[dayIndexPM];
+    passengerPMList = cars[day][carID].PM.passengers; 
+    dayIndexPM = 2*daysArray.indexOf(day) +1 ;
+    ampmTablePM = document.getElementsByClassName("titleTable")[dayIndexPM];
     var tableRowsPM = ampmTablePM.getElementsByTagName('tr');
     var rowPM = tableRowsPM[0];
     for (var i=0; i<passengerPMList.length; ++i){
