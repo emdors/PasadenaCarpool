@@ -370,7 +370,7 @@ function makeCarBox(day) {
   closeButton.className = 'boxclose';
 
   // onClick we remove the car
-  closeButton.setAttribute("onClick", "deleteCarOnX(" + carBoxID +")");
+  closeButton.setAttribute("onClick", "deleteCarOnX(" + carBoxID +", \'" + day + "\'" + ")");
 
   carBox.appendChild(closeButton);
 
@@ -420,9 +420,6 @@ function makeCarBox(day) {
 
       // use day, ampm, and email to get persons data 
       var dayIndex = 2*daysArray.indexOf(day) ;
-
-      var dayIndexString = dayIndex.toString();
-
       var ampmTable = document.getElementsByClassName("titleTable")[dayIndex];
       var tableRows = ampmTable.getElementsByTagName('tr');
       var row = tableRows[0];
@@ -437,7 +434,7 @@ function makeCarBox(day) {
       row.setAttribute('carstatus', 'passenger');
       
 
-// personName and radio buttons go under label element
+      // personName and radio buttons go under label element
       var label = document.createElement('label');
       label.className = "radioLabel";
       label.id = "radioLabel" + passengerName + "AM";
@@ -583,15 +580,67 @@ function makeCarBox(day) {
 }
 
 function handleChange(myRadio){
-  content = 'The driver is: ' + myRadio.value;
-  countNum = myRadio.parentElement.parentElement.parentElement.id;
-  day1 = myRadio.parentElement.parentElement.parentElement.parentElement.id;
+  var radioID = myRadio.id;
+  var countNum = myRadio.parentElement.parentElement.parentElement.id;
+  var day1 = myRadio.parentElement.parentElement.parentElement.parentElement.id;
 
-  driverID = countNum.toString() + day1 + "driver";
+  //go through the am array to see if they car drive 
+  var dayIndex = 2*daysArray.indexOf(day1);
+  var ampmTable = document.getElementsByClassName("titleTable")[dayIndex];
+  var tableRows = ampmTable.getElementsByTagName('tr');
+  var row = tableRows[0];
+  var tableRowIndex = 0;
+  // find the table row of the passenger 
+  for(var index = 0; index < tableRows.length; ++index){
+    if(tableRows[index].getAttribute('email') == passengerEmail){
+      row = tableRows[index];
+      tableRowIndex = index;
+    }
+  }
 
-  document.getElementById(driverID).innerHTML = content;
+  var driverEmail = aliasToEmail(myRadio.value);
 
-  cars[day1][countNum].driver = myRadio.value;
+  var inAM = false;
+  passengerAMList = cars[day1][countNum].AM.passengers; 
+  for (var i=0; i<passengerAMList.length; ++i)
+  {
+    if(driverEmail == passengerAMList[i])
+    {
+        inAM = true;
+    }
+  } 
+
+  var inPM = false;
+  passengerPMList = cars[day1][countNum].PM.passengers;
+  for (var i=0; i<passengerPMList.length; ++i)
+  {
+    if(driverEmail == passengerPMList[i])
+    {
+        inPM = true;
+    }
+  } 
+
+  if(inAM == false || inPM == false)
+  {
+    alert("Please add the driver to the AM and the PM of the car");
+  }
+  else{
+    var driveStatuses = row.getElementsByClassName('driveStatus');
+
+    if(driveStatuses.length ==1 && driveStatuses[0].innerHTML == "cannot drive"){
+      alert("You tried to make someone a driver who can not drive. \n Please select a new driver.");
+      //document.getElementById(radioID).checked = false; doesnt work:( )
+    }
+    else
+    {
+      content = 'The driver is: ' + myRadio.value;
+      driverID = countNum.toString() + day1 + "driver";
+
+      document.getElementById(driverID).innerHTML = content;
+
+      cars[day1][countNum].driver = aliasToEmail(myRadio.value);
+    }
+  }
 }
 
 function finishCar(carID,day){
@@ -600,6 +649,11 @@ function finishCar(carID,day){
 
  cars[day][carID].AM.time = amTime;
  cars[day][carID].PM.time = pmTime;
+
+ if (cars[day][carID].driver == "")
+ {
+   alert("Plese select a driver before you finish the car.");
+ }
 
 }
 // author: edorsey,tstannard
@@ -612,6 +666,38 @@ function allowDrop(event) {
 //TODO need to change status of passengers when car gets deleted 
 function deleteCarOnX(carID) {
   var day = document.getElementById(carID).parentElement.id;
+
+  //change all the passenger status's 
+  passengerAMList = cars[day][carID].AM.passengers; 
+  var dayIndexAM = 2*daysArray.indexOf(day) ;
+  var ampmTableAM = document.getElementsByClassName("titleTable")[dayIndexAM];
+  var tableRowsAM = ampmTableAM.getElementsByTagName('tr');
+  var rowAM = tableRowsAM[0];
+  for (var i=0; i<passengerAMList.length; ++i){
+      // find the table row of the passenger 
+      var amEmail = passengerAMList[i];
+      for(var index = 0; index < tableRowsAM.length; ++index){
+        if(tableRowsAM[index].getAttribute('email') == amEmail){
+          tableRowsAM[index].setAttribute('carstatus', 'false')
+        }
+      } 
+   }
+
+    passengerPMList = cars[day][carID].AM.passengers; 
+    var dayIndexPM = 2*daysArray.indexOf(day) +1 ;
+    var ampmTablePM = document.getElementsByClassName("titleTable")[dayIndexPM];
+    var tableRowsPM = ampmTablePM.getElementsByTagName('tr');
+    var rowPM = tableRowsPM[0];
+    for (var i=0; i<passengerPMList.length; ++i){
+        // find the table row of the passenger 
+        var pmEmail = passengerPMList[i];
+        for(var index = 0; index < tableRowsPM.length; ++index){
+          if(tableRowsPM[index].getAttribute('email') == pmEmail){
+            tableRowsPM[index].setAttribute('carstatus', 'false')
+          }
+        } 
+    }
+
   document.getElementById(carID).remove();
   console.log(cars[day])
   delete cars[day][carID];
