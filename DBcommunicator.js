@@ -45,9 +45,13 @@ var self = module.exports = {
       console.log("There was a midweek edit.  Stats being reset.");
       var index = parsed.weeks.indexOf(date);
       parsed.weeks.splice(index, 1);
+      var users_impacted = 0;
+      var total_days = 0;
       for (userIdx = 0; userIdx < parsed.users.length; userIdx++) {
         user = parsed.users[userIdx];
         if (user.hasOwnProperty(date)) {
+          users_impacted++;
+          total_days++;
           var driver_dec = user[date].driver_count;
           var rider_dec = user[date].rider_count;
           delete parsed.users[userIdx][date];
@@ -55,6 +59,7 @@ var self = module.exports = {
           parsed.users[userIdx].total_rider -= rider_dec;
         }
       }
+      parsed.poolDays -= total_days/users_impacted;
     }
     parsed.weeks.push(date);
     console.log("Date list is:" + parsed.weeks);
@@ -105,8 +110,8 @@ var self = module.exports = {
                 continue;
               }
               if (!(passenger in carpoolers)) {
-                var new_pooler = {"total_driver":0, "total_rider":1};//, "new_in_stats":False};
-                new_pooler["week"] = {"driver_count":0, "rider_count":1};
+                var new_pooler = {"total_driver":0, "total_rider":.5};//, "new_in_stats":False};
+                new_pooler["week"] = {"driver_count":0, "rider_count":.5};
                 if (parsed.userList.indexOf(passenger) <0) {
                   //new_pooler[new_in_stats] = True;
                   new_pooler["userIdx"] = -1;
@@ -122,8 +127,8 @@ var self = module.exports = {
               }
               else {
                 // The driver is already in the carpoolers list
-                carpoolers[passenger].week.rider_count++;
-                carpoolers[passenger].total_rider++;
+                carpoolers[passenger].week.rider_count+=.5;
+                carpoolers[passenger].total_rider+=.5;
               }
             }
           }
@@ -135,8 +140,8 @@ var self = module.exports = {
                 continue;
               }
               if (!(passenger in carpoolers)) {
-                var new_pooler = {"total_driver":0, "total_rider":1};//, "new_in_stats":False};
-                new_pooler["week"] = {"driver_count":0, "rider_count":1};
+                var new_pooler = {"total_driver":0, "total_rider":.5};//, "new_in_stats":False};
+                new_pooler["week"] = {"driver_count":0, "rider_count":.5};
                 if (parsed.userList.indexOf(passenger) <0) {
                   //new_pooler[new_in_stats] = True;
                   new_pooler["userIdx"] = -1;
@@ -152,8 +157,8 @@ var self = module.exports = {
               }
               else {
                 // The driver is already in the carpoolers list
-                carpoolers[passenger].week.rider_count++;
-                carpoolers[passenger].total_rider++;
+                carpoolers[passenger].week.rider_count+=.5;
+                carpoolers[passenger].total_rider+=.5;
               }
             }
           }          

@@ -36,7 +36,7 @@ html(lang='en')
 
       br
       .container.theme-showcase(role='main')
-  
+        h1 Total Carpool Days #{poolDays}
         div(class="userStats")
           table#userstats
             thead
@@ -44,6 +44,7 @@ html(lang='en')
                 th User
                 th Days In Carpool
                 th Days as Driver
+                th Percentage Driver of Participant Days
                 th Percentage Driver Overall
             tbody
               each user in users
@@ -51,7 +52,8 @@ html(lang='en')
                   td(id = 'leftJustify') #{user.username}
                   td(id = 'centerJustify') #{user.total_driver + user.total_rider}
                   td(id = 'centerJustify') #{user.total_driver}
-                  td(id = 'centerJustify') #{user.total_driver/poolDays}
+                  td(id = 'centerJustify') #{(user.total_driver/(user.total_driver + user.total_rider)).toPrecision(2)}
+                  td(id = 'centerJustify') #{(user.total_driver/poolDays).toPrecision(2)}
 
         div(class="weekbyweekstats")
           table#weekbyweekstats
@@ -65,11 +67,9 @@ html(lang='en')
               each user in users
                 tr
                 td(id = 'leftJustify') #{user.username}
-                - console.log(weekList)
                 each week in weekList
                   if week in user
                     - var percentage = user[week].driver_count/(user[week].rider_count + user[week].driver_count)
-                    - console.log(percentage)
                     td(id = 'centerJustify', style='background-color:rgba(100, 250, 250, #{percentage})') #{user[week].driver_count + user[week].rider_count}
                   else
                     //- td 
