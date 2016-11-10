@@ -172,7 +172,7 @@ function updateHighlightingAndTablesForOneDay(day) {
 
 
   document.getElementById(day+'Cars').innerHTML = "";
-  var car = cars[day][car_Idx];
+  var car = cars[day];
   for (var driver in cars[day]) {
     document.getElementById(day+'Cars').appendChild(makeCarTable(allPreferences, car, day, false, true, null));
   }
@@ -701,7 +701,6 @@ function deleteCarOnX(carID) {
     }
 
   document.getElementById(carID).remove();
-  console.log(cars[day])
   delete cars[day][carID];
 }
 
