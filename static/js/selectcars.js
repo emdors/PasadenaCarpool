@@ -778,6 +778,21 @@ function saveDirectCarModifyChanges() {
   changedPage = true;
   updateHighlightingAndTables();
 }
+function aliasToEmail(alias) {
+   if (alias in allPreferences) {
+     return alias;
+   } else {
+     // They must have given a name or a "preferred email" instead of their
+     // gmail
+     for (var person in allPreferences) {
+       var theirPreferences = allPreferences[person];
+       if (theirPreferences.prefEmail == alias
+           || theirPreferences.name.toLowerCase() == alias.toLowerCase()) {
+         return person;
+       }
+     }
+   }
+ }
 
 function directlyAddCar(day) {
   // Get the modal
