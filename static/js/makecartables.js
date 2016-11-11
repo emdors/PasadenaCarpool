@@ -43,6 +43,8 @@ function makeCarTable(allPreferences, car, day, showDays, haveDeleteButtons, use
   }
   var driverEmail = aliasToEmail(driver);
   driverNameSpan.appendChild(document.createTextNode(allPreferences[driverEmail].name));
+  console.log("all Preferences" + JSON.stringify(allPreferences))
+  console.log("drivers email? " + allPreferences[driverEmail].name)
   driverNameSpan.className = 'drivername';
   if (userToHighlight == driverEmail) {
     var strong = document.createElement('strong');
@@ -123,13 +125,12 @@ function makeCarTable(allPreferences, car, day, showDays, haveDeleteButtons, use
       var cell = document.createElement('td');
       if (car[halfday] && car[halfday].passengers.length > passengerIdx) {
         var passenger = car[halfday].passengers[passengerIdx];
-        var passengerEmail = aliasToEmail(car[halfday].passengers[passengerIdx]);
-        if (userToHighlight == passengerEmail) {
+        if (userToHighlight == passenger) {
           var strong = document.createElement('strong');
-          strong.appendChild(document.createTextNode(passenger));
+          strong.appendChild(document.createTextNode(allPreferences[passenger].name));
           cell.appendChild(strong);
         } else {
-          cell.appendChild(document.createTextNode(passenger));
+          cell.appendChild(document.createTextNode(allPreferences[passenger].name));
         }
 
 
