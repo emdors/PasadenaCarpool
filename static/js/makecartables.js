@@ -157,13 +157,13 @@ function parseTime(time){
   //make the time with a colon in it. We need seperate cases for when
   //we have 4 digits vs 3 digits of time.
   if (timeString.length == 5){
-    var startOfTime = timeString.substring(2,3).concat(':')
+    var startOfTime = timeString.substring(2,3)
     startOfTime = startOfTime.concat(timeString.substring(3))
 
     //add a space for astetic
     startOfTime = startOfTime.concat(' ')
   }else{
-    var startOfTime = timeString.substring(2,4).concat(':')
+    var startOfTime = timeString.substring(2,4)
     startOfTime = startOfTime.concat(timeString.substring(4))
 
     //add a space for astetic
