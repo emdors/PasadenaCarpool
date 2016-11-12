@@ -13,7 +13,10 @@ html(lang='en')
     link(rel='stylesheet', href='css/schedulestyle.css')
     link(rel='stylesheet', href='css/cartable.css')
     script(src='dynamic/allPreferences.js')
-    script(src='dynamic/thisweekSchedule.js')
+    - if (thisWeek == true)
+      script(src='dynamic/thisweekSchedule.js')
+    - else
+      script(src='dynamic/nextweekSchedule.js')
     script(src='dynamic/currentUser.js')
     script(src='js/makecartables.js')
     script(src='js/schedule.js')
@@ -45,6 +48,7 @@ html(lang='en')
               a(href='/logout') Logout
       br
       .container.theme-showcase(role='main')
+        h1 Schedule for the week of: #{week}
         div#yourcars
           h1 Your Cars
         br(style="clear:both;")
