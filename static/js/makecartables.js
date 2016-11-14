@@ -1,7 +1,6 @@
 function makeCarTable(allPreferences, car, day, showDays, haveDeleteButtons, userToHighlight) {
   // driver = cars[day][car_Idx].driver
   // Create a new table
-  console.log("Inside makeCarTable");
   var carTable = document.createElement('table');
   var carTableBody = document.createElement('tbody');
   carTable.className = 'table fullcartable table-bordered';
@@ -43,10 +42,10 @@ function makeCarTable(allPreferences, car, day, showDays, haveDeleteButtons, use
     }
   }
   var driverEmail = aliasToEmail(driver);
-  console.log(driverEmail);
   driverNameSpan.appendChild(document.createTextNode(allPreferences[driverEmail].name));
+  console.log("all Preferences" + JSON.stringify(allPreferences))
+  console.log("drivers email? " + allPreferences[driverEmail].name)
   driverNameSpan.className = 'drivername';
-  console.log("userToHiglight" + userToHighlight);
   if (userToHighlight == driverEmail) {
     var strong = document.createElement('strong');
     strong.appendChild(driverNameSpan);
@@ -85,7 +84,6 @@ function makeCarTable(allPreferences, car, day, showDays, haveDeleteButtons, use
   for (var halfdayIdx=0; halfdayIdx<2; ++halfdayIdx) {
     var halfday = ['AM', 'PM'][halfdayIdx];
     var timeCell = document.createElement('td');
-    console.log("HALFDAY HERE" + JSON.stringify(car[halfday]));
     if (car[halfday]) {
       var timeString = parseTime(day+halfday+car[halfday].time);
       timeCell.appendChild(document.createTextNode(timeString));
@@ -127,16 +125,12 @@ function makeCarTable(allPreferences, car, day, showDays, haveDeleteButtons, use
       var cell = document.createElement('td');
       if (car[halfday] && car[halfday].passengers.length > passengerIdx) {
         var passenger = car[halfday].passengers[passengerIdx];
-        var passengerEmail = aliasToEmail(car[halfday].passengers[passengerIdx]);
-        console.log("passenger" + passenger);
-        console.log("userToHighlight" + userToHighlight);
-        // console.log("allPreferences passenger name" + allPreferences[passenger].email);
-        if (userToHighlight == passengerEmail) {
+        if (userToHighlight == passenger) {
           var strong = document.createElement('strong');
-          strong.appendChild(document.createTextNode(passenger));
+          strong.appendChild(document.createTextNode(allPreferences[passenger].name));
           cell.appendChild(strong);
         } else {
-          cell.appendChild(document.createTextNode(passenger));
+          cell.appendChild(document.createTextNode(allPreferences[passenger].name));
         }
 
 
@@ -164,13 +158,13 @@ function parseTime(time){
   //make the time with a colon in it. We need seperate cases for when
   //we have 4 digits vs 3 digits of time.
   if (timeString.length == 5){
-    var startOfTime = timeString.substring(2,3).concat(':')
+    var startOfTime = timeString.substring(2,3)
     startOfTime = startOfTime.concat(timeString.substring(3))
 
     //add a space for astetic
     startOfTime = startOfTime.concat(' ')
   }else{
-    var startOfTime = timeString.substring(2,4).concat(':')
+    var startOfTime = timeString.substring(2,4)
     startOfTime = startOfTime.concat(timeString.substring(4))
 
     //add a space for astetic
