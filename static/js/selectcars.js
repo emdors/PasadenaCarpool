@@ -655,6 +655,27 @@ function finishCar(carID,day){
  if (cars[day][carID].driver == "")
  {
    alert("Plese select a driver before you finish the car.");
+ } 
+  else 
+ {
+var numPassengersAM = cars[day][carID].AM.passengers.length;
+var numPassengersPM = cars[day][carID].PM.passengers.length;
+
+var carSize = allPreferences[cars[day][carID].driver].numPassengers;
+
+if(carSize < numPassengersAM & carSize < numPassengersPM) {
+    alert("You have added too many passengers in both the AM and PM! " +
+   allPreferences[cars[day][carID].driver].name + " has only " + carSize + " seat(s).");
+}
+else if(carSize < numPassengersAM) {
+  alert("You have added too many AM passengers! " +
+   allPreferences[cars[day][carID].driver].name + " has only " + carSize + " seat(s).");
+}
+else if(carSize < numPassengersPM ) {
+  alert("You have added too many PM passengers! " +
+   allPreferences[cars[day][carID].driver].name + " has only " + carSize + " seat(s).");
+}
+
  }
 
 }
@@ -777,6 +798,8 @@ function saveDirectCarModifyChanges() {
   changedPage = true;
   updateHighlightingAndTables();
 }
+
+
 function aliasToEmail(alias) {
    if (alias in allPreferences) {
      return alias;
@@ -791,6 +814,10 @@ function aliasToEmail(alias) {
        }
      }
    }
+ }
+
+ function emailToCarSize(email) {
+   return allPreferences[email].numPassengers;
  }
 
 function directlyAddCar(day) {
