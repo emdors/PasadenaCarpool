@@ -652,29 +652,43 @@ function finishCar(carID,day){
  cars[day][carID].AM.time = amTime;
  cars[day][carID].PM.time = pmTime;
 
+ // check if driver is blank
  if (cars[day][carID].driver == "")
  {
    alert("Plese select a driver before you finish the car.");
  } 
+ // check if AM time is blank
+ if(cars[day][carID].AM.time == "")
+ {
+   alert("Please add an AM time.");
+ }
+ // check if PM time is blank
+ if(cars[day][carID].PM.time == ""){
+   alert("Please add a PM time.");
+ } 
+ // if driver and time are not blank
   else 
  {
-var numPassengersAM = cars[day][carID].AM.passengers.length;
-var numPassengersPM = cars[day][carID].PM.passengers.length;
+    var numPassengersAM = cars[day][carID].AM.passengers.length;
+    var numPassengersPM = cars[day][carID].PM.passengers.length;
 
-var carSize = allPreferences[cars[day][carID].driver].numPassengers;
+    var carSize = allPreferences[cars[day][carID].driver].numPassengers;
 
-if(carSize < numPassengersAM & carSize < numPassengersPM) {
-    alert("You have added too many passengers in both the AM and PM! " +
-   allPreferences[cars[day][carID].driver].name + " has only " + carSize + " seat(s).");
-}
-else if(carSize < numPassengersAM) {
-  alert("You have added too many AM passengers! " +
-   allPreferences[cars[day][carID].driver].name + " has only " + carSize + " seat(s).");
-}
-else if(carSize < numPassengersPM ) {
-  alert("You have added too many PM passengers! " +
-   allPreferences[cars[day][carID].driver].name + " has only " + carSize + " seat(s).");
-}
+  if(carSize < numPassengersAM & carSize < numPassengersPM) 
+  {
+      alert("You have added too many passengers in both the AM and PM! " +
+    allPreferences[cars[day][carID].driver].name + " has only " + carSize + " seat(s).");
+  }
+  else if(carSize < numPassengersAM) 
+  {
+    alert("You have added too many AM passengers! " +
+    allPreferences[cars[day][carID].driver].name + " has only " + carSize + " seat(s).");
+  }
+  else if(carSize < numPassengersPM ) 
+  {
+    alert("You have added too many PM passengers! " +
+    allPreferences[cars[day][carID].driver].name + " has only " + carSize + " seat(s).");
+  }
 
  }
 
