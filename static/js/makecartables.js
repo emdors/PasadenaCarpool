@@ -153,12 +153,12 @@ function parseTime(time){
   var timeString = time.split('y')[1]
 
   //save the AM vs PM
-  var endOfTime = timeString.substring(0,2)
-
+  var endOfTime = timeString.substring(0,2);
   //make the time with a colon in it. We need seperate cases for when
   //we have 4 digits vs 3 digits of time.
   if (timeString.length == 5){
     var startOfTime = timeString.substring(2,3)
+    console.log(timeString.substring(3))
     startOfTime = startOfTime.concat(timeString.substring(3))
 
     //add a space for astetic
@@ -166,7 +166,7 @@ function parseTime(time){
   }else{
     var startOfTime = timeString.substring(2,4)
     startOfTime = startOfTime.concat(timeString.substring(4))
-
+    console.log(timeString.substring(2,4))
     //add a space for astetic
     startOfTime = startOfTime.concat(' ')
   }
