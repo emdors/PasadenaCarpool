@@ -469,7 +469,8 @@ function makeCarBox(day) {
       var temp = "AM";
 
       removePersonButton.setAttribute("onClick", "deletePersonOnX(\'" + currentEmail + "\'" + ", " + 
-      dayIndex + ", " + "\'" + day + "\'" + ", " + "\'" + temp + "\'" + ", " + tableRowIndex + ", \'" + labelID + "\')");
+      dayIndex + ", " + "\'" + day + "\'" + ", " + "\'" + temp + "\'" + ", " + tableRowIndex + ", \'" + labelID + "\', \'" + 
+      carBox.id + "\')");
 
 
       label.appendChild(removePersonButton);
@@ -573,7 +574,8 @@ function makeCarBox(day) {
       var temp = "PM";
 
       removePersonButton.setAttribute("onClick", "deletePersonOnX(\'" + currentEmail + "\'" + ", " + 
-      dayIndex + ", " + "\'" + day + "\'" + ", " + "\'" + temp + "\'" + ", " + tableRowIndex + ", \'" + labelID + "\')");
+      dayIndex + ", " + "\'" + day + "\'" + ", " + "\'" + temp + "\'" + ", " + tableRowIndex + ", \'" + labelID + "\', \'" + 
+      carBox.id + "\')");
 
 
       label.appendChild(removePersonButton);
@@ -663,7 +665,7 @@ function checkIfInList(dayList, email) {
 
 function removeFromPassengerList(email, day, amPM)
 {
-    alert(amPM);
+
     if (amPM == "AM") {
     if (day == "Monday") {
       dayList = mondayAM;
@@ -689,15 +691,13 @@ function removeFromPassengerList(email, day, amPM)
       dayList = fridayPM;
     }
   }
-alert(dayList);
+
     var listLength=dayList.length;
-    alert(listLength);
 
     for(var i=0; i<listLength; i++)
     {
         // if its in the array, return true
         if(dayList[i] == email){
-          alert(i);
           dayList.splice(i);
         }
     }
@@ -864,7 +864,7 @@ function deleteCarOnX(carID) {
 }
 
 
-function deletePersonOnX(email, dayIndex, day, ampm, rowIndex, listEl) {
+function deletePersonOnX(email, dayIndex, day, ampm, rowIndex, listEl, currentID) {
   // delete front end 
 
   document.getElementById(listEl).remove();
@@ -886,9 +886,6 @@ function deletePersonOnX(email, dayIndex, day, ampm, rowIndex, listEl) {
     var passengerIndex = cars[day][currentID].PM.passengers.indexOf(email);
     cars[day][currentID].PM.passengers.splice(passengerIndex);
   }
-
-  alert(day);
-  alert(ampm);
 
   removeFromPassengerList(email, day, ampm);
 
