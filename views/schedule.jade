@@ -48,7 +48,18 @@ html(lang='en')
               a(href='/logout') Logout
       br
       .container.theme-showcase(role='main')
-        h1 Schedule for the week of: #{week}
+        div(class='dateDisplaySelection')
+          div(class='dateDisplay')
+            h1 Schedule for the week of: #{week}
+          div(class='dropdown')
+            button(class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown") View Schedule For
+              span(class="caret")
+            
+            ul(class="dropdown-menu")
+              li 
+                a(href="/scheduleNext") Next Week
+              li 
+                a(href="/scheduleCurrent") This Week
         div#yourcars
           h1 Your Cars
         br(style="clear:both;")
