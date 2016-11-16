@@ -158,18 +158,19 @@ function parseTime(time){
   //we have 4 digits vs 3 digits of time.
   if (timeString.length == 5){
     var startOfTime = timeString.substring(2,3)
-    console.log(timeString.substring(3))
     startOfTime = startOfTime.concat(timeString.substring(3))
 
     //add a space for astetic
     startOfTime = startOfTime.concat(' ')
   }else{
     var startOfTime = timeString.substring(2,4)
+    if(startOfTime > 12) {
+      startOfTime -= 12
+      startOfTime = startOfTime.toString()
+    }
     startOfTime = startOfTime.concat(timeString.substring(4))
-    console.log(timeString.substring(2,4))
     //add a space for astetic
     startOfTime = startOfTime.concat(' ')
   }
-
   return startOfTime.concat(endOfTime)
 }

@@ -237,10 +237,24 @@ app.get('/login', function(req, res){
   res.render(viewpath+'login.jade', { user: req.user });
 });
 
+app.get('/schedule', function(req, res){
+  res.redirect('/scheduleCurrent');
+});
 
-app.get('/schedule', ensureAuthenticated, function(req,res) {
+app.get('/scheduleCurrent', ensureAuthenticated, function(req,res) {
   console.log("In the schedule get function from server.js");
-  res.render(viewpath+"schedule.jade", { user: req.user,
+  var date = dbComm.userDataFileName(new Date);
+  res.render(viewpath+"schedule.jade", { week: date, thisWeek: true, user: req.user,
+    userscars : [{ 'driver':'Louise', 'AM':{ 'time':'10:30 AM', 'passengers':['George', 'Alex', 'Johanna', 'Emel'] }, 'PM':{'time':'4:45 PM', 'passengers':['Harkness', 'Jessie']}},
+                 { 'driver':'Louise', 'AM':{ 'time':'10:30 AM', 'passengers':['George', 'Alex', 'Johanna', 'Emel'] }, 'PM':{'time':'4:45 PM', 'passengers':['Harkness', 'Jessie']}}],
+    allcars : [ { 'driver':'Louise', 'AM':{ 'time':'10:30 AM', 'passengers':['George', 'Alex', 'Johanna', 'Emel'] }, 'PM':{'time':'4:45 PM', 'passengers':['Harkness', 'Jessie']}},
+                { 'driver':'Louise', 'AM':{ 'time':'10:30 AM', 'passengers':['George', 'Alex', 'Johanna', 'Emel'] }, 'PM':{'time':'4:45 PM', 'passengers':['Harkness', 'Jessie']}} ] });
+});
+
+app.get('/scheduleNext', ensureAuthenticated, function(req,res) {
+  console.log("In the schedule get function from server.js");
+  var date = dbComm.userDataFileName();
+  res.render(viewpath+"schedule.jade", { week: date, thisWeek: false, user: req.user,
     userscars : [{ 'driver':'Louise', 'AM':{ 'time':'10:30 AM', 'passengers':['George', 'Alex', 'Johanna', 'Emel'] }, 'PM':{'time':'4:45 PM', 'passengers':['Harkness', 'Jessie']}},
                  { 'driver':'Louise', 'AM':{ 'time':'10:30 AM', 'passengers':['George', 'Alex', 'Johanna', 'Emel'] }, 'PM':{'time':'4:45 PM', 'passengers':['Harkness', 'Jessie']}}],
     allcars : [ { 'driver':'Louise', 'AM':{ 'time':'10:30 AM', 'passengers':['George', 'Alex', 'Johanna', 'Emel'] }, 'PM':{'time':'4:45 PM', 'passengers':['Harkness', 'Jessie']}},
@@ -332,7 +346,7 @@ app.post('/czarData', ensureAuthenticated, function(req,res){
   dbComm.updateStatistics(req.body.allCars, function(callback){
     console.log('Inside this function thing');
     })
-  res.redirect('/czar')
+  res.redirect('/scheduleNext')
 });
 app.post('/czarDataCurrent', ensureAuthenticated, function(req,res){
   //console.log(JSON.stringify(req.body));
@@ -340,7 +354,7 @@ app.post('/czarDataCurrent', ensureAuthenticated, function(req,res){
   dbComm.updateStatistics(req.body.allCars, function(callback){
     console.log('Inside this function thing');
   })
-  res.redirect('/czar')
+  res.redirect('/scheduleCurrent')
 });
 
 // GET /auth/google
