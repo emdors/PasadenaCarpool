@@ -462,8 +462,11 @@ function makeCarBox(day) {
       removePersonButton.className = 'removePersonButton';
       
       var currentEmail = passengerEmail;
+
+      var temp = "AM";
+
       removePersonButton.setAttribute("onClick", "deletePersonOnX(\'" + currentEmail + "\'" + ", " + 
-      dayIndex + ", " + tableRowIndex + ", \'" + labelID + "\')");
+      dayIndex + ", " + "\'" + day + "\'" + ", " + "\'" + temp + "\'" + ", " + tableRowIndex + ", \'" + labelID + "\')");
 
       label.appendChild(removePersonButton);
        
@@ -557,8 +560,12 @@ function makeCarBox(day) {
       removePersonButton.className = 'removePersonButton';
 
       var currentEmail = passengerEmail;
+
+      var temp = "PM";
+
       removePersonButton.setAttribute("onClick", "deletePersonOnX(\'" + currentEmail + "\'" + ", " + 
-      dayIndex + ", " + tableRowIndex + ", \'" + labelID + "\')");
+      dayIndex + ", " + "\'" + day + "\'" + ", " + "\'" + temp + "\'" + ", " + tableRowIndex + ", \'" + labelID + "\')");
+
       label.appendChild(removePersonButton);
 
       // append the list element to the amDiv
@@ -644,6 +651,49 @@ function checkIfInList(dayList, email) {
     return false;
 }
 
+function removeFromPassengerList(email, day, amPM)
+{
+    alert(amPM);
+    if (amPM == "AM") {
+    if (day == "Monday") {
+      dayList = mondayAM;
+    } else if (day == "Tuesday") {
+      dayList = tuesdayAM;
+    } else if (day == "Wednesday") {
+      dayList = wednesdayAM;
+    } else if (day == "Thursday") { 
+      dayList = thursdayAM;
+    } else {
+      dayList = fridayAM;
+    }
+  } else {
+    if (day == "Monday") {
+      dayList = mondayPM;
+    } else if (day == "Tuesday") {
+      dayList = tuesdayPM;
+    } else if (day == "Wednesday") {
+      dayList = wednesdayPM;
+    } else if (day == "Thursday") {
+      dayList = thursdayPM;
+    } else {
+      dayList = fridayPM;
+    }
+  }
+alert(dayList);
+    var listLength=dayList.length;
+    alert(listLength);
+
+    for(var i=0; i<listLength; i++)
+    {
+        // if its in the array, return true
+        if(dayList[i] == email){
+          alert(i);
+          dayList.splice(i);
+        }
+    }
+
+}
+
 function handleChange(myRadio){
   content = 'The driver is: ' + myRadio.value;
   countNum = myRadio.parentElement.parentElement.parentElement.id;
@@ -675,7 +725,7 @@ function deleteCarOnX(carID) {
   delete cars[day][carID];
 }
 
-function deletePersonOnX(email, dayIndex, rowIndex, listEl) {
+function deletePersonOnX(email, dayIndex, day, ampm, rowIndex, listEl) {
   // delete front end 
   document.getElementById(listEl).remove();
 
@@ -684,6 +734,11 @@ function deletePersonOnX(email, dayIndex, rowIndex, listEl) {
   var tableRows = ampmTable.getElementsByTagName('tr');
   var row = tableRows[rowIndex];
   row.setAttribute('carstatus', 'false');
+
+  alert(day);
+  alert(ampm);
+
+  removeFromPassengerList(email, day, ampm);
 
   //TODO remove from backend
  
