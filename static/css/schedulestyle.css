@@ -10,3 +10,13 @@
 .dateDisplaySelection {
 	margin-bottom: 100px;
 }
+
+.buttons{
+	float: left;
+	width: 100%;
+}
+
+#saveEditsButton{
+	/*visibility: hidden;*/
+	display: none;
+}
