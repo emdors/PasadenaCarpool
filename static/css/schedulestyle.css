@@ -10,3 +10,8 @@
 .dateDisplaySelection {
 	margin-bottom: 100px;
 }
+
+.buttons{
+  float: left;
+  width: 100%;
+}
