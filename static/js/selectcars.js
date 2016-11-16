@@ -408,9 +408,16 @@ function makeCarBox(day) {
   amDiv.id = count.toString() + day + "AM";
   
   amDiv.ondrop = function(event) {
-    if(ampm == "PM"){
-      alert("You tried to add a PM passenger to an AM spot.");}
-    else{
+     var tooMany;
+     tooMany = checkAlreadyAdded(amDiv, "AM", passengerEmail, day);
+
+     //alert(tooMany);
+
+     if(ampm == "PM"){
+      alert("You tried to add an PM passenger to a AM spot.");}
+    else if (tooMany == true) {
+      alert("This person already has a AM ride!");
+    } else {
       event.preventDefault();
 
       //add person in backend
@@ -458,9 +465,12 @@ function makeCarBox(day) {
       removePersonButton.className = 'removePersonButton';
       
       var currentEmail = passengerEmail;
-      removePersonButton.setAttribute("onClick", "deletePersonOnX(\'" + currentEmail + "\'" + ", " +
-      dayIndex + ", \'" + day + "\'" + ", " + tableRowIndex + ", \'" + labelID + "\', \'" + 
-      carBox.id + "\')");
+
+      var temp = "AM";
+
+      removePersonButton.setAttribute("onClick", "deletePersonOnX(\'" + currentEmail + "\'" + ", " + 
+      dayIndex + ", " + "\'" + day + "\'" + ", " + "\'" + temp + "\'" + ", " + tableRowIndex + ", \'" + labelID + "\')");
+
 
       label.appendChild(removePersonButton);
        
@@ -499,9 +509,16 @@ function makeCarBox(day) {
 
   // on drop, we make a label and add passengerName text and radio button
   pmDiv.ondrop = function(event) {
+     var tooMany;
+     tooMany = checkAlreadyAdded(pmDiv, "PM", passengerEmail, day);
+
+     //alert(tooMany);
 
      if(ampm == "AM"){
       alert("You tried to add an AM passenger to a PM spot.");}
+    else if (tooMany == true) {
+      alert("This person already has a PM ride!");
+    }
     else{
       event.preventDefault();
 
@@ -552,9 +569,12 @@ function makeCarBox(day) {
       removePersonButton.className = 'removePersonButton';
 
       var currentEmail = passengerEmail;
-      removePersonButton.setAttribute("onClick", "deletePersonOnX(\'" + currentEmail + "\'" + ", " +
-      dayIndex + ", \'" + day + "\'" + ", " + tableRowIndex + ", \'" + labelID + "\', \'" + 
-      carBox.id + "\')");
+
+      var temp = "PM";
+
+      removePersonButton.setAttribute("onClick", "deletePersonOnX(\'" + currentEmail + "\'" + ", " + 
+      dayIndex + ", " + "\'" + day + "\'" + ", " + "\'" + temp + "\'" + ", " + tableRowIndex + ", \'" + labelID + "\')");
+
 
       label.appendChild(removePersonButton);
 
@@ -577,6 +597,111 @@ function makeCarBox(day) {
   d.appendChild( carBox );
 
   count++;
+}
+
+var mondayAM = [];
+var mondayPM = [];
+var tuesdayAM = [];
+var tuesdayPM = [];
+var wednesdayAM = [];
+var wednesdayPM = [];
+var thursdayAM = [];
+var thursdayPM = [];
+var fridayAM = [];
+var fridayPM = [];
+
+function checkAlreadyAdded(pmDiv, amPM, passengerEmail, day) {
+
+  var currCount = pmDiv.parentNode.id;
+
+  var inList;
+
+  if (amPM == "AM") {
+    if (day == "Monday") {
+      inList = checkIfInList(mondayAM, passengerEmail);
+    } else if (day == "Tuesday") {
+      inList = checkIfInList(tuesdayAM, passengerEmail);
+    } else if (day == "Wednesday") {
+      inList = checkIfInList(wednesdayAM, passengerEmail);
+    } else if (day == "Thursday") { 
+      inList = checkIfInList(thursdayAM, passengerEmail);
+    } else {
+      inList = checkIfInList(fridayAM, passengerEmail);
+    }
+  } else {
+    if (day == "Monday") {
+      inList = checkIfInList(mondayPM, passengerEmail);
+    } else if (day == "Tuesday") {
+      inList = checkIfInList(tuesdayPM, passengerEmail);
+    } else if (day == "Wednesday") {
+      inList = checkIfInList(wednesdayPM, passengerEmail);
+    } else if (day == "Thursday") {
+      inList = checkIfInList(thursdayPM, passengerEmail);
+    } else {
+      inList = checkIfInList(fridayPM, passengerEmail);
+    }
+  }
+
+  return inList;
+
+}
+
+function checkIfInList(dayList, email) {
+    var listLength=dayList.length;
+
+    for(var i=0; i<listLength; i++)
+    {
+        // if its in the array, return true
+        if(dayList[i] == email){
+          return true;
+        }
+    }
+    // if not, then add to list and return false
+    dayList.push(email);
+    return false;
+}
+
+function removeFromPassengerList(email, day, amPM)
+{
+    alert(amPM);
+    if (amPM == "AM") {
+    if (day == "Monday") {
+      dayList = mondayAM;
+    } else if (day == "Tuesday") {
+      dayList = tuesdayAM;
+    } else if (day == "Wednesday") {
+      dayList = wednesdayAM;
+    } else if (day == "Thursday") { 
+      dayList = thursdayAM;
+    } else {
+      dayList = fridayAM;
+    }
+  } else {
+    if (day == "Monday") {
+      dayList = mondayPM;
+    } else if (day == "Tuesday") {
+      dayList = tuesdayPM;
+    } else if (day == "Wednesday") {
+      dayList = wednesdayPM;
+    } else if (day == "Thursday") {
+      dayList = thursdayPM;
+    } else {
+      dayList = fridayPM;
+    }
+  }
+alert(dayList);
+    var listLength=dayList.length;
+    alert(listLength);
+
+    for(var i=0; i<listLength; i++)
+    {
+        // if its in the array, return true
+        if(dayList[i] == email){
+          alert(i);
+          dayList.splice(i);
+        }
+    }
+
 }
 
 function handleChange(myRadio){
@@ -738,8 +863,10 @@ function deleteCarOnX(carID) {
   delete cars[day][carID];
 }
 
-function deletePersonOnX(email, dayIndex, day, rowIndex, listEl, currentID) {
-  // delete front end
+
+function deletePersonOnX(email, dayIndex, day, ampm, rowIndex, listEl) {
+  // delete front end 
+
   document.getElementById(listEl).remove();
 
   //use day, ampm, and email to get/changes persons car status  
@@ -759,8 +886,12 @@ function deletePersonOnX(email, dayIndex, day, rowIndex, listEl, currentID) {
     var passengerIndex = cars[day][currentID].PM.passengers.indexOf(email);
     cars[day][currentID].PM.passengers.splice(passengerIndex);
   }
-  
-  
+
+  alert(day);
+  alert(ampm);
+
+  removeFromPassengerList(email, day, ampm);
+
 }
 
 //This is a helper function which parses a time into a viuallly apealling
