@@ -56,7 +56,7 @@ function makeCarTable(allPreferences, car, day, showDays, haveDeleteButtons, use
   driverCell.appendChild(document.createTextNode(' (driver)'));
   driverCell.setAttribute('colspan', 2);
 
-  if (haveDeleteButtons) {
+  if (haveDeleteButtons == true) {
     // Make a delete button for the car
     var deleteWholeCarBtn = document.createElement('button');
     deleteWholeCarBtn.className = 'close';
@@ -113,7 +113,7 @@ function makeCarTable(allPreferences, car, day, showDays, haveDeleteButtons, use
         } else {
           cell.appendChild(document.createTextNode(allPreferences[passenger].name));
         }
-        if(haveDeleteButtons) {
+        if(haveDeleteButtons == true) {
            // Make a delete button for the car
             var deleteWholeCarBtn = document.createElement('button');
             deleteWholeCarBtn.className = 'close';
