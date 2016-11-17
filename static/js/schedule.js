@@ -11,7 +11,7 @@ window.onload = function(editMode=false) {
     var car = cars[day]
     for (var car_Idx in car) {
 
-      var table = makeCarTable(allPreferences, car[car_Idx], day, true, editMode, user, editMode);
+      var table = makeCarTable(allPreferences, car[car_Idx], day, true, editMode, user);
       allcars.appendChild(table);
 
       var tableisyourtable = false;

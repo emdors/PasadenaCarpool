@@ -115,7 +115,7 @@ function deleteWholeCar(day, driver) {
   changedPage = true;
   updateHighlightingAndTables(day);
 }
-
+console.log("Cars" + JSON.stringify(cars));
 function deleteCar(day, driver, halfday) {
   delete cars[day][driver][halfday];
   var tableNowEmpty = true;
@@ -174,7 +174,7 @@ function updateHighlightingAndTablesForOneDay(day) {
   document.getElementById(day+'Cars').innerHTML = "";
   var car = cars[day];
   for (var driver in cars[day]) {
-    document.getElementById(day+'Cars').appendChild(makeCarTable(allPreferences, car, day, false, true, null));
+    document.getElementById(day+'Cars').appendChild(makeCarTable(allPreferences, car, day, false, true));
   }
 }
 

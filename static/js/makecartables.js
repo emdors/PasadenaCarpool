@@ -1,4 +1,4 @@
-function makeCarTable(allPreferences, car, day, showDays, haveDeleteButtons, userToHighlight, writeIn=false) {
+function makeCarTable(allPreferences, car, day, showDays, editMode, userToHighlight) {
   // driver = cars[day][car_Idx].driver
   // Create a new table
   var carTable = document.createElement('table');
@@ -55,22 +55,22 @@ function makeCarTable(allPreferences, car, day, showDays, haveDeleteButtons, use
   driverCell.appendChild(document.createTextNode(' (driver)'));
   driverCell.setAttribute('colspan', 2);
 
-  if (haveDeleteButtons == true) {
+  if (editMode == true) {
     // Make a delete button for the car
-    var deleteWholeCarBtn = document.createElement('button');
-    deleteWholeCarBtn.className = 'close';
-    var deleteWholeCarBtnIcon = document.createElement('span');
-    deleteWholeCarBtnIcon.className = "glyphicon glyphicon-remove";
-    deleteWholeCarBtnIcon.setAttribute('aria-hidden',"true");
-    deleteWholeCarBtn.appendChild(deleteWholeCarBtnIcon);
+    var deletePartOfCarBtn = document.createElement('button');
+    deletePartOfCarBtn.className = 'close';
+    var deletePartOfCarBtnIcon = document.createElement('span');
+    deletePartOfCarBtnIcon.className = "glyphicon glyphicon-remove";
+    deletePartOfCarBtnIcon.setAttribute('aria-hidden',"true");
+    deletePartOfCarBtn.appendChild(deletePartOfCarBtnIcon);
     // This is weird... basically, we want to make a copy of these parameters
     // so that the closure has its own copy. Making a function lets us do that.
-    function setDeleteWholeCarBtnOnClick(day, driver) {
-      deleteWholeCarBtn.onclick = function() {deleteWholeCar(day, driver);};
-    }
-    setDeleteWholeCarBtnOnClick(day, driver);
-    deleteWholeCarBtn.setAttribute('type', 'button');
-    driverCell.appendChild(deleteWholeCarBtn);
+    // function setdeletePartOfCarBtnOnClick(day, driver) {
+    //   deletePartOfCarBtn.onclick = function() {deleteWholeCar(day, driver);};
+    // }
+    // setdeletePartOfCarBtnOnClick(day, driver);
+    deletePartOfCarBtn.setAttribute('type', 'button');
+    driverCell.appendChild(deletePartOfCarBtn);
   }
 
   driverRow.appendChild(driverCell);
@@ -113,23 +113,22 @@ function makeCarTable(allPreferences, car, day, showDays, haveDeleteButtons, use
           cell.appendChild(document.createTextNode(allPreferences[passenger].name));
         }
 
-        if(haveDeleteButtons == true) {
+        if(editMode == true) {
            // Make a delete button for the car
-            var deleteWholeCarBtn = document.createElement('button');
-            deleteWholeCarBtn.className = 'close';
-            var deleteWholeCarBtnIcon = document.createElement('span');
-            deleteWholeCarBtnIcon.className = "glyphicon glyphicon-remove";
-            deleteWholeCarBtnIcon.setAttribute('aria-hidden',"true");
-            deleteWholeCarBtn.appendChild(deleteWholeCarBtnIcon);
+            var deletePartOfCarBtn = document.createElement('button');
+            deletePartOfCarBtn.className = 'close';
+            var deletePartOfCarBtnIcon = document.createElement('span');
+            deletePartOfCarBtnIcon.className = "glyphicon glyphicon-remove";
+            deletePartOfCarBtnIcon.setAttribute('aria-hidden',"true");
+            deletePartOfCarBtn.appendChild(deletePartOfCarBtnIcon);
             // This is weird... basically, we want to make a copy of these parameters
             // so that the closure has its own copy. Making a function lets us do that.
-            // function setDeleteWholeCarBtnOnClick(day, driver) {
-            //   deleteWholeCarBtn.onclick = function() {deleteWholeCar(day, driver);};
+            // function setdeletePartOfCarBtnOnClick(day, driver) {
+            //   deletePartOfCarBtn.onclick = function() {deleteWholeCar(day, driver);};
             // }
-            // setDeleteWholeCarBtnOnClick(day, driver);
-            deleteWholeCarBtn.setAttribute('type', 'button');
-            // driverCell.appendChild(deleteWholeCarBtn);
-            cell.appendChild(deleteWholeCarBtn);
+            // setdeletePartOfCarBtnOnClick(day, driver);
+            deletePartOfCarBtn.setAttribute('type', 'button');
+            cell.appendChild(deletePartOfCarBtn);
         }
       }
       row.appendChild(cell);
@@ -137,7 +136,7 @@ function makeCarTable(allPreferences, car, day, showDays, haveDeleteButtons, use
     carTableBody.appendChild(row);
   }
 
-  if (writeIn==true) {
+  if (editMode == true) {
      var row = document.createElement('tr');
      var cell = document.createElement('td');
      var writeInField = document.createElement('input');
