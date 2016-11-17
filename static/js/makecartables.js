@@ -1,4 +1,4 @@
-function makeCarTable(allPreferences, car, day, showDays, haveDeleteButtons, userToHighlight) {
+function makeCarTable(allPreferences, car, day, showDays, haveDeleteButtons, userToHighlight, writeIn=false) {
   // driver = cars[day][car_Idx].driver
   // Create a new table
   var carTable = document.createElement('table');
@@ -54,8 +54,8 @@ function makeCarTable(allPreferences, car, day, showDays, haveDeleteButtons, use
   }
   driverCell.appendChild(document.createTextNode(' (driver)'));
   driverCell.setAttribute('colspan', 2);
-  
-  if (haveDeleteButtons) {
+
+  if (haveDeleteButtons == true) {
     // Make a delete button for the car
     var deleteWholeCarBtn = document.createElement('button');
     deleteWholeCarBtn.className = 'close';
@@ -112,7 +112,8 @@ function makeCarTable(allPreferences, car, day, showDays, haveDeleteButtons, use
         } else {
           cell.appendChild(document.createTextNode(allPreferences[passenger].name));
         }
-        if(haveDeleteButtons) {
+
+        if(haveDeleteButtons == true) {
            // Make a delete button for the car
             var deleteWholeCarBtn = document.createElement('button');
             deleteWholeCarBtn.className = 'close';
@@ -130,12 +131,24 @@ function makeCarTable(allPreferences, car, day, showDays, haveDeleteButtons, use
             // driverCell.appendChild(deleteWholeCarBtn);
             cell.appendChild(deleteWholeCarBtn);
         }
-
       }
       row.appendChild(cell);
     }
     carTableBody.appendChild(row);
   }
+
+  if (writeIn==true) {
+     var row = document.createElement('tr');
+     var cell = document.createElement('td');
+     var writeInField = document.createElement('input');
+     cell.appendChild(writeInField);
+     var cell2 = document.createElement('td');
+     var writeInField2 = document.createElement('input');
+     cell2.appendChild(writeInField2);
+     row.appendChild(cell);
+     row.appendChild(cell2);
+     carTableBody.appendChild(row);
+   }
 
   carTable.appendChild(carTableBody);
 
