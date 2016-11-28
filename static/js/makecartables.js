@@ -1,8 +1,7 @@
-function makeCarTable(allPreferences, cars, car_Idx, day, showDays, editMode, userToHighlight) {
+function makeCarTable(allPreferences, car_Idx, day, showDays, editMode, userToHighlight) {
   // driver = cars[day][car_Idx].driver
   // Create a new table
-  var carsTemp = cars;
-  var car = carsTemp[day][car_Idx] 
+  var car = carsTemp[day][car_Idx]; 
   var carTable = document.createElement('table');
   var carTableBody = document.createElement('tbody');
   carTable.className = 'table fullcartable table-bordered';

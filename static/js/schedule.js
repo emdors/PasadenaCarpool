@@ -10,7 +10,7 @@ window.onload = function(editMode=false) {
     for (var car_Idx in cars[day]) {
       
       var car = cars[day][car_Idx]
-      var table = makeCarTable(allPreferences, cars, car_Idx, day, true, editMode, user);
+      var table = makeCarTable(allPreferences, car_Idx, day, true, editMode, user);
       console.log(JSON.stringify(car));
       allcars.appendChild(table);
 

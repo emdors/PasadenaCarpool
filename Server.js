@@ -163,15 +163,30 @@ function getSchedule(day, callback) {
     }
   });
 }
-
+app.get("/dynamic/thisWeekTempCar.js", ensureAuthenticated, function(req, res) {
+  console.log("OUTSIDE0");
+  dbComm.getSchedule(new Date(), function(sch) {
+    console.log("making carsTemp variable");
+    res.send("var carsTemp = " + JSON.stringify(sch) + ';');
+  });
+})
+app.get("/dynamic/nextWeekTempCar.js", ensureAuthenticated, function(req, res) {
+  console.log("OUTSIDE1");
+  dbComm.getSchedule(undefined, function(sch) {
+    console.log("making carsTemp variable");
+    res.send("var carsTemp = " + JSON.stringify(sch) + ';');
+  });
+})
 // undefined - day get set to current day in get schedule
 app.get("/dynamic/nextweekSchedule.js", ensureAuthenticated, function(req, res) {
+  console.log("OUTSIDE2");
   dbComm.getSchedule(undefined, function(sch) {
     res.send("var cars = " + JSON.stringify(sch));
   });
 });
 
 app.get("/dynamic/thisweekSchedule.js", ensureAuthenticated, function(req, res) {
+  console.log("OUTSIDE3");
   dbComm.getSchedule(new Date(), function(sch) {
     res.send("var cars = " + JSON.stringify(sch) + ';');
   });
@@ -195,13 +210,6 @@ app.get("/dynamic/examplePreferences.js", ensureAuthenticated, function(req, res
 app.get("/dynamic/exampleCars.js", ensureAuthenticated, function(req, res){
   res.send("var cars = {\"Monday\":{},\"Tuesday\":{},\"Wednesday\":{},\"Thursday\":{},\"Friday\":{}}");
 });
-
-app.get("/dynamic/tempCar.js", ensureAuthenticated, function(req, res) {
-  dbComm.getSchedule(new Date(), function(sch) {
-    res.send("var carsTemp = " + JSON.stringify(sch) + ';');
-  });
-})
-
 app.post("/times", ensureAuthenticated, function(req,res){
 
   var thisWeeksScheduleFilename = dbComm.userDataFileName();

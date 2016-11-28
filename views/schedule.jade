@@ -18,10 +18,14 @@ html(lang='en')
     script(src='js/makecartables.js')
     script(src='js/schedule.js')
     - if (thisWeek == true)
+      - console.log("in the if statement")
+      script(src='dynamic/thisWeekTempCar.js')
       script(src='dynamic/thisweekSchedule.js')
     - else
+      - console.log("in the if statement")
       script(src='dynamic/nextweekSchedule.js')
-    script(scr='dynamic/tempCar.js')
+      script(src='dynamic/nextWeekTempCar.js')
+    
   body
     div
       div
