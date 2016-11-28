@@ -19,7 +19,6 @@ function createStatistics(){
 
 var self = module.exports = {
   updateStatistics : function updateStatistics(unp_data, callback){
-    console.log("Inside updateStatistics");
     try {
       fs.statSync(statisticspath+statFileName);
     }
@@ -193,6 +192,13 @@ var self = module.exports = {
     fs.writeFile(statisticspath + statFileName,  JSON.stringify(parsed));
   },
   getStatistics : function getStatistics(callback){
+  	try {
+      fs.statSync(statisticspath+statFileName);
+    }
+    catch(err) {
+      console.log("Thinks file doesn't exist.");
+      createStatistics();
+    }
     var jsoncontent = fs.readFileSync(statisticspath + statFileName);
     var dataForStatPage = JSON.parse(jsoncontent);
     callback(dataForStatPage);
