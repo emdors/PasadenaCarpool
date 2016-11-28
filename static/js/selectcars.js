@@ -109,7 +109,6 @@ function updateHighlightingAndTables(day) {
     updateHighlightingAndTablesForOneDay(day);
   }
 }
-
 function deleteWholeCar(day, driver) {
   delete cars[day][driver];
   changedPage = true;
@@ -172,10 +171,12 @@ function updateHighlightingAndTablesForOneDay(day) {
 
 
   document.getElementById(day+'Cars').innerHTML = "";
-  var car = cars[day];
-  for (var driver in cars[day]) {
-    document.getElementById(day+'Cars').appendChild(makeCarTable(allPreferences, car, day, false, true));
-  }
+  // var car = cars[day];
+  //hmm this doesnt seem to do anything
+  // for (var driver in cars[day]) {
+  //   console.log("here");
+  //   document.getElementById(day+'Cars').appendChild(makeCarTable(allPreferences, car, day, false, true));
+  // }
 }
 
 

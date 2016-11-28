@@ -7,22 +7,22 @@ window.onload = function(editMode=false) {
   var allcars = document.getElementById('allcars');
   //allcars = none;
   for (var day in cars) {
-
-    var car = cars[day]
-    for (var car_Idx in car) {
-
-      var table = makeCarTable(allPreferences, car[car_Idx], day, true, editMode, user);
+    for (var car_Idx in cars[day]) {
+      
+      var car = cars[day][car_Idx]
+      var table = makeCarTable(allPreferences, cars, car_Idx, day, true, editMode, user);
+      console.log(JSON.stringify(car));
       allcars.appendChild(table);
 
       var tableisyourtable = false;
       userEmail = user;
-      if (car[car_Idx]["driver"] == userEmail) {
+      if (car["driver"] == userEmail) {
         tableisyourtable = true;
       } else {
-        for (halfday in car[car_Idx]) {
+        for (halfday in car) {
           if(halfday != "driver"){
-            for (var passengerIdx=0; passengerIdx<car[car_Idx][halfday].passengers.length; ++passengerIdx) {
-              if (car[car_Idx][halfday].passengers[passengerIdx] == userEmail) {
+            for (var passengerIdx=0; passengerIdx<car[halfday].passengers.length; ++passengerIdx) {
+              if (car[halfday].passengers[passengerIdx] == userEmail) {
                 tableisyourtable = true;
               }
             }

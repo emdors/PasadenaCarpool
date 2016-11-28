@@ -196,6 +196,12 @@ app.get("/dynamic/exampleCars.js", ensureAuthenticated, function(req, res){
   res.send("var cars = {\"Monday\":{},\"Tuesday\":{},\"Wednesday\":{},\"Thursday\":{},\"Friday\":{}}");
 });
 
+app.get("/dynamic/tempCar.js", ensureAuthenticated, function(req, res) {
+  dbComm.getSchedule(new Date(), function(sch) {
+    res.send("var carsTemp = " + JSON.stringify(sch) + ';');
+  });
+})
+
 app.post("/times", ensureAuthenticated, function(req,res){
 
   var thisWeeksScheduleFilename = dbComm.userDataFileName();

@@ -5,6 +5,7 @@ html(lang='en')
   head
     meta(charset='UTF-8')
     title Pasadena Carpool Schedule
+    script(scr='js/selectcars.js')
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.3.3/angular.min.js')
     script(src='//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.3/angular-route.min.js')
     script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
@@ -13,14 +14,16 @@ html(lang='en')
     link(rel='stylesheet', href='css/schedulestyle.css')
     link(rel='stylesheet', href='css/cartable.css')
     script(src='dynamic/allPreferences.js')
+    script(src='dynamic/currentUser.js')
+    script(src='js/makecartables.js')
+    script(src='js/schedule.js')
     - if (thisWeek == true)
       script(src='dynamic/thisweekSchedule.js')
     - else
       script(src='dynamic/nextweekSchedule.js')
-    script(src='dynamic/currentUser.js')
-    script(src='js/makecartables.js')
-    script(src='js/schedule.js')
-
+    //I think we need a variable like thisWeek but for editMode for the dynamic page
+    - if (editMode == true)
+      script(scr='dynamic/tempCar.js')
   body
     div
       div
@@ -72,4 +75,4 @@ html(lang='en')
         div(class = "buttons")#saveEditsButton
           // create a save edits button that is by default not displayed
           button(class = "btn btn-primary", type="button", onClick='saveSchedule();') Save Schedule
-
+           

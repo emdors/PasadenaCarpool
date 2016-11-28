@@ -1,10 +1,12 @@
-function makeCarTable(allPreferences, car, day, showDays, editMode, userToHighlight) {
+function makeCarTable(allPreferences, cars, car_Idx, day, showDays, editMode, userToHighlight) {
   // driver = cars[day][car_Idx].driver
   // Create a new table
+  var carsTemp = cars;
+  var car = carsTemp[day][car_Idx] 
   var carTable = document.createElement('table');
   var carTableBody = document.createElement('tbody');
   carTable.className = 'table fullcartable table-bordered';
-
+  console.log("car" + JSON.stringify(cars));
   // If we want to show the day, do it
   if (showDays) {
     var dayRow = document.createElement('tr');
@@ -15,7 +17,6 @@ function makeCarTable(allPreferences, car, day, showDays, editMode, userToHighli
     dayRow.className = 'day';
     carTableBody.appendChild(dayRow);
   }
-
 
   // Put the driver's name in
   var driverRow = document.createElement('tr');
@@ -65,10 +66,10 @@ function makeCarTable(allPreferences, car, day, showDays, editMode, userToHighli
     deletePartOfCarBtn.appendChild(deletePartOfCarBtnIcon);
     // This is weird... basically, we want to make a copy of these parameters
     // so that the closure has its own copy. Making a function lets us do that.
-    // function setdeletePartOfCarBtnOnClick(day, driver) {
-    //   deletePartOfCarBtn.onclick = function() {deleteWholeCar(day, driver);};
-    // }
-    // setdeletePartOfCarBtnOnClick(day, driver);
+    function setdeletePartOfCarBtnOnClick(day, driver) {
+      deletePartOfCarBtn.onclick = function() {deleteWholeCar(day, driver);};
+    }
+    setdeletePartOfCarBtnOnClick(day, driver);
     deletePartOfCarBtn.setAttribute('type', 'button');
     driverCell.appendChild(deletePartOfCarBtn);
   }
@@ -123,10 +124,11 @@ function makeCarTable(allPreferences, car, day, showDays, editMode, userToHighli
             deletePartOfCarBtn.appendChild(deletePartOfCarBtnIcon);
             // This is weird... basically, we want to make a copy of these parameters
             // so that the closure has its own copy. Making a function lets us do that.
-            // function setdeletePartOfCarBtnOnClick(day, driver) {
-            //   deletePartOfCarBtn.onclick = function() {deleteWholeCar(day, driver);};
-            // }
-            // setdeletePartOfCarBtnOnClick(day, driver);
+            function setdeletePartOfCarBtnOnClick(day, driver) {
+              console.log("here the button has been clicked");
+              deletePartOfCarBtn.onclick = function() {deleteWholeCar(day, driver);};
+            }
+            setdeletePartOfCarBtnOnClick(day, driver);
             deletePartOfCarBtn.setAttribute('type', 'button');
             cell.appendChild(deletePartOfCarBtn);
         }
