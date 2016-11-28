@@ -87,3 +87,9 @@ saveSchedule = function() {
   // Remake the window with edit fields
   window.onload(false);
 }
+
+addCarpooler = function() {
+  // TODO make this function add text from input field to table
+  // TODO make this function update dynamic json with added input to table
+  console.log('Im in the addCarpooler function woot woot');
+}
