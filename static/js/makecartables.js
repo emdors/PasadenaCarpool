@@ -145,7 +145,7 @@ function makeCarTable(allPreferences, car_Idx, day, showDays, editMode, userToHi
      var addText = document.createTextNode('Add');
      addButton.className = 'btn btn-primary';
      addButton.appendChild(addText);
-     addButton.setAttribute('onclick', 'addCarpooler()');
+     addButton.setAttribute('onclick', 'addCarpooler(this)');
      cell.appendChild(writeInField);
      cell.appendChild(addButton);
      var cell2 = document.createElement('td');
@@ -154,7 +154,7 @@ function makeCarTable(allPreferences, car_Idx, day, showDays, editMode, userToHi
      var addText2 = document.createTextNode('Add');
      addButton2.className = 'btn btn-primary';
      addButton2.appendChild(addText2);
-     addButton2.setAttribute('onclick', 'addCarpooler()');
+     addButton2.setAttribute('onclick', 'addCarpooler(this)');
      cell2.appendChild(writeInField2);
      cell2.appendChild(addButton2);
      row.appendChild(cell);

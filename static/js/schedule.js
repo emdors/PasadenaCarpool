@@ -88,8 +88,14 @@ saveSchedule = function() {
   window.onload(false);
 }
 
-addCarpooler = function() {
+addCarpooler = function(obj) {
   // TODO make this function add text from input field to table
   // TODO make this function update dynamic json with added input to table
-  console.log('Im in the addCarpooler function woot woot');
+  var row = document.createElement('tr');
+  var cell = document.createElement('td');
+  parent = obj.parentNode;
+  var newText = document.createTextNode(obj.parentNode.firstChild.value)
+  cell.appendChild(newText);
+  row.appendChild(cell);
+  obj.parentNode.parentNode.insertBefore(cell, null);
 }
