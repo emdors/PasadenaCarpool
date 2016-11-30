@@ -354,6 +354,16 @@ app.post('/example', ensureAuthenticated, function(req,res){
   res.redirect('/schedule')
 });
 
+app.post('/scheduleUpdate', ensureAuthenticated, function(req,res){
+  console.log('in the post, and req is:')
+  //console.log(JSON.stringify(req.body));
+  console.log(cars);
+  console.log(req.cars);
+  fs.writeFile(schedulepath + dbComm.userDataFileName(), req.cars);
+  console.log(req.body.cars);
+  res.redirect('/scheduleNext')
+});
+
 app.post('/czarData', ensureAuthenticated, function(req,res){
   //console.log(JSON.stringify(req.body));
   fs.writeFile(schedulepath + dbComm.userDataFileName(), req.body.allCars);

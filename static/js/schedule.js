@@ -68,10 +68,10 @@ makeEditBoxesVisible = function() {
 
 saveSchedule = function() {
   //TODO add saving of cars here
-  console.log('In save schedule');
-  // var carsNode = document.createTextNode(JSON.stringify(cars));
-  // carsNode.setAttribute('id', 'cars');
-  console.log(JSON.stringify(cars));
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', "/scheduleUpdate", true);
+  xhr.setRequestHeader("Content-type", JSON.stringify(cars));
+  xhr.send(JSON.stringify(cars));
 
   // Clear the current cars displayed
   document.getElementById('yourcars').innerHTML = '';
@@ -94,6 +94,8 @@ saveSchedule = function() {
   document.getElementById("editButton").style.display = 'block';
 
   // Remake the window with edit fields
+  console.log("about to send request");
+  //xhr.send();
   window.onload(false);
 }
 
