@@ -2,6 +2,10 @@ window.onload = function(editMode=false) {
   //console.log(cars);
   if (editMode == true) {
     console.log("hello, the edit Mode variable in onload was reached and I know it is true.");
+    var carsText = document.createTextNode(JSON.stringify(cars));
+    var carsNode = document.createElement('div');
+    carsNode.appendChild(carsText);
+    carsNode.setAttribute('id', 'cars');
   }
   var yourcars = document.getElementById('yourcars');
   //yourcars = none;
@@ -64,6 +68,10 @@ makeEditBoxesVisible = function() {
 
 saveSchedule = function() {
   //TODO add saving of cars here
+  console.log('In save schedule');
+  // var carsNode = document.createTextNode(JSON.stringify(cars));
+  // carsNode.setAttribute('id', 'cars');
+  console.log(JSON.stringify(cars));
 
   // Clear the current cars displayed
   document.getElementById('yourcars').innerHTML = '';
@@ -94,7 +102,6 @@ addCarpoolerLeft = function(obj) {
   // TODO make this function update dynamic json with added input to table
   var row = document.createElement('tr');
   var cell = document.createElement('td');
-  parent = obj.parentNode;
   var rider = obj.parentNode.firstChild.value;
   var newText = document.createTextNode(rider);
   obj.parentNode.firstChild.value = '';
@@ -104,19 +111,12 @@ addCarpoolerLeft = function(obj) {
   obj.parentNode.parentNode.parentNode.insertBefore(row, null);
   var day = obj.parentNode.parentNode.parentNode.firstChild.firstChild.innerHTML;
   var driver = obj.parentNode.parentNode.parentNode.childNodes[1].firstChild.firstChild.innerHTML;
-  console.log(day);
-  console.log(driver);
   var possible_cars = cars[day];
   for (car_Idx in possible_cars){
     var car = possible_cars[car_Idx];
-    console.log(car);
     if (car.driver == aliasToEmail(driver)){
-      console.log(car.AM.passengers);
       car.AM.passengers.push(rider);
-      console.log(car.AM.passengers);
-      console.log(cars[day][car_Idx].AM.passengers);
       cars[day][car_Idx].AM.passengers = car.AM.passengers;
-      console.log(cars[day][car_Idx].AM.passengers);
     }
   }
   //fs.writeFile(,  JSON.stringify(cars));
@@ -127,16 +127,26 @@ addCarpoolerRight = function(obj) {
   // TODO make this function add text from input field to table
   // TODO make this function update dynamic json with added input to table
   var row = document.createElement('tr');
-  row.appendChild(document.createElement('td'));
   var cell = document.createElement('td');
-  parent = obj.parentNode;
-  var newText = document.createTextNode(obj.parentNode.firstChild.value);
-  (obj.parentNode.firstChild.value)
+  var rider = obj.parentNode.firstChild.value;
+  var newText = document.createTextNode(rider);
   obj.parentNode.firstChild.value = '';
   cell.appendChild(newText);
+  row.appendChild(document.createElement('td'));
   row.appendChild(cell);
   
   obj.parentNode.parentNode.parentNode.insertBefore(row, null);
+  var day = obj.parentNode.parentNode.parentNode.firstChild.firstChild.innerHTML;
+  var driver = obj.parentNode.parentNode.parentNode.childNodes[1].firstChild.firstChild.innerHTML;
+  var possible_cars = cars[day];
+  for (car_Idx in possible_cars){
+    var car = possible_cars[car_Idx];
+    console.log(car);
+    if (car.driver == aliasToEmail(driver)){
+      car.PM.passengers.push(rider);
+      cars[day][car_Idx].PM.passengers = car.PM.passengers;
+    }
+  }
 }
 
 function aliasToEmail(alias) {

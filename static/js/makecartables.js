@@ -1,11 +1,12 @@
 function makeCarTable(allPreferences, car_Idx, day, showDays, editMode, userToHighlight) {
   // driver = cars[day][car_Idx].driver
   // Create a new table
-  var car = carsTemp[day][car_Idx]; 
+  var car = cars[day][car_Idx]; 
   var carTable = document.createElement('table');
   var carTableBody = document.createElement('tbody');
   carTable.className = 'table fullcartable table-bordered';
   console.log("car" + JSON.stringify(cars));
+  
   // If we want to show the day, do it
   if (showDays) {
     var dayRow = document.createElement('tr');
@@ -91,6 +92,7 @@ function makeCarTable(allPreferences, car_Idx, day, showDays, editMode, userToHi
   }
   carTableBody.appendChild(timeRow);
 
+  
   // Put passengers in
   for (var passengerIdx=0;
            (car.AM && passengerIdx < car.AM.passengers.length)
@@ -105,12 +107,17 @@ function makeCarTable(allPreferences, car_Idx, day, showDays, editMode, userToHi
       var cell = document.createElement('td');
       if (car[halfday] && car[halfday].passengers.length > passengerIdx) {
         var passenger = car[halfday].passengers[passengerIdx];
+        var pass = passenger;
+        if (allPreferences.hasOwnProperty(passenger)){
+          pass = allPreferences[passenger].name;
+        }
+
         if (userToHighlight == passenger) {
           var strong = document.createElement('strong');
-          strong.appendChild(document.createTextNode(allPreferences[passenger].name));
+          strong.appendChild(document.createTextNode(pass));
           cell.appendChild(strong);
         } else {
-          cell.appendChild(document.createTextNode(allPreferences[passenger].name));
+          cell.appendChild(document.createTextNode(pass));
         }
 
         if(editMode == true) {
