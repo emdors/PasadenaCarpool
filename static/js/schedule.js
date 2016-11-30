@@ -1,4 +1,5 @@
 window.onload = function(editMode=false) {
+  //console.log(cars);
   if (editMode == true) {
     console.log("hello, the edit Mode variable in onload was reached and I know it is true.");
   }
@@ -88,14 +89,68 @@ saveSchedule = function() {
   window.onload(false);
 }
 
-addCarpooler = function(obj) {
+addCarpoolerLeft = function(obj) {
   // TODO make this function add text from input field to table
   // TODO make this function update dynamic json with added input to table
   var row = document.createElement('tr');
   var cell = document.createElement('td');
   parent = obj.parentNode;
-  var newText = document.createTextNode(obj.parentNode.firstChild.value)
+  var rider = obj.parentNode.firstChild.value;
+  var newText = document.createTextNode(rider);
+  obj.parentNode.firstChild.value = '';
   cell.appendChild(newText);
   row.appendChild(cell);
-  obj.parentNode.parentNode.insertBefore(cell, null);
+  row.appendChild(document.createElement('td'));
+  obj.parentNode.parentNode.parentNode.insertBefore(row, null);
+  var day = obj.parentNode.parentNode.parentNode.firstChild.firstChild.innerHTML;
+  var driver = obj.parentNode.parentNode.parentNode.childNodes[1].firstChild.firstChild.innerHTML;
+  console.log(day);
+  console.log(driver);
+  var possible_cars = cars[day];
+  for (car_Idx in possible_cars){
+    var car = possible_cars[car_Idx];
+    console.log(car);
+    if (car.driver == aliasToEmail(driver)){
+      console.log(car.AM.passengers);
+      car.AM.passengers.push(rider);
+      console.log(car.AM.passengers);
+      console.log(cars[day][car_Idx].AM.passengers);
+      cars[day][car_Idx].AM.passengers = car.AM.passengers;
+      console.log(cars[day][car_Idx].AM.passengers);
+    }
+  }
+  //fs.writeFile(,  JSON.stringify(cars));
+
 }
+
+addCarpoolerRight = function(obj) {
+  // TODO make this function add text from input field to table
+  // TODO make this function update dynamic json with added input to table
+  var row = document.createElement('tr');
+  row.appendChild(document.createElement('td'));
+  var cell = document.createElement('td');
+  parent = obj.parentNode;
+  var newText = document.createTextNode(obj.parentNode.firstChild.value);
+  (obj.parentNode.firstChild.value)
+  obj.parentNode.firstChild.value = '';
+  cell.appendChild(newText);
+  row.appendChild(cell);
+  
+  obj.parentNode.parentNode.parentNode.insertBefore(row, null);
+}
+
+function aliasToEmail(alias) {
+    if (alias in allPreferences) {
+      return alias;
+    } else {
+      // They must have given a name or a "preferred email" instead of their
+      // gmail
+      for (var person in allPreferences) {
+        var theirPreferences = allPreferences[person];
+        if (theirPreferences.prefEmail == alias
+            || theirPreferences.name.toLowerCase() == alias.toLowerCase()) {
+          return person;
+        }
+      }
+    }
+  }
