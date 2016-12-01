@@ -409,13 +409,15 @@ function makeCarBox(day) {
   
   amDiv.ondrop = function(event) {
      var tooMany;
-     tooMany = checkAlreadyAdded(amDiv, "AM", passengerEmail, day);
 
      //alert(tooMany);
 
      if(ampm == "PM"){
       alert("You tried to add an PM passenger to a AM spot.");}
-    else if (tooMany == true) {
+
+    tooMany = checkAlreadyAdded(amDiv, "AM", passengerEmail, day);
+    
+    if (tooMany == true) {
       alert("This person already has a AM ride!");
     } else {
       event.preventDefault();
@@ -511,13 +513,15 @@ function makeCarBox(day) {
   // on drop, we make a label and add passengerName text and radio button
   pmDiv.ondrop = function(event) {
      var tooMany;
-     tooMany = checkAlreadyAdded(pmDiv, "PM", passengerEmail, day);
 
      //alert(tooMany);
 
      if(ampm == "AM"){
       alert("You tried to add an AM passenger to a PM spot.");}
-    else if (tooMany == true) {
+
+    tooMany = checkAlreadyAdded(pmDiv, "PM", passengerEmail, day);
+
+    if (tooMany == true) {
       alert("This person already has a PM ride!");
     }
     else{
@@ -590,6 +594,9 @@ function makeCarBox(day) {
   carBox.appendChild(pmDiv);
 
   var finishCarButton = document.createElement('button');
+  var temp = carBoxID + "finishButton";
+  finishCarButton.id = temp;
+  finishCarButton.innerHTML = "Finish Car";
   finishCarButton.className = 'finishCarButton';
   finishCarButton.setAttribute("onClick", "finishCar(\'" + carBoxID + "\', \'" + day + "\')");
   carBox.appendChild(finishCarButton);
@@ -772,6 +779,10 @@ function handleChange(myRadio){
 }
 
 function finishCar(carID,day){
+
+// will tell button text to change if there are no errors
+var error = 0;
+
  var amTime = document.getElementById(carID+"AMtime").value
  var pmTime = document.getElementById(carID+"PMtime").value
 
@@ -782,15 +793,18 @@ function finishCar(carID,day){
  if (cars[day][carID].driver == "")
  {
    alert("Plese select a driver before you finish the car.");
+   error++;
  } 
  // check if AM time is blank
  if(cars[day][carID].AM.time == "")
  {
    alert("Please add an AM time.");
+   error++;
  }
  // check if PM time is blank
  if(cars[day][carID].PM.time == ""){
    alert("Please add a PM time.");
+   error++;
  } 
  // if driver and time are not blank
   else 
@@ -802,21 +816,42 @@ function finishCar(carID,day){
 
   if(carSize < numPassengersAM & carSize < numPassengersPM) 
   {
+    error++;
       alert("You have added too many passengers in both the AM and PM! " +
     allPreferences[cars[day][carID].driver].name + " has only " + carSize + " seat(s).");
   }
   else if(carSize < numPassengersAM) 
   {
+    error++;
     alert("You have added too many AM passengers! " +
     allPreferences[cars[day][carID].driver].name + " has only " + carSize + " seat(s).");
   }
   else if(carSize < numPassengersPM ) 
   {
+    error++;
     alert("You have added too many PM passengers! " +
     allPreferences[cars[day][carID].driver].name + " has only " + carSize + " seat(s).");
   }
 
  }
+
+
+var buttonID = carID + "finishButton";
+//alert(buttonID);
+
+var finishButton = document.getElementById(buttonID);
+ if(error == 0 && finishButton.innerHTML == "Finish Car")
+ {
+   //alert("WHY");
+   finishButton.innerHTML = "Edit Car";
+   document.getElementById(carID).style.background = "#cccccc";
+ }
+ else 
+ {
+   finishButton.innerHTML = "Finish Car";
+   document.getElementById(carID).style.background = "#eee8f3";
+ }
+
 
 }
 // author: edorsey,tstannard
