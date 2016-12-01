@@ -694,6 +694,8 @@ function removeFromPassengerList(email, day, amPM)
 
     var listLength=dayList.length;
 
+    //alert(dayList);
+
     for(var i=0; i<listLength; i++)
     {
         // if its in the array, return true
@@ -825,11 +827,20 @@ function allowDrop(event) {
 
 // remove the car from the front end and the back end 
 //TODO need to change status of passengers when car gets deleted 
-function deleteCarOnX(carID) {
+function deleteCarOnX(carID, day) {
+  //alert("?????");
+
   var day = document.getElementById(carID).parentElement.id;
 
   //change all the passenger status's 
   passengerAMList = cars[day][carID].AM.passengers; 
+
+  for(a = 0; a < passengerAMList.length; a++)
+  {
+    //alert(passengerAMList[a]);
+    removeFromPassengerList(passengerAMList[a], day, "AM");
+  }
+
   var dayIndexAM = 2*daysArray.indexOf(day) ;
   var ampmTableAM = document.getElementsByClassName("titleTable")[dayIndexAM];
   var tableRowsAM = ampmTableAM.getElementsByTagName('tr');
@@ -845,6 +856,13 @@ function deleteCarOnX(carID) {
    }
 
     passengerPMList = cars[day][carID].PM.passengers; 
+
+  for(a = 0; a < passengerPMList.length; a++)
+  {
+    //alert(passengerAMList[a]);
+    removeFromPassengerList(passengerPMList[a], day, "PM");
+  }
+
     dayIndexPM = 2*daysArray.indexOf(day) +1 ;
     ampmTablePM = document.getElementsByClassName("titleTable")[dayIndexPM];
     var tableRowsPM = ampmTablePM.getElementsByTagName('tr');
