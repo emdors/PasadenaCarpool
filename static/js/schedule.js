@@ -6,6 +6,7 @@ window.onload = function(editMode=false) {
   //yourcars = none;
   var allcars = document.getElementById('allcars');
   //allcars = none;
+  console.log("THIS IS CARS:" + JSON.stringify(cars));
   for (var day in cars) {
 
     var car = cars[day]
@@ -36,54 +37,3 @@ window.onload = function(editMode=false) {
   }
 }
 
-makeEditBoxesVisible = function() {
-  // Clear the current cars
-  document.getElementById('yourcars').innerHTML = '';
-  document.getElementById('allcars').innerHTML = '';
-
-  // Regenterate the headings
-  var yourHeading = document.createElement('h1');
-  var headingContent = document.createTextNode("Your Cars");
-  yourHeading.appendChild(headingContent);
-  var allHeading = document.createElement('h1');
-  var allheadingContent = document.createTextNode("All Cars");
-  allHeading.appendChild(allheadingContent);
-  
-  document.getElementById('yourcars').appendChild(yourHeading);
-  document.getElementById('allcars').appendChild(allHeading);
-
-  // Make save schedule visible
-  //var saveEdits = document.getElementById("saveEdits");
-  document.getElementById("saveEditsButton").style.display = 'block';
-  document.getElementById("editButton").style.display = 'none';
-
-  // Remake the window with edit fields
-  window.onload(true);
-}
-
-saveSchedule = function() {
-  //TODO add saving of cars here
-
-  // Clear the current cars displayed
-  document.getElementById('yourcars').innerHTML = '';
-  document.getElementById('allcars').innerHTML = '';
-
-  // Regenterate the headings
-  var yourHeading = document.createElement('h1');
-  var headingContent = document.createTextNode("Your Cars");
-  yourHeading.appendChild(headingContent);
-  var allHeading = document.createElement('h1');
-  var allheadingContent = document.createTextNode("All Cars");
-  allHeading.appendChild(allheadingContent);
-  
-  document.getElementById('yourcars').appendChild(yourHeading);
-  document.getElementById('allcars').appendChild(allHeading);
-
-  // Make save schedule visible
-  //var saveEdits = document.getElementById("saveEdits");
-  document.getElementById("saveEditsButton").style.display = 'none';
-  document.getElementById("editButton").style.display = 'block';
-
-  // Remake the window with edit fields
-  window.onload(false);
-}
