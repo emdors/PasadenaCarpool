@@ -18,11 +18,9 @@ html(lang='en')
     script(src='js/makecartables.js')
     script(src='js/schedule.js')
     - if (thisWeek == true)
-      - console.log("in the if statement")
       script(src='dynamic/thisWeekTempCar.js')
       script(src='dynamic/thisweekSchedule.js')
     - else
-      - console.log("in the if statement")
       script(src='dynamic/nextweekSchedule.js')
       script(src='dynamic/nextWeekTempCar.js')
     
@@ -74,7 +72,10 @@ html(lang='en')
         div(class = "buttons")#editButton
           // make a new car box
           button(class = "btn btn-primary", type="button", onClick='makeEditBoxesVisible();') Edit Schedule
+
         div(class = "buttons")#saveEditsButton
           // create a save edits button that is by default not displayed
           button(class = "btn btn-primary", type="button", onClick='saveSchedule();') Save Schedule
-
+        
+        div(class = "buttons")#cancelButton
+          button(class = "btn btn-primary", type="button", onClick='dontSaveSchedule();') Cancel

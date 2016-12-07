@@ -164,14 +164,11 @@ function getSchedule(day, callback) {
   });
 }
 app.get("/dynamic/thisWeekTempCar.js", ensureAuthenticated, function(req, res) {
-  console.log("OUTSIDE0");
   dbComm.getSchedule(new Date(), function(sch) {
-    console.log("making carsTemp variable");
     res.send("var carsTemp = " + JSON.stringify(sch) + ';');
   });
 })
 app.get("/dynamic/nextWeekTempCar.js", ensureAuthenticated, function(req, res) {
-  console.log("OUTSIDE1");
   dbComm.getSchedule(undefined, function(sch) {
     console.log("making carsTemp variable");
     res.send("var carsTemp = " + JSON.stringify(sch) + ';');

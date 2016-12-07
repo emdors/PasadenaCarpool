@@ -65,7 +65,7 @@ window.onload = function(peopleDataInput) {
       }
     }
   }
-  updateHighlightingAndTables();
+  //  updateHighlightingAndTables();
 }
 $(document).ready(function(){
     $('[data-toggle="popover"]').popover();
@@ -99,85 +99,66 @@ function isPassengerForDay(day, email) {
   return null;
 }
 
-function updateHighlightingAndTables(day) {
+// function updateHighlightingAndTables(day) {
 
-  if (day === undefined) {
-    for (var i=0; i<weekdays.length; ++i) {
-      updateHighlightingAndTablesForOneDay(weekdays[i]);
-    }
-  } else {
-    updateHighlightingAndTablesForOneDay(day);
-  }
-}
-function deleteWholeCar(day, driver) {
-  delete cars[day][driver];
-  changedPage = true;
-  updateHighlightingAndTables(day);
-}
-console.log("Cars" + JSON.stringify(cars));
-function deleteCar(day, driver, halfday) {
-  delete cars[day][driver][halfday];
-  var tableNowEmpty = true;
-  for (var otherHalfdays in cars[day][driver]) {
-    tableNowEmpty = false;
-    break;
-  }
-  if (tableNowEmpty) {
-    delete cars[day][driver];
-  }
-  changedPage = true;
-  updateHighlightingAndTables(day);
-}
+//   if (day === undefined) {
+//     for (var i=0; i<weekdays.length; ++i) {
+//       updateHighlightingAndTablesForOneDay(weekdays[i]);
+//     }
+//   } else {
+//     updateHighlightingAndTablesForOneDay(day);
+//   }
+// }
 
-function updateHighlightingAndTablesForOneDay(day) {
-  // Get every person's row for that day
-  var personRows = document.querySelectorAll("table.timetable[day="+day+"] .timeview ");
+// function updateHighlightingAndTablesForOneDay(day) {
+//   // Get every person's row for that day
+//   var personRows = document.querySelectorAll("table.timetable[day="+day+"] .timeview ");
 
-  for (var personRowIdx=0; personRowIdx<personRows.length; ++personRowIdx) {
-    var row = personRows[personRowIdx];
-    var email = row.getAttribute('email');
-    var halfday = row.parentNode.parentNode.getAttribute('halfday');
-    var otherhalfday = halfday == 'AM'? 'PM' : 'AM';
+//   for (var personRowIdx=0; personRowIdx<personRows.length; ++personRowIdx) {
+//     var row = personRows[personRowIdx];
+//     var email = row.getAttribute('email');
+//     var halfday = row.parentNode.parentNode.getAttribute('halfday');
+//     var otherhalfday = halfday == 'AM'? 'PM' : 'AM';
 
-    // Figure out if the person is in a car for that day 
-    var inCar = false; // Already assigned for this halfday
-    var carstatus = "unassigned"; // Assignment (driver, passenger) for the full day
-    if (cars[day][email]) {
-      carstatus = "driver";
-      if (cars[day][email][halfday]) {
-        inCar = true;
-      }
-    } else {
-      var passTime = isPassengerForDay(day, email);
-      if (passTime) {
-        carstatus = 'passenger';
-        if (passTime == 'both' || passTime == halfday) {
-          inCar = true;
-        }
-      }
-    }
-    row.setAttribute('inCar', inCar);
-    row.setAttribute('carstatus', carstatus);
+//     // Figure out if the person is in a car for that day 
+//     var inCar = false; // Already assigned for this halfday
+//     var carstatus = "unassigned"; // Assignment (driver, passenger) for the full day
+//     if (cars[day][email]) {
+//       carstatus = "driver";
+//       if (cars[day][email][halfday]) {
+//         inCar = true;
+//       }
+//     } else {
+//       var passTime = isPassengerForDay(day, email);
+//       if (passTime) {
+//         carstatus = 'passenger';
+//         if (passTime == 'both' || passTime == halfday) {
+//           inCar = true;
+//         }
+//       }
+//     }
+//     row.setAttribute('inCar', inCar);
+//     row.setAttribute('carstatus', carstatus);
 
-    // Now clear out the click-highlighting
-    var tds = row.getElementsByTagName('td');
-    for (var tdIdx=0; tdIdx<tds.length; ++tdIdx) {
-      var td = tds[tdIdx];
-      if (td.className != 'name') {
-        td.setAttribute('carstatus', false);
-      }
-    }
-  }
+//     // Now clear out the click-highlighting
+//     var tds = row.getElementsByTagName('td');
+//     for (var tdIdx=0; tdIdx<tds.length; ++tdIdx) {
+//       var td = tds[tdIdx];
+//       if (td.className != 'name') {
+//         td.setAttribute('carstatus', false);
+//       }
+//     }
+//   }
 
 
-  document.getElementById(day+'Cars').innerHTML = "";
-  // var car = cars[day];
-  //hmm this doesnt seem to do anything
-  // for (var driver in cars[day]) {
-  //   console.log("here");
-  //   document.getElementById(day+'Cars').appendChild(makeCarTable(allPreferences, car, day, false, true));
-  // }
-}
+//   document.getElementById(day+'Cars').innerHTML = "";
+//   // var car = cars[day];
+//   //hmm this doesnt seem to do anything
+//   // for (var driver in cars[day]) {
+//   //   console.log("here");
+//   //   document.getElementById(day+'Cars').appendChild(makeCarTable(allPreferences, car, day, false, true));
+//   // }
+// }
 
 
 //This function is called by the finish car button and

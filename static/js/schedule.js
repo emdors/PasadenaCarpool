@@ -60,18 +60,47 @@ makeEditBoxesVisible = function() {
   // Make save schedule visible
   //var saveEdits = document.getElementById("saveEdits");
   document.getElementById("saveEditsButton").style.display = 'block';
+  document.getElementById("cancelButton").style.display = 'block';
   document.getElementById("editButton").style.display = 'none';
 
   // Remake the window with edit fields
   window.onload(true);
 }
-
+function deleteWholeCar(day, driver) {
+  console.log("deleteWhole is being called");
+  console.log("before" + JSON.stringify(carsTemp));
+  console.log("the driver?" + JSON.stringify(delete carsTemp[day][0]["AM"].passengers[0]));
+  delete carsTemp[day][0]["AM"].passengers[0]
+  delete carsTemp[day][0]["PM"].passengers[0]
+  carsTemp[day][0]["AM"].passengers[0] = "Deleted Driver"
+  carsTemp[day][0]["PM"].passengers[0] = "Deleted Driver"
+  console.log("after" + JSON.stringify(carsTemp))
+  // cars = delete cars[day].driver;
+  // console.log("after2" + JSON.stringify(cars))
+  changedPage = true;
+  // updateHighlightingAndTables(day);
+}
+function deleteCar(day, driver, halfday) {
+  delete cars[day][driver][halfday];
+  var tableNowEmpty = true;
+  for (var otherHalfdays in cars[day][driver]) {
+    tableNowEmpty = false;
+    break;
+  }
+  if (tableNowEmpty) {
+    delete cars[day][driver];
+  }
+  changedPage = true;
+  // updateHighlightingAndTables(day);
+}
 saveSchedule = function() {
   //TODO add saving of cars here
   console.log('In save schedule');
   // var carsNode = document.createTextNode(JSON.stringify(cars));
   // carsNode.setAttribute('id', 'cars');
   console.log(JSON.stringify(cars));
+  console.log("carsTemp" + JSON.stringify(carsTemp));
+  cars = carsTemp;
 
   // Clear the current cars displayed
   document.getElementById('yourcars').innerHTML = '';
@@ -91,6 +120,36 @@ saveSchedule = function() {
   // Make save schedule visible
   //var saveEdits = document.getElementById("saveEdits");
   document.getElementById("saveEditsButton").style.display = 'none';
+  document.getElementById("cancelButton").style.display = 'none';
+  document.getElementById("editButton").style.display = 'block';
+
+  // Remake the window with edit fields
+  window.onload(false);
+}
+dontSaveSchedule = function() {
+  console.log('In dont save schedule');
+  console.log(JSON.stringify(cars));
+  console.log("carsTemp" + JSON.stringify(carsTemp));
+
+  // Clear the current cars displayed
+  document.getElementById('yourcars').innerHTML = '';
+  document.getElementById('allcars').innerHTML = '';
+
+  // Regenterate the headings
+  var yourHeading = document.createElement('h1');
+  var headingContent = document.createTextNode("Your Cars");
+  yourHeading.appendChild(headingContent);
+  var allHeading = document.createElement('h1');
+  var allheadingContent = document.createTextNode("All Cars");
+  allHeading.appendChild(allheadingContent);
+  
+  document.getElementById('yourcars').appendChild(yourHeading);
+  document.getElementById('allcars').appendChild(allHeading);
+
+  // Make save schedule visible
+  //var saveEdits = document.getElementById("saveEdits");
+  document.getElementById("saveEditsButton").style.display = 'none';
+  document.getElementById("cancelButton").style.display = 'none';
   document.getElementById("editButton").style.display = 'block';
 
   // Remake the window with edit fields

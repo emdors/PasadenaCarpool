@@ -5,7 +5,7 @@ function makeCarTable(allPreferences, car_Idx, day, showDays, editMode, userToHi
   var carTable = document.createElement('table');
   var carTableBody = document.createElement('tbody');
   carTable.className = 'table fullcartable table-bordered';
-  console.log("car" + JSON.stringify(cars));
+  console.log("cars" + JSON.stringify(cars));
   
   // If we want to show the day, do it
   if (showDays) {
@@ -131,8 +131,8 @@ function makeCarTable(allPreferences, car_Idx, day, showDays, editMode, userToHi
             // This is weird... basically, we want to make a copy of these parameters
             // so that the closure has its own copy. Making a function lets us do that.
             function setdeletePartOfCarBtnOnClick(day, driver) {
-              console.log("here the button has been clicked");
-              deletePartOfCarBtn.onclick = function() {deleteWholeCar(day, driver);};
+              //console.log("here the button has been clicked 123");
+               deletePartOfCarBtn.onclick = function() {deleteWholeCar(day, driver);};
             }
             setdeletePartOfCarBtnOnClick(day, driver);
             deletePartOfCarBtn.setAttribute('type', 'button');
