@@ -140,17 +140,8 @@ html(lang='en')
               // make a new car box
               button(class = "btn btn-primary", type="button", onClick='makeCarBox("#{dayData.day}");') Make New Car
 
-              button.btn.btn-default.btn-sm(type='button', data-toggle='collapse', data-target='#directAddCar'+dayData.day, aria-expanded='false', aria-controls='directAddCar'+dayData.day)
-                | Directly Enter Car (Advanced)
-
-
             div(id=dayData.day)
             //  p The div is here! 
-
-
-            //-button.btn.btn-primary(type='button', data-toggle='collapse', data-target='#collapseExample', aria-expanded='false', aria-controls='collapseExample')
-            //-  | Button with data-target
-
 
             div(id='directAddCar'+dayData.day, class="collapse")
               form(id='directAddForm'+dayData.day, action="", method="post")
@@ -180,10 +171,6 @@ html(lang='en')
 
             br(style="clear:both")
 
-
-          // Button trigger modal
-          button.btn.btn-default.btn-sm(type='button', data-toggle='modal', data-target='#directModifyJSON', onClick='populateModifyCarsModal()')
-            | Modify Car JSON Directly (advanced)
           // Modal
           #directModifyJSON.modal.fade(tabindex='-1', role='dialog', aria-labelledby='directModifyJSON')
             .modal-dialog.modal-lg(role='document')

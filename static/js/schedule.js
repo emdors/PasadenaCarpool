@@ -13,7 +13,7 @@ window.onload = function(editMode=false) {
     for (var car_Idx in car) {
 
       var table = makeCarTable(allPreferences, car[car_Idx], day, true, editMode, user, editMode);
-      allcars.appendChild(table);
+      allcars.appendChild(table); 
 
       var tableisyourtable = false;
       userEmail = user;

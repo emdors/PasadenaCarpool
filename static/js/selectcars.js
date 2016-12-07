@@ -15,15 +15,19 @@ var weekdays = [];
 //     },
 //   },
 // };
+
 var userData = {};
 var changedPage = false;
 
-window.onload = function(peopleDataInput) {
+window.onload = function(peopleDataInput) 
+{
   var peopleData = peopleDataInput;
   var timeResults = document.getElementById("timeResults");
 
   var h3s = timeResults.getElementsByTagName("h3");
-  for (var h3idx=0; h3idx<h3s.length; h3idx +=2) {
+  
+  for (var h3idx=0; h3idx<h3s.length; h3idx +=2) 
+  {
     var day = h3s[h3idx].textContent;
     weekdays.push(day);
     cars[day] = {};
@@ -31,110 +35,109 @@ window.onload = function(peopleDataInput) {
 
   //Checks if the time tables are clicked and responds accordingly
   var timetables = timeResults.getElementsByClassName("timetable");
-  for (var timetableidx=0; timetableidx<timetables.length; ++timetableidx) {
-
+  for (var timetableidx=0; timetableidx<timetables.length; ++timetableidx)
+  {
     var ti = timetables[timetableidx];
     var tds = ti.getElementsByTagName("td");
-    for (var tdIdx=0; tdIdx<tds.length; ++tdIdx) {
+
+    for (var tdIdx=0; tdIdx<tds.length; ++tdIdx) 
+    {
       var td = tds[tdIdx];
 
-      if (td.getAttribute('selected')) {
-        td.onmouseover = function() {
+      if (td.getAttribute('selected')) 
+      {
+        td.onmouseover = function() 
+        {
           this.setAttribute('mousedover', 'true');
         }
-        td.onmouseleave = function() {
+
+        td.onmouseleave = function() 
+        {
           this.setAttribute('mousedover', 'false');
         }
 
-        //This function deals with being able to pick drivers and
+        //This needs to be here - So that you can click one someone 
         //Pasengers
-        td.onclick = function() {
-          //Commented out the code that used to select drivers/passengers
-          //keeping here in case we want to reference how to select people 
-          //Make sure that we can only change the car status of selected tiles.
-          // if(this.getAttribute('selected') == 'true'){
-          //   if (this.getAttribute('carstatus') == 'passenger'){
-          //     this.setAttribute('carstatus', 'driver');
-          //   } else if (this.getAttribute('carstatus') == 'driver'){
-          //     this.setAttribute('carstatus', 'unassigned');
-          //   } else{
-          //     this.setAttribute('carstatus', 'passenger');
-          //   }
-          // }
-        }
+        td.onclick = function(){}
       }
     }
   }
   updateHighlightingAndTables();
 }
-$(document).ready(function(){
+
+$(document).ready(function()
+{
     $('[data-toggle="popover"]').popover();
-});
+}
+);
 
 // Returns 'AM' or 'PM' or 'both' if they are a passenger or null if they are a
 // driver or not yet assigned
-function isPassengerForDay(day, email) {
+function isPassengerForDay(day, email)
+{
   var numFound = 0;
   var foundHalfday;
-  for (var otherdriveremail in cars[day]) {
-    for (var halfdayIdx=0; halfdayIdx<2; ++halfdayIdx) {
+  
+  for (var otherdriveremail in cars[day]) 
+  {
+    
+    for (var halfdayIdx=0; halfdayIdx<2; ++halfdayIdx) 
+    {
       var halfday = ['AM', 'PM'][halfdayIdx];
       var hd = cars[day][otherdriveremail][halfday];
-      if (hd) {
-        for (var i=0; i<hd.passengers.length; ++i) {
-          if (hd.passengers[i] == email) {
+      
+      if (hd) 
+      {
+        
+        for (var i=0; i<hd.passengers.length; ++i) 
+        {
+          
+          if (hd.passengers[i] == email) 
+          {
             ++numFound;
             foundHalfday = halfday;
           }
         }
       }
     }
-    if (numFound == 2) {
+
+    if (numFound == 2) 
+    {
       return 'both';
     }
   }
-  if (numFound == 1) {
+
+  if (numFound == 1) 
+  {
     return foundHalfday;
   }
+  
   return null;
 }
 
-function updateHighlightingAndTables(day) {
-
-  if (day === undefined) {
-    for (var i=0; i<weekdays.length; ++i) {
+function updateHighlightingAndTables(day) 
+{
+  if (day === undefined) 
+  {
+    
+    for (var i=0; i<weekdays.length; ++i) 
+    {
       updateHighlightingAndTablesForOneDay(weekdays[i]);
     }
-  } else {
+  }  
+  else 
+  {
     updateHighlightingAndTablesForOneDay(day);
   }
 }
 
-function deleteWholeCar(day, driver) {
-  delete cars[day][driver];
-  changedPage = true;
-  updateHighlightingAndTables(day);
-}
-
-function deleteCar(day, driver, halfday) {
-  delete cars[day][driver][halfday];
-  var tableNowEmpty = true;
-  for (var otherHalfdays in cars[day][driver]) {
-    tableNowEmpty = false;
-    break;
-  }
-  if (tableNowEmpty) {
-    delete cars[day][driver];
-  }
-  changedPage = true;
-  updateHighlightingAndTables(day);
-}
-
-function updateHighlightingAndTablesForOneDay(day) {
+function updateHighlightingAndTablesForOneDay(day) 
+{
   // Get every person's row for that day
   var personRows = document.querySelectorAll("table.timetable[day="+day+"] .timeview ");
 
-  for (var personRowIdx=0; personRowIdx<personRows.length; ++personRowIdx) {
+  for (var personRowIdx=0; personRowIdx<personRows.length; ++personRowIdx) 
+  {
     var row = personRows[personRowIdx];
     var email = row.getAttribute('email');
     var halfday = row.parentNode.parentNode.getAttribute('halfday');
@@ -143,193 +146,78 @@ function updateHighlightingAndTablesForOneDay(day) {
     // Figure out if the person is in a car for that day 
     var inCar = false; // Already assigned for this halfday
     var carstatus = "unassigned"; // Assignment (driver, passenger) for the full day
-    if (cars[day][email]) {
+
+    if (cars[day][email]) 
+    {
       carstatus = "driver";
-      if (cars[day][email][halfday]) {
+      if (cars[day][email][halfday])
+      {
         inCar = true;
       }
-    } else {
+    } 
+    else 
+    {
       var passTime = isPassengerForDay(day, email);
-      if (passTime) {
+
+      if (passTime) 
+      {
         carstatus = 'passenger';
-        if (passTime == 'both' || passTime == halfday) {
+
+        if (passTime == 'both' || passTime == halfday) 
+        {
           inCar = true;
         }
       }
     }
+
     row.setAttribute('inCar', inCar);
     row.setAttribute('carstatus', carstatus);
 
     // Now clear out the click-highlighting
     var tds = row.getElementsByTagName('td');
-    for (var tdIdx=0; tdIdx<tds.length; ++tdIdx) {
+
+    for (var tdIdx=0; tdIdx<tds.length; ++tdIdx) 
+    {
       var td = tds[tdIdx];
-      if (td.className != 'name') {
+
+      if (td.className != 'name') 
+      {
         td.setAttribute('carstatus', false);
       }
     }
   }
 
-
   document.getElementById(day+'Cars').innerHTML = "";
   var car = cars[day];
-  for (var driver in cars[day]) {
+
+  for (var driver in cars[day])
+  {
     document.getElementById(day+'Cars').appendChild(makeCarTable(allPreferences, car, day, false, true, null));
   }
 }
 
-
-//This function is called by the finish car button and
-//adds a new car to the car list.
-function makeCar(day){
-  // Check to see the overide box is checked and reset it
-  //var overrideButton = document.getElementById(day+'Override');
-  //var override = overrideButton.checked;
-  var override = false;
-  //overrideButton.checked = false;
-
-  // Get a list of the time tables and select the am and pm tables we are
-  // interested in.
-  var tablesForDay = document.querySelectorAll("table.timetable[day="+day+"]");
-
-  // Emails of driver and passengers
-  var driver = undefined;
-  var passengers = [];
-  var time = undefined;
-  var halfday = undefined;
-
-  // Variable to do with error checking
-  //var trOfCar = [];
-  var carError = false;
-  var errorString = 'While you were trying to make a car there were the following errors: \n';
-
-  // Do the following search and creation for both the am and pm tables
-  for(var halfdayIdx = 0; halfdayIdx < tablesForDay.length; ++halfdayIdx){
-    var currTable = tablesForDay[halfdayIdx];
-    var thishalfday = ['AM', 'PM'][halfdayIdx];
-    // Go through the am table and split it apart into each form submision
-    var trs = currTable.getElementsByClassName('timeview');
-    for (var trIdx=0; trIdx<trs.length; ++trIdx) {
-      var tr = trs[trIdx];
-
-      var email = tr.getAttribute('email');
-
-      var driveStatuses = tr.getElementsByClassName('driveStatus');
-      var driveRestriction = undefined;
-      if (driveStatuses.length == 1) {
-        driveRestriction = driveStatuses[0].innerHTML;
-      }
-
-      // Get the entries for this submision
-      var tds = tr.getElementsByTagName('td');
-
-      // We can start at 1 because the first entry is a name
-      for (var tdIdx = 1; tdIdx < tds.length; ++tdIdx){
-        var td = tds[tdIdx];
-        var carstatus = td.getAttribute('carstatus');
-        if (carstatus == 'driver' || carstatus == 'passenger') {
-
-          //if there is no time currently then change it, otherwise make
-          //sure the times are the same
-          if (!time) {
-            time = td.getAttribute('time');
-          } else if (time != td.getAttribute('time')) {
-            carError = true;
-            errorString = errorString.concat('You entered multiple times for one car. \n');
-          }
-          if (!halfday) {
-            halfday = thishalfday;
-          } else if (halfday != thishalfday) {
-            carError = true;
-            errorString = errorString.concat('You entered multiple halfdays for one car.\n');
-          }
-
-          if (carstatus == 'driver') {
-            if (driver) {
-              errorString = errorString.concat('You picked two drivers. \n');
-              carError = true;
-            }
-            if (driveRestriction == 'cannot drive') {
-              errorString = errorString.concat('You made someone a driver who cannot drive that day. \n');
-              carError = true;
-            }
-            if (isPassengerForDay(day, email)) {
-              carError = true;
-              errorString = errorString.concat('You made someone a driver who is already a passenger going the other way. \n');
-            }
-
-            driver = email;
-          } else if (carstatus == 'passenger') {
-            if (driveRestriction == 'must drive') {
-              carError = true;
-              errorString = errorString.concat('You made someone a passenger who must drive that day. \n');
-            }
-            if (cars[day][email]) {
-              carError = true;
-              errorString = errorString.concat('You made someone a passenger who is already a driver going the otherway. \n');
-            }
-
-            passengers.push(email);
-          }
-
-          // Check if the person is already in a car.
-          if(tr.getAttribute('inCar') == 'true'){
-            errorString = errorString.concat('One of those people is already in a car.\n');
-            carError = true;
-          }
-        }
-      }
-    }
-  }
-
-  //Check if the drive string is still empty. In this case let the user know that they
-  //forgot to add a driver.
-  if(!driver){
-    carError = true;
-    errorString = errorString.concat('you did not select a driver. \n');
-  }
-  //Check if there is a car error, in which case notify the user change the
-  //in car status of all the passengers and exit the function
-  if(carError && !override){
-    window.alert(errorString);
-    return;
-  }
-
-  // There's no errors! We can continue merrily
-
-  if (!cars[day][driver]) {
-    cars[day][driver] = {};
-  }
-  if (!cars[day][driver][halfday]) {
-    cars[day][driver][halfday] = {};
-  }
-
-  cars[day][driver][halfday].time = time;
-  cars[day][driver][halfday].passengers = passengers;
-
-  changedPage = true;
-  updateHighlightingAndTables(day);
-}
-
-function submitCars() {
+function submitCars()
+{
   changedPage = false;
   document.getElementById('allCars').value = JSON.stringify(cars);
-  //new cars 
-
 }
 
-passengerName = ""
-ampm = ""
-passengerEmail = ""
-passengerDay = "" 
+//global variables used for drag and drop 
+var passengerName = ""
+var ampm = ""
+var passengerEmail = ""
+var passengerDay = "" 
+
 var daysArray = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+
 //object of person data which is reference to where i want to go 
 /*
 * Drag start is called when you start dragging the table row
 * Sets the global var passengerName to the name of the person 
 *   being dragged
 */
-function dragStart(event, name, ampmstring, email, day){
+function dragStart(event, name, ampmstring, email, day)
+{
   passengerName = name;
   ampm = ampmstring;
   passengerEmail = email;
@@ -341,10 +229,11 @@ var count = 0;
 var carsArray = new Array();
 
 
-// author: edorsey, tstannard
-// Makes a car box
-function makeCarBox(day) {
-  //put car in the backend 
+// authors: edorsey, tstannard
+// Makes a car box - also handles how people are dropped in 
+function makeCarBox(day) 
+{
+  //put car in the backend using a JSON object
   var car_json = {};
   car_json["driver"] = "";
   var am_car = {};
@@ -369,9 +258,10 @@ function makeCarBox(day) {
   var closeButton = document.createElement('button');
   closeButton.className = 'boxclose';
 
-  // onClick we remove the car
+  // onClick of the close button we remove the car
   closeButton.setAttribute("onClick", "deleteCarOnX(" + carBoxID +", \'" + day + "\'" + ")");
 
+  // put the button in the div
   carBox.appendChild(closeButton);
 
   // car text
@@ -384,6 +274,8 @@ function makeCarBox(day) {
   carText.appendChild(content);
   carBox.appendChild(carText);
 
+
+  // driver info div 
   var driverText = document.createElement('div');
   var carDriverID = count.toString() + day + "driver";
   driverText.id = carDriverID;
@@ -407,182 +299,197 @@ function makeCarBox(day) {
   amDiv.setAttribute("ondragover", "allowDrop(event)");
   amDiv.id = count.toString() + day + "AM";
   
-  amDiv.ondrop = function(event) {
+  // drop function is implicitly defined here
+  // this means if you edit the drop, you must also do the same edits on 
+  // the PM drop 
+  amDiv.ondrop = function(event) 
+  {
      var tooMany;
-     tooMany = checkAlreadyAdded(amDiv, "AM", passengerEmail, day);
 
-     //alert(tooMany);
+     if(ampm == "PM")
+     {
+      alert("You tried to add an PM passenger to a AM spot.");
+     }
+     else 
+     {
+        tooMany = checkAlreadyAdded(amDiv, "AM", passengerEmail, day);
+        
+        if (tooMany == true) 
+        {
+          alert("This person already has a AM ride!");
+        } 
+        else 
+        {
+          event.preventDefault();
 
-     if(ampm == "PM"){
-      alert("You tried to add an PM passenger to a AM spot.");}
-    else if (tooMany == true) {
-      alert("This person already has a AM ride!");
-    } else {
-      event.preventDefault();
+          //add person in backend
+          cars[day][carBox.id].AM.passengers.push(passengerEmail);
+          countID = carBox.id;
+          dayVar = day;
 
-      //add person in backend
-      cars[day][carBox.id].AM.passengers.push(passengerEmail);
-      countID = carBox.id;
-      dayVar = day;
+          // use day, ampm, and email to get persons data 
+          var dayIndex = 2*daysArray.indexOf(day) ;
+          var ampmTable = document.getElementsByClassName("titleTable")[dayIndex];
+          var tableRows = ampmTable.getElementsByTagName('tr');
+          var row = tableRows[0];
+          var tableRowIndex = 0;
 
-      // use day, ampm, and email to get persons data 
-      var dayIndex = 2*daysArray.indexOf(day) ;
-      var ampmTable = document.getElementsByClassName("titleTable")[dayIndex];
-      var tableRows = ampmTable.getElementsByTagName('tr');
-      var row = tableRows[0];
-      var tableRowIndex = 0;
-      // find the table row of the passenger 
-      for(var index = 0; index < tableRows.length; ++index){
-        if(tableRows[index].getAttribute('email') == passengerEmail){
-          row = tableRows[index];
-          tableRowIndex = index;
-        }
+          // find the table row of the passenger 
+          for(var index = 0; index < tableRows.length; ++index)
+          {
+            if(tableRows[index].getAttribute('email') == passengerEmail)
+            {
+              row = tableRows[index];
+              tableRowIndex = index;
+            }
+          }
+
+          row.setAttribute('carstatus', 'passenger');
+          
+          // personName and radio buttons go under label element
+          var label = document.createElement('label');
+          label.className = "radioLabel";
+          label.id = "radioLabel" + passengerName + "AM";
+          var labelID = label.id.toString();
+          var listEl = document.createElement('input');
+          listEl.setAttribute("type", "radio");
+          listEl.setAttribute("onChange", "handleChange(this)")
+          var amID = amDiv.id;
+          listEl.setAttribute("name", amID);
+          listEl.setAttribute("value", passengerName);
+          listEl.setAttribute("textContent", passengerName);
+          listEl.setAttribute("style", "margin: 0 3px 0 3px");
+
+          // append radio button and passengerName text
+          var dropText = document.createTextNode(passengerName);
+          label.appendChild(listEl);
+          label.appendChild(dropText);
+          
+          //append removePersonButton to label
+          var removePersonButton = document.createElement('button');
+          removePersonButton.className = 'removePersonButton';
+          
+          var currentEmail = passengerEmail;
+
+          var temp = "AM";
+
+          removePersonButton.setAttribute("onClick", "deletePersonOnX(\'" + currentEmail + "\'" + ", " + 
+          dayIndex + ", " + "\'" + day + "\'" + ", " + "\'" + temp + "\'" + ", " + tableRowIndex + ", \'" + labelID + "\', \'" + 
+          carBox.id + "\')");
+
+          label.appendChild(removePersonButton);      
+
+          // append the list element to the amDiv
+          amDiv.appendChild(label);
+          }
       }
-      row.setAttribute('carstatus', 'passenger');
-      
+    };
 
-      // personName and radio buttons go under label element
-      var label = document.createElement('label');
-      label.className = "radioLabel";
-      label.id = "radioLabel" + passengerName + "AM";
-      var labelID = label.id.toString();
-      var listEl = document.createElement('input');
-      listEl.setAttribute("type", "radio");
-      listEl.setAttribute("onChange", "handleChange(this)")
-      var amID = amDiv.id;
-      listEl.setAttribute("name", amID);
-      listEl.setAttribute("value", passengerName);
-      listEl.setAttribute("textContent", passengerName);
-      listEl.setAttribute("style", "margin: 0 3px 0 3px");
+    // add amDiv to the car box
+    carBox.appendChild(amDiv);
 
-      // append radio button and passengerName text
-      var dropText = document.createTextNode(passengerName);
-      label.appendChild(listEl);
-      label.appendChild(dropText);
-      
-       //append removePersonButton to label
-      var removePersonButton = document.createElement('button');
-      removePersonButton.className = 'removePersonButton';
-      
-      var currentEmail = passengerEmail;
+    // repeat above with pm box
+    var pmDiv = document.createElement('div');
+    var pmTimeDiv = document.createElement('input');
+    pmTimeDiv.setAttribute("type", "time");
+    pmTimeDiv.id = count + "PMtime";
+    pmTimeDiv.className = "timeInput";
+    pmDiv.appendChild(pmTimeDiv);
+    var pmText = document.createTextNode("Drop PM passengers here");
+    pmDiv.appendChild(pmText);
+    pmDiv.className = "pmContainer";
+    pmDiv.setAttribute("ondragover", "allowDrop(event)");
+    pmDiv.id = count.toString() + day + "PM";
 
-      var temp = "AM";
+    // on drop, we make a label and add passengerName text and radio button
+    // ondrop is implicitly defined, so if you make a change be sure to update 
+    // the AM ondrop as well 
+    pmDiv.ondrop = function(event) 
+    {
+      var tooMany;
 
-      removePersonButton.setAttribute("onClick", "deletePersonOnX(\'" + currentEmail + "\'" + ", " + 
-      dayIndex + ", " + "\'" + day + "\'" + ", " + "\'" + temp + "\'" + ", " + tableRowIndex + ", \'" + labelID + "\', \'" + 
-      carBox.id + "\')");
-
-
-      label.appendChild(removePersonButton);
-       
-
-      // append the list element to the amDiv
-      amDiv.appendChild(label);
-
-      //alert(driverStatusStr);
-
-      // if(this.getAttribute('selected') == 'true'){
-      //       if (this.getAttribute('carstatus') == 'passenger'){
-      //         this.setAttribute('carstatus', 'driver');
-      //       } else if (this.getAttribute('carstatus') == 'driver'){
-      //         this.setAttribute('carstatus', 'unassigned');
-      //       } else{
-      //         this.setAttribute('carstatus', 'passenger');
-      //       }
-    }
-  };
-
-  // add amDiv to the car box
-  carBox.appendChild(amDiv);
-
-  // repeat above with pm box
-  var pmDiv = document.createElement('div');
-  var pmTimeDiv = document.createElement('input');
-  pmTimeDiv.setAttribute("type", "time");
-  pmTimeDiv.id = count + "PMtime";
-  pmTimeDiv.className = "timeInput";
-  pmDiv.appendChild(pmTimeDiv);
-  var pmText = document.createTextNode("Drop PM passengers here");
-  pmDiv.appendChild(pmText);
-  pmDiv.className = "pmContainer";
-  pmDiv.setAttribute("ondragover", "allowDrop(event)");
-  pmDiv.id = count.toString() + day + "PM";
-
-  // on drop, we make a label and add passengerName text and radio button
-  pmDiv.ondrop = function(event) {
-     var tooMany;
-     tooMany = checkAlreadyAdded(pmDiv, "PM", passengerEmail, day);
-
-     //alert(tooMany);
-
-     if(ampm == "AM"){
-      alert("You tried to add an AM passenger to a PM spot.");}
-    else if (tooMany == true) {
-      alert("This person already has a PM ride!");
-    }
-    else{
-      event.preventDefault();
-
-      //add person in backend 
-      cars[day][carBox.id].PM.passengers.push(passengerEmail);
-      countID = carBox.id;
-      dayVar = day;
-
-      // use day, ampm, and email to get persons data 
-      var dayIndex = 2*daysArray.indexOf(day) +1;
-
-      var dayIndexString = dayIndex.toString();
-
-      var ampmTable = document.getElementsByClassName("titleTable")[dayIndex];
-      var tableRows = ampmTable.getElementsByTagName('tr');
-      var row = tableRows[0];
-      var tableRowIndex = 0;
-      // find the table row of the passenger 
-      for(var index = 0; index < tableRows.length; ++index){
-        if(tableRows[index].getAttribute('email') == passengerEmail){
-          row = tableRows[index];
-          tableRowIndex = index;
-        }
+      if(ampm == "AM")
+      {
+        alert("You tried to add an AM passenger to a PM spot.");
       }
-      row.setAttribute('carstatus', 'passenger');
-      
-      // personName and radio buttons go under label element
-      var label = document.createElement('label');
-      label.className = "radioLabel";
-      label.id = "radioLabel" + passengerName + "PM";
-      var labelID = label.id.toString();
-      var listEl = document.createElement('input');
-      listEl.setAttribute("type", "radio");
-      listEl.setAttribute("onChange", "handleChange(this)")
-      var pmID = pmDiv.id;
-      listEl.setAttribute("name", pmID);
-      listEl.setAttribute("value", passengerName);
-      listEl.setAttribute("textContent", passengerName);
-      listEl.setAttribute("style", "margin: 0 3px 0 3px ");
 
-      // append radio button and passengerName text
-      var dropText = document.createTextNode(passengerName);
-      label.appendChild(listEl);
-      label.appendChild(dropText);
-      
-      //append removePersonButton to label
-      var removePersonButton = document.createElement('button');
-      removePersonButton.className = 'removePersonButton';
+      else 
+      {
+      tooMany = checkAlreadyAdded(pmDiv, "PM", passengerEmail, day);
 
-      var currentEmail = passengerEmail;
+      if (tooMany == true) 
+      {
+        alert("This person already has a PM ride!");
+      }
 
-      var temp = "PM";
+      else
+      {
+        event.preventDefault();
 
-      removePersonButton.setAttribute("onClick", "deletePersonOnX(\'" + currentEmail + "\'" + ", " + 
-      dayIndex + ", " + "\'" + day + "\'" + ", " + "\'" + temp + "\'" + ", " + tableRowIndex + ", \'" + labelID + "\', \'" + 
-      carBox.id + "\')");
+        //add person in backend 
+        cars[day][carBox.id].PM.passengers.push(passengerEmail);
+        countID = carBox.id;
+        dayVar = day;
 
+        // use day, ampm, and email to get persons data 
+        var dayIndex = 2*daysArray.indexOf(day) +1;
 
-      label.appendChild(removePersonButton);
+        var dayIndexString = dayIndex.toString();
 
-      // append the list element to the amDiv
-      pmDiv.appendChild(label);
+        var ampmTable = document.getElementsByClassName("titleTable")[dayIndex];
+        var tableRows = ampmTable.getElementsByTagName('tr');
+        var row = tableRows[0];
+        var tableRowIndex = 0;
 
+        // find the table row of the passenger 
+        for(var index = 0; index < tableRows.length; ++index)
+        {
+          if(tableRows[index].getAttribute('email') == passengerEmail)
+          {
+            row = tableRows[index];
+            tableRowIndex = index;
+          }
+        }
+
+        row.setAttribute('carstatus', 'passenger');
+        
+        // personName and radio buttons go under label element
+        var label = document.createElement('label');
+        label.className = "radioLabel";
+        label.id = "radioLabel" + passengerName + "PM";
+        var labelID = label.id.toString();
+        var listEl = document.createElement('input');
+        listEl.setAttribute("type", "radio");
+        listEl.setAttribute("onChange", "handleChange(this)")
+        var pmID = pmDiv.id;
+        listEl.setAttribute("name", pmID);
+        listEl.setAttribute("value", passengerName);
+        listEl.setAttribute("textContent", passengerName);
+        listEl.setAttribute("style", "margin: 0 3px 0 3px ");
+
+        // append radio button and passengerName text
+        var dropText = document.createTextNode(passengerName);
+        label.appendChild(listEl);
+        label.appendChild(dropText);
+        
+        //append removePersonButton to label
+        var removePersonButton = document.createElement('button');
+        removePersonButton.className = 'removePersonButton';
+
+        var currentEmail = passengerEmail;
+
+        var temp = "PM";
+
+        removePersonButton.setAttribute("onClick", "deletePersonOnX(\'" + currentEmail + "\'" + ", " + 
+        dayIndex + ", " + "\'" + day + "\'" + ", " + "\'" + temp + "\'" + ", " + tableRowIndex + ", \'" + labelID + "\', \'" + 
+        carBox.id + "\')");
+
+        label.appendChild(removePersonButton);
+
+        // append the list element to the amDiv
+        pmDiv.appendChild(label);
+
+      }
     }
   };
 
@@ -590,6 +497,9 @@ function makeCarBox(day) {
   carBox.appendChild(pmDiv);
 
   var finishCarButton = document.createElement('button');
+  var temp = carBoxID + "finishButton";
+  finishCarButton.id = temp;
+  finishCarButton.innerHTML = "Finish Car";
   finishCarButton.className = 'finishCarButton';
   finishCarButton.setAttribute("onClick", "finishCar(\'" + carBoxID + "\', \'" + day + "\')");
   carBox.appendChild(finishCarButton);
@@ -612,7 +522,8 @@ var thursdayPM = [];
 var fridayAM = [];
 var fridayPM = [];
 
-function checkAlreadyAdded(pmDiv, amPM, passengerEmail, day) {
+function checkAlreadyAdded(pmDiv, amPM, passengerEmail, day) 
+{
 
   var currCount = pmDiv.parentNode.id;
 
@@ -643,18 +554,18 @@ function checkAlreadyAdded(pmDiv, amPM, passengerEmail, day) {
       inList = checkIfInList(fridayPM, passengerEmail);
     }
   }
-
   return inList;
-
 }
 
-function checkIfInList(dayList, email) {
+function checkIfInList(dayList, email) 
+{
     var listLength=dayList.length;
 
     for(var i=0; i<listLength; i++)
     {
         // if its in the array, return true
-        if(dayList[i] == email){
+        if(dayList[i] == email)
+        {
           return true;
         }
     }
@@ -697,14 +608,15 @@ function removeFromPassengerList(email, day, amPM)
     for(var i=0; i<listLength; i++)
     {
         // if its in the array, return true
-        if(dayList[i] == email){
+        if(dayList[i] == email)
+        {
           dayList.splice(i);
         }
     }
-
 }
 
-function handleChange(myRadio){
+function handleChange(myRadio)
+{
   var radioID = myRadio.id;
   var countNum = myRadio.parentElement.parentElement.parentElement.id;
   var day1 = myRadio.parentElement.parentElement.parentElement.parentElement.id;
@@ -716,17 +628,19 @@ function handleChange(myRadio){
   var row = tableRows[0];
   var tableRowIndex = 0;
   // find the table row of the passenger 
-  for(var index = 0; index < tableRows.length; ++index){
-    if(tableRows[index].getAttribute('email') == passengerEmail){
+  for(var index = 0; index < tableRows.length; ++index)
+  {
+    if(tableRows[index].getAttribute('email') == passengerEmail)
+    {
       row = tableRows[index];
       tableRowIndex = index;
     }
   }
 
   var driverEmail = aliasToEmail(myRadio.value);
-
   var inAM = false;
   passengerAMList = cars[day1][countNum].AM.passengers; 
+
   for (var i=0; i<passengerAMList.length; ++i)
   {
     if(driverEmail == passengerAMList[i])
@@ -750,13 +664,17 @@ function handleChange(myRadio){
     alert("Please add the driver to the AM and the PM of the car");
     myRadio.checked = false;
   }
-  else{
+
+  else
+  {
     var driveStatuses = row.getElementsByClassName('driveStatus');
 
-    if(driveStatuses.length ==1 && driveStatuses[0].innerHTML == "cannot drive"){
+    if(driveStatuses.length ==1 && driveStatuses[0].innerHTML == "cannot drive")
+    {
       alert("You tried to make someone a driver who can not drive. \n Please select a new driver.");
       myRadio.checked = false;
     }
+
     else
     {
       content = 'The driver is: ' + myRadio.value;
@@ -769,54 +687,83 @@ function handleChange(myRadio){
   }
 }
 
-function finishCar(carID,day){
- var amTime = document.getElementById(carID+"AMtime").value
- var pmTime = document.getElementById(carID+"PMtime").value
+function finishCar(carID,day)
+{
 
- cars[day][carID].AM.time = amTime;
- cars[day][carID].PM.time = pmTime;
+  // will tell button text to change if there are no errors
+  var error = 0;
 
- // check if driver is blank
- if (cars[day][carID].driver == "")
- {
-   alert("Plese select a driver before you finish the car.");
- } 
- // check if AM time is blank
- if(cars[day][carID].AM.time == "")
- {
-   alert("Please add an AM time.");
- }
- // check if PM time is blank
- if(cars[day][carID].PM.time == ""){
-   alert("Please add a PM time.");
- } 
- // if driver and time are not blank
+  var amTime = document.getElementById(carID+"AMtime").value
+  var pmTime = document.getElementById(carID+"PMtime").value
+
+  cars[day][carID].AM.time = amTime;
+  cars[day][carID].PM.time = pmTime;
+
+  // check if driver is blank
+  if (cars[day][carID].driver == "")
+  {
+    alert("Plese select a driver before you finish the car.");
+    error++;
+  } 
+
+  // check if AM time is blank
+  if(cars[day][carID].AM.time == "")
+  {
+    alert("Please add an AM time.");
+    error++;
+  }
+
+  // check if PM time is blank
+  if(cars[day][carID].PM.time == ""){
+    alert("Please add a PM time.");
+    error++;
+  } 
+
+  // if driver and time are not blank update the backend 
   else 
- {
+  {
     var numPassengersAM = cars[day][carID].AM.passengers.length;
     var numPassengersPM = cars[day][carID].PM.passengers.length;
-
     var carSize = allPreferences[cars[day][carID].driver].numPassengers;
 
-  if(carSize < numPassengersAM & carSize < numPassengersPM) 
-  {
+    if(carSize < numPassengersAM & carSize < numPassengersPM) 
+    {
+      error++;
       alert("You have added too many passengers in both the AM and PM! " +
-    allPreferences[cars[day][carID].driver].name + " has only " + carSize + " seat(s).");
-  }
-  else if(carSize < numPassengersAM) 
-  {
-    alert("You have added too many AM passengers! " +
-    allPreferences[cars[day][carID].driver].name + " has only " + carSize + " seat(s).");
-  }
-  else if(carSize < numPassengersPM ) 
-  {
-    alert("You have added too many PM passengers! " +
-    allPreferences[cars[day][carID].driver].name + " has only " + carSize + " seat(s).");
+      allPreferences[cars[day][carID].driver].name + " has only " + carSize + " seat(s).");
+    }
+
+    else if(carSize < numPassengersAM) 
+    {
+      error++;
+      alert("You have added too many AM passengers! " +
+      allPreferences[cars[day][carID].driver].name + " has only " + carSize + " seat(s).");
+    }
+
+    else if(carSize < numPassengersPM) 
+    {
+      error++;
+      alert("You have added too many PM passengers! " +
+      allPreferences[cars[day][carID].driver].name + " has only " + carSize + " seat(s).");
+    }
   }
 
- }
+  var buttonID = carID + "finishButton";
+  var finishButton = document.getElementById(buttonID);
 
+  if(error == 0 && finishButton.innerHTML == "Finish Car")
+  {
+    finishButton.innerHTML = "Edit Car";
+    document.getElementById(carID).style.background = "#cccccc";
+  }
+
+  else 
+  {
+    finishButton.innerHTML = "Finish Car";
+    document.getElementById(carID).style.background = "#eee8f3";
+  }
 }
+
 // author: edorsey,tstannard
 // this needs to be here
 function allowDrop(event) {
@@ -824,49 +771,70 @@ function allowDrop(event) {
 }
 
 // remove the car from the front end and the back end 
-//TODO need to change status of passengers when car gets deleted 
-function deleteCarOnX(carID) {
+function deleteCarOnX(carID, day) 
+{
   var day = document.getElementById(carID).parentElement.id;
 
   //change all the passenger status's 
   passengerAMList = cars[day][carID].AM.passengers; 
-  var dayIndexAM = 2*daysArray.indexOf(day) ;
+
+  for(i = 0; i < passengerAMList.length; i++)
+  {
+    removeFromPassengerList(passengerAMList[i], day, "AM");
+  }
+
+  var dayIndexAM = 2*daysArray.indexOf(day);
   var ampmTableAM = document.getElementsByClassName("titleTable")[dayIndexAM];
   var tableRowsAM = ampmTableAM.getElementsByTagName('tr');
   var rowAM = tableRowsAM[0];
-  for (var i=0; i<passengerAMList.length; ++i){
+
+  for (var i=0; i<passengerAMList.length; ++i)
+  {
       // find the table row of the passenger 
       var amEmail = passengerAMList[i];
-      for(var index = 0; index < tableRowsAM.length; ++index){
-        if(tableRowsAM[index].getAttribute('email') == amEmail){
+
+      for(var index = 0; index < tableRowsAM.length; ++index)
+      {
+        if(tableRowsAM[index].getAttribute('email') == amEmail)
+        {
           tableRowsAM[index].setAttribute('carstatus', 'false')
         }
       } 
    }
+   
+   passengerPMList = cars[day][carID].PM.passengers; 
+   for(a = 0; a < passengerPMList.length; a++)
+   {
+     //alert(passengerAMList[a]);
+     removeFromPassengerList(passengerPMList[a], day, "PM");
+    }
 
-    passengerPMList = cars[day][carID].PM.passengers; 
-    dayIndexPM = 2*daysArray.indexOf(day) +1 ;
+    dayIndexPM = 2*daysArray.indexOf(day) +1;
     ampmTablePM = document.getElementsByClassName("titleTable")[dayIndexPM];
     var tableRowsPM = ampmTablePM.getElementsByTagName('tr');
     var rowPM = tableRowsPM[0];
-    for (var i=0; i<passengerPMList.length; ++i){
-        // find the table row of the passenger 
-        var pmEmail = passengerPMList[i];
-        for(var index = 0; index < tableRowsPM.length; ++index){
-          if(tableRowsPM[index].getAttribute('email') == pmEmail){
-            tableRowsPM[index].setAttribute('carstatus', 'false')
-          }
-        } 
+
+    for (var i=0; i<passengerPMList.length; ++i)
+    {
+      // find the table row of the passenger 
+      var pmEmail = passengerPMList[i];
+
+      for(var index = 0; index < tableRowsPM.length; ++index)
+      {
+        if(tableRowsPM[index].getAttribute('email') == pmEmail)
+        {
+          tableRowsPM[index].setAttribute('carstatus', 'false')
+        }
+      } 
     }
 
   document.getElementById(carID).remove();
   delete cars[day][carID];
 }
 
-
-function deletePersonOnX(email, dayIndex, day, ampm, rowIndex, listEl, currentID) {
+function deletePersonOnX(email, dayIndex, day, ampm, rowIndex, listEl, currentID) 
+{
   // delete front end 
-
   document.getElementById(listEl).remove();
 
   //use day, ampm, and email to get/changes persons car status  
@@ -881,54 +849,61 @@ function deletePersonOnX(email, dayIndex, day, ampm, rowIndex, listEl, currentID
     var passengerIndex = cars[day][currentID].AM.passengers.indexOf(email);
     cars[day][currentID].AM.passengers.splice(passengerIndex);
   }
+
   else
   {
     var passengerIndex = cars[day][currentID].PM.passengers.indexOf(email);
     cars[day][currentID].PM.passengers.splice(passengerIndex);
   }
-
   removeFromPassengerList(email, day, ampm);
-
 }
 
 //This is a helper function which parses a time into a viuallly apealling
 //and uniform way
 function parseTime(time){
-  //Get rid of the first part which has the day.
 
+  //Get rid of the first part which has the day.
   var timeString = time.split('y')[1]
 
   //save the AM vs PM
-  var endOfTime = timeString.substring(0,2)
+  var endOfTime = timeString.substring(0,2);
 
   //make the time with a colon in it. We need seperate cases for when
   //we have 4 digits vs 3 digits of time.
-  if (timeString.length == 5){
-    var startOfTime = timeString.substring(2,3).concat(':')
-    startOfTime = startOfTime.concat(timeString.substring(3))
+  if (timeString.length == 5)
+  {
+    var startOfTime = timeString.substring(2,3).concat(':');
+    startOfTime = startOfTime.concat(timeString.substring(3));
 
     //add a space for astetic
-    startOfTime = startOfTime.concat(' ')
-  }else{
-    var startOfTime = timeString.substring(2,4).concat(':')
-    startOfTime = startOfTime.concat(timeString.substring(4))
-
-    //add a space for astetic
-    startOfTime = startOfTime.concat(' ')
+    startOfTime = startOfTime.concat(' ');
   }
+  
+  else
+  {
+    var startOfTime = timeString.substring(2,4).concat(':');
+    startOfTime = startOfTime.concat(timeString.substring(4));
 
-  return startOfTime.concat(endOfTime)
+    //add a space for astetic
+    startOfTime = startOfTime.concat(' ');
+  }
+  return startOfTime.concat(endOfTime);
 }
 
-function populateModifyCarsModal() {
+function populateModifyCarsModal()
+{
   document.getElementById('directModifyJSONInput').value = JSON.stringify(cars, null, 2);
 }
 
-function saveDirectCarModifyChanges() {
+function saveDirectCarModifyChanges()
+{
   var value;
-  try {
+  try 
+  {
     value = JSON.parse(document.getElementById('directModifyJSONInput').value);
-  } catch(e) {
+  } 
+  catch(e) 
+  {
     alert("JSON parse error: " + e);
     return;
   }
@@ -940,28 +915,37 @@ function saveDirectCarModifyChanges() {
   updateHighlightingAndTables();
 }
 
-
-function aliasToEmail(alias) {
-   if (alias in allPreferences) {
+function aliasToEmail(alias)
+{
+   if (alias in allPreferences) 
+   {
      return alias;
-   } else {
+   } 
+
+   else 
+   {
      // They must have given a name or a "preferred email" instead of their
      // gmail
-     for (var person in allPreferences) {
+     for (var person in allPreferences) 
+     {
        var theirPreferences = allPreferences[person];
+
        if (theirPreferences.prefEmail == alias
-           || theirPreferences.name.toLowerCase() == alias.toLowerCase()) {
+           || theirPreferences.name.toLowerCase() == alias.toLowerCase()) 
+       {
          return person;
        }
      }
    }
  }
 
- function emailToCarSize(email) {
+ function emailToCarSize(email) 
+ {
    return allPreferences[email].numPassengers;
  }
 
-function directlyAddCar(day) {
+function directlyAddCar(day) 
+{
   // Get the modal
   var theForm = document.getElementById('directAddCar'+day);
 
@@ -974,13 +958,18 @@ function directlyAddCar(day) {
 
   // Get the list of passengers
   var amPassengers = [];
-  for (var i=0; i<amPassengerInputs.length; ++i) {
+
+  for (var i=0; i<amPassengerInputs.length; ++i)
+  {
     var p = amPassengerInputs[i].value;
     if (!p) continue;
     amPassengers.push(aliasToEmail(p));
   }
+
   var pmPassengers = [];
-  for (var i=0; i<pmPassengerInputs.length; ++i) {
+
+  for (var i=0; i<pmPassengerInputs.length; ++i) 
+  {
     var p = pmPassengerInputs[i].value;
     if (!p) continue;
     pmPassengers.push(aliasToEmail(p));
@@ -989,9 +978,12 @@ function directlyAddCar(day) {
   // Change the times to the right format
   amtime = parseInt(amtime.slice(0,2), 10).toString() + amtime.slice(amtime.length-2);
   pmHour = parseInt(pmtime.slice(0,2), 10);
-  if (pmHour > 12) {
+
+  if (pmHour > 12)
+  {
     pmHour -= 12;
   }
+
   pmtime = pmHour.toString() + pmtime.slice(pmtime.length-2);
 
   // Clear the form!
@@ -1002,21 +994,24 @@ function directlyAddCar(day) {
     AM: {time: amtime, passengers: amPassengers},
     PM: {time: pmtime, passengers: pmPassengers}
   };
+
   changedPage = true;
   updateHighlightingAndTables(day);
 }
 
-function directlyAddCarClear(day) {
+function directlyAddCarClear(day)
+{
   var theForm = document.getElementById('directAddForm'+day);
   theForm.reset();
 }
 
-window.addEventListener("beforeunload", function (e) {
-  if (changedPage) {
+window.addEventListener("beforeunload", function (e) 
+{
+  if (changedPage) 
+  {
     var confirmationMessage = "You have unsaved cars!";
 
     e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
     return confirmationMessage;              // Gecko, WebKit, Chrome <34
   }
 });
-

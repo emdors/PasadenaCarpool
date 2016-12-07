@@ -69,13 +69,6 @@ html(lang='en')
             //If the finished car is hit then we save what day we are using and call the make car function.
             button(class="btn btn-primary",value='ADD', type='button' ,onClick='return makeCar("#{dayData.day}");') Finish Car
 
-            button.btn.btn-default.btn-sm(type='button', data-toggle='collapse', data-target='#directAddCar'+dayData.day, aria-expanded='false', aria-controls='directAddCar'+dayData.day)
-              | Directly Enter Car (Advanced)
-
-            //-button.btn.btn-primary(type='button', data-toggle='collapse', data-target='#collapseExample', aria-expanded='false', aria-controls='collapseExample')
-            //-  | Button with data-target
-
-
             div(id='directAddCar'+dayData.day, class="collapse")
               form(id='directAddForm'+dayData.day, action="", method="post")
                 h4 Enter names or emails

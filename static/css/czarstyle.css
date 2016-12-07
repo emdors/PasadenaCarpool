@@ -96,9 +96,10 @@ body {
   margin-top: 6px;
 }
 
-.finishCarButton:before{
+
+/*.finishCarButton:before{
   content: "finish car"
-}
+}*/
 
 table.timetable {
   border-collapse: separate;
