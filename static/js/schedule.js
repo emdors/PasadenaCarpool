@@ -1,12 +1,7 @@
 window.onload = function(editMode=false) {
-  if (editMode == true) {
-    console.log("hello, the edit Mode variable in onload was reached and I know it is true.");
-  }
   var yourcars = document.getElementById('yourcars');
-  //yourcars = none;
   var allcars = document.getElementById('allcars');
-  //allcars = none;
-  console.log("THIS IS CARS:" + JSON.stringify(cars));
+
   for (var day in cars) {
 
     var car = cars[day]
